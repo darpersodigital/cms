@@ -394,7 +394,7 @@ class DatabaseController extends BaseController
                 '%%custom_functions%%',
             ],
             $replacements,
-            file_get_contents(__DIR__ . '../static/templates/model.stub')
+            file_get_contents(__DIR__ . '/constants/model.stub')
         );
     
         file_put_contents($filePath, $fileContent);
