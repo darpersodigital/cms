@@ -14,9 +14,9 @@
 			</div>
 		</div>
 
-		@include('darpersocms::cms.components/show-fields/text', ['label' => 'Name', 'text' => request()->get('admin')['name']])
+		@include('darpersocms::cms.components/show-fields/text', ['label' => 'Name', 'value' => request()->get('admin')['name']])
 
-		@include('darpersocms::cms.components/show-fields/image', ['label' => 'Image', 'image' => request()->get('admin')['image'] ? request()->get('admin')['image'] : ''])
+		@include('darpersocms::cms.components/show-fields/image', ['label' => 'Image', 'value' => request()->get('admin')['image'] ? request()->get('admin')['image'] : ''])
 
 	</div>
 
