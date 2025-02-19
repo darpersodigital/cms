@@ -68,7 +68,9 @@ a {
         color: $primary !important;
     }
 }
-
+.text-primary {
+    color:$primary;
+}
 .bg-primary {
     background-color: $primary;
 }

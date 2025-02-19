@@ -7,7 +7,7 @@
     background-color: #fd7e14 !important;
 }
 
-a:hover,
+a:hover,.text-primary,
 a.active {
     color: #fd7e14 !important;
 }
