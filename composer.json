@@ -1,0 +1,30 @@
+{
+    "name": "darpersodigital/cms",
+    "description": "Darperso CMS",
+    "type": "package",
+    "autoload": {
+        "psr-4": {
+            "Darpersodigital\\Cms\\": "src/",
+            "Darpersodigital\\Cms\\Middlewares\\": "src/middlewares",
+            "Darpersodigital\\Cms\\Models\\": "src/models"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Darpersodigital\\Cms\\Providers\\CmsServiceProvider"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "darpersodigital"
+        }
+    ],
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "require": {
+        "astrotomic/laravel-translatable": "^11.15",
+        "intervention/image": "^3.11"
+    }
+}

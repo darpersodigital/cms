@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+
+%%head%%
+
+class %%model_name%% extends Model %%implements%%
+{
+	%%use%%
+
+    protected $table = '%%database_table%%';
+
+    protected $guarded = ['id'];
+
+    %%translated_attributes%%
+
+	%%body%%
+
+    /* Start custom functions */%%custom_functions%%/* End custom functions */
+}

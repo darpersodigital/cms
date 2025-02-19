@@ -1,0 +1,244 @@
+table.dataTable {
+    margin-bottom: 30px;
+}
+
+.dataTables_info,
+.server-pagination-numbers,
+.dataTables_paginate {
+    font-size: 0.7rem;
+}
+
+.dataTables_length label,
+.dataTables_info label,
+.dataTables_filter label,
+.dataTables_paginate label {
+    margin-bottom: 20px;
+    font-size: 12px;
+}
+
+.dataTables_length input,
+.dataTables_info input,
+.dataTables_filter input,
+.dataTables_paginate input {
+    border: 1px solid #e9ecef;
+    padding: 2px 12px;
+    border-radius: 5px;
+}
+
+.dataTables_length,
+.dataTables_info {
+    padding-left: 0px;
+}
+
+table.dataTable tbody tr,
+table.dataTable.display tbody tr.odd > .sorting_1,
+table.dataTable.order-column.stripe tbody tr.odd > .sorting_1,
+table.dataTable.display tbody tr.even > .sorting_1,
+table.dataTable.order-column.stripe tbody tr.even > .sorting_1 {
+    background-color: white !important;
+}
+.server-pagination-numbers {
+    color: #333;
+}
+.datatable-container {
+    .selection,
+    .select2-container {
+        width: 40px !important;
+    }
+}
+
+.dataTables_length .select2-selection,
+.dataTables_info .select2-selection,
+.server-side-showing-nbr .select2-selection {
+    height: auto !important;
+    padding: 2px 6px !important;
+    width: 40px !important;
+    text-align: center;
+    .select2-selection__rendered {
+        font-size: 12px !important;
+    }
+    .select2-selection__arrow {
+        display: none;
+    }
+}
+.dataTables_filter,
+.dataTables_paginate,
+.filter-wrapper {
+    cursor: pointer;
+    padding-right: 0px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    max-width: 120px;
+    height: 25px !important;
+    padding: 0.375rem 0.75rem;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.dataTables_filter .paginate_button,
+.dataTables_paginate .paginate_button,
+.filter-wrapper .paginate_button {
+    position: relative;
+    vertical-align: middle;
+    width: 40px !important;
+    height: 40px !important;
+    line-height: 38px !important;
+    border: 1px solid #e9ecef !important;
+    border-radius: 100%;
+    padding: 0 !important;
+    background-image: unset !important;
+}
+
+.dataTables_filter .paginate_button.previous,
+.dataTables_filter .paginate_button.next,
+.dataTables_paginate .paginate_button.previous,
+.dataTables_paginate .paginate_button.next,
+.filter-wrapper .paginate_button.previous,
+.filter-wrapper .paginate_button.next {
+    font-size: 0;
+}
+
+.dataTables_filter .paginate_button.previous:before,
+.dataTables_filter .paginate_button.next:before,
+.dataTables_paginate .paginate_button.previous:before,
+.dataTables_paginate .paginate_button.next:before,
+.filter-wrapper .paginate_button.previous:before,
+.filter-wrapper .paginate_button.next:before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+}
+
+.dataTables_filter .paginate_button.previous:before,
+.dataTables_paginate .paginate_button.previous:before,
+.filter-wrapper .paginate_button.previous:before {
+    border-right: 8px solid $primary;
+    margin-right: 3px;
+}
+
+.dataTables_filter .paginate_button.next:before,
+.dataTables_paginate .paginate_button.next:before,
+.filter-wrapper .paginate_button.next:before {
+    border-left: 8px solid $primary;
+    margin-left: 3px;
+}
+
+.dataTables_filter .paginate_button.current,
+.dataTables_paginate .paginate_button.current,
+.filter-wrapper .paginate_button.current {
+    background: $primary;
+    border-color: $primary;
+}
+
+.dataTables_filter .paginate_button.disabled,
+.dataTables_paginate .paginate_button.disabled,
+.filter-wrapper .paginate_button.disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+@media (max-width: 767.98px) {
+    .dataTables_length,
+    .dataTables_info {
+        padding-left: 0 !important;
+        float: none !important;
+        text-align: center !important;
+    }
+    .dataTables_filter,
+    .dataTables_paginate {
+        padding-right: 0 !important;
+        float: none !important;
+        text-align: center !important;
+    }
+}
+
+.server-side-pagination {
+    #DataTables_Table_0_length,
+    .dataTables_filter,
+    .dataTables_info,
+    .dataTables_paginate {
+        display: none;
+    }
+}
+
+.pagination-btns {
+    p {
+        display: none;
+    }
+
+    svg {
+        width: 20px !important;
+        height: 20px !important;
+    }
+
+    a ,span[aria-current="page"], span[aria-disabled="true"]{
+        display: flex;
+        width: 40px !important;
+        height: 40px !important;
+        align-items: center;
+        justify-content: center;
+        padding: 0px !important;
+        border: 1px solid #dee2e6 !important;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    span[aria-current="page"],span[aria-disabled="true"] {
+       span {
+       
+        padding: 0px !important;
+        border: unset !important;
+       }
+        
+    }
+    span[aria-current="page"] {
+        color: $primary !important;
+    }
+    div {
+        width: auto !important;
+        display: flex;
+        justify-content: center;
+        > span {
+            display: flex;
+            justify-content: center;
+        }
+    }
+    nav div:first-of-type {
+        display: none !important;
+    }
+}
+
+.server-pagination-numbers {
+    font-size: 0.7rem;
+}
+
+
+.sort-form {
+    .select2-selection.select2-selection--single {
+        padding: 0px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .select2-selection__rendered {
+            margin-left: -10px !important;
+        }
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        top: 50%;
+        transform: translateY(-50%);
+        right: 5px;
+    }
+}
+.sort-arrows  {
+    pointer-events: none !important;
+}

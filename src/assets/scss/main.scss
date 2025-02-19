@@ -1,0 +1,42 @@
+@import "template";
+@import "navbar";
+@import "datatables";
+
+.multiple-image {
+    height: 60px;
+    width: 60px;
+    object-fit: contain;
+}
+.session-popup {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 300px;
+    transition: top 1s ease;
+    z-index: 999;
+    &.animate {
+        top: 30px;
+    }
+}
+@media (max-width: 767.98px) {
+    .side-menu {
+        width: 0px !important;
+        transform: translateX(-50%);
+    }
+    .right-content {
+        width: 100% !important;
+    }
+
+    .btn-action.lg {
+        width: 30px !important;
+        height: 30px !important;
+        i {
+            font-size: 16px !important;
+        }
+    }
+}
+
+.loader-wrapper {
+    background-color: $primary;
+}
