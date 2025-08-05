@@ -25,10 +25,7 @@ table.dataTable {
     border-radius: 5px;
 }
 
-.dataTables_length,
-.dataTables_info {
-    padding-left: 0px;
-}
+
 
 table.dataTable tbody tr,
 table.dataTable.display tbody tr.odd > .sorting_1,
@@ -67,7 +64,9 @@ table.dataTable.order-column.stripe tbody tr.even > .sorting_1 {
     cursor: pointer;
     padding-right: 0px;
 }
-
+.dataTables_wrapper  {
+    overflow-x: auto;
+}
 .dataTables_wrapper .dataTables_filter input {
     max-width: 120px;
     height: 25px !important;
@@ -150,14 +149,12 @@ table.dataTable.order-column.stripe tbody tr.even > .sorting_1 {
 @media (max-width: 767.98px) {
     .dataTables_length,
     .dataTables_info {
-        padding-left: 0 !important;
-        float: none !important;
+        float: left !important;
         text-align: center !important;
     }
     .dataTables_filter,
     .dataTables_paginate {
-        padding-right: 0 !important;
-        float: none !important;
+        float: left !important;
         text-align: center !important;
     }
 }

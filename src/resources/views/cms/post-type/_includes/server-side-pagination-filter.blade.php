@@ -24,8 +24,8 @@
             </form>
         </div>
     </div>
-    <div class="col-md-8  dataTables_length text-right">
-        <div class="d-flex justify-content-end align-items-center">
+    <div class="col-md-8  dataTables_length text-right ">
+        <div class="d-flex justify-content-start justify-content-lg-end align-items-center ">
             <form>
                 <label>
                     Search: <input type="search" name="search" value="{{ request('search') }}">

@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Shouf El Menu CMS</title>
+    <title>{{ config('cms_config.seo_title') }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
@@ -16,56 +14,53 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
-
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  
-    <link rel="stylesheet" href="{{ asset('assets/fontawesome-cms/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ url('asset?path=css/main.css') }}">
-    
-    @foreach(config('cms_config.additional_styles') as $path)
-		<link rel="stylesheet" type="text/css" href="{{ url($path) }}">
-	@endforeach
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+
+    @foreach (config('cms_config.additional_styles') as $path)
+        <link rel="stylesheet" type="text/css" href="{{ url($path) }}">
+    @endforeach
 
 
 </head>
 
 <body>
     @if (session('success'))
-    <div class="alert alert-success session-popup">
-        {{ session('success') }}
-    </div>
-@endif
+        <div class="alert alert-success session-popup">
+            {{ session('success') }}
+        </div>
+    @endif
 
     @if (session('error'))
-    <div class="alert alert-danger session-popup">
-        {{ session('error') }}
-    </div>
+        <div class="alert alert-danger session-popup">
+            {{ session('error') }}
+        </div>
     @endif
 
     <div class="page-wrapper ">
+      <div class="floating-burger-menu">
+          <div class="burger-menu">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+      </div>
         <div class="side-menu expanded">
             <div class="logo-wrapper  d-flex py-3">
-                <img src="{{ url('asset?path=cms-images/'.config('cms_config.logo')) }}" alt="" class="mx-auto">
+                <img src="{{ url('asset?path=cms-images/' . config('cms_config.logo')) }}" alt=""
+                    class="mx-auto">
             </div>
 
-
-            <div class="admin-menu mt-3">
-                <div class="admin-menu-item-wrapper">
+            <div class="admin-menu ">
+                <div style="height:7.5px;width:50px;"></div>
+                <a class="admin-menu-item-wrapper" href="{{ route('admin-dashboard') }}">
                     <div class="admin-menu-item @if (Route::current()->getName() === 'dashboard') active @endif">
                         <i class="fa-solid fa-house"></i>
                         <div class="title">Dashboard</div>
                     </div>
-                </div>
-
-                {{-- <a href={{ route('post-types') }} class=" admin-menu-item-wrapper   ">
-                    <div class="admin-menu-item @if (Route::current()->getName() === 'post-types') active @endif">
-                        <i class="fa-solid fa-table-columns"></i>
-                        <div class="title">Post Types</div>
-                    </div>
-                </a> --}}
-
+                </a>
 
                 @foreach (request()->get('admin')['post_types_grouped'] as $group)
                     @if (!$group['icon'] && !$group['title'])
@@ -91,9 +86,7 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <i class="text-center mr-2 fa {{ $group['icon'] }}" aria-hidden="true"></i>
                                         <div class="title">{{ $group['title'] }} </div>
-
                                     </div>
-
                                     <i class="fa-solid fa-chevron-down"></i>
                                 </div>
 
@@ -109,13 +102,12 @@
 
                                 </div>
                             </div>
-
                         </div>
                     @endif
                 @endforeach
 
-            </div>
 
+            </div>
         </div>
 
         <div class="right-content">
@@ -151,8 +143,9 @@
 
     @include('darpersocms::cms/components/footer')
 
-   
- <div class="loader-wrapper bg-primary" style="position: fixed;
+
+    <div class="loader-wrapper bg-primary"
+        style="position: fixed;
     height: 100vh;
     width: 100%;
     top: 0;
@@ -169,7 +162,7 @@
             <div class="spinner-item"></div>
             <div class="spinner-item"></div>
         </div>
-    </div> 
+    </div>
 
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -178,19 +171,20 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.ckeditor.com/4.6.2/standard-all/ckeditor.js"></script>
-    <script src="{{url('asset?path=js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{url('asset?path=js/buttons.html5.min.js') }}"></script>
-    <script src="{{url('asset?path=js/pdfmake.min.js') }}"></script>
-    <script src="{{url('asset?path=js/vfs_fonts.js') }}"></script>
-    <script src="{{url('asset?path=js/main.js') }}"></script>
-    <script src="{{url('asset?path=js/jquery.mjs.nestedSortable.js') }}"></script>
+    <script src="{{ url('asset?path=js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ url('asset?path=js/buttons.html5.min.js') }}"></script>
+    <script src="{{ url('asset?path=js/pdfmake.min.js') }}"></script>
+    <script src="{{ url('asset?path=js/vfs_fonts.js') }}"></script>
+    <script src="{{ url('asset?path=js/main.js') }}"></script>
+    <script src="{{ url('asset?path=js/jquery.mjs.nestedSortable.js') }}"></script>
 
 
     @yield('scripts')
 
-    @foreach(config('cms_config.additional_methods') as $path)
-		<script type="text/javascript" src="{{ url($path) }}"></script>
-	@endforeach
+    @foreach (config('cms_config.additional_methods') as $path)
+        <script type="text/javascript" src="{{ url($path) }}"></script>
+    @endforeach
+
 
 </body>
 

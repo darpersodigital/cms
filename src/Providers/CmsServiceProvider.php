@@ -40,7 +40,7 @@ class CmsServiceProvider extends ServiceProvider
      
         Schema::defaultStringLength(191);
      
-        $this->publishes([__DIR__ . '/../publishable/config' => config_path('/')], 'cms_config');
+        $this->publishes([__DIR__ . '/../publishable/darperso' => config_path('/')], 'darperso');
         $this->publishes([__DIR__ . '/../publishable/test-env' => config_path('/')], 'test-env');
         
         if (!is_array($this->app['config']->get('cms_config'))) $this->runInitialSetup();
@@ -161,6 +161,7 @@ class CmsServiceProvider extends ServiceProvider
             $table->tinyInteger('server_side_pagination')->nullable();
             $table->tinyInteger('with_export')->nullable();
             $table->tinyInteger('is_form')->default(0);
+            $table->tinyInteger('show_dashboard')->default(0);
             $table->tinyInteger('hidden')->default(0);
             $table->tinyInteger('custom_page')->default(0);
             $table->string('parent_title')->nullable();
@@ -190,6 +191,9 @@ class CmsServiceProvider extends ServiceProvider
                 'parent_icon' => null,
                 'server_side_pagination'=>0,
                 'is_form'=>0,
+                'show_dashboard'=>0,
+
+
             ],
             [
                 'icon' => 'fa-language',
@@ -211,6 +215,7 @@ class CmsServiceProvider extends ServiceProvider
                 'parent_icon' => null,
                 'server_side_pagination'=>0,
                 'is_form'=>0,
+                'show_dashboard'=>0,
             ],
             [
                 'icon' => 'fa-lock',
@@ -232,6 +237,7 @@ class CmsServiceProvider extends ServiceProvider
                 'parent_icon' => 'fa-user-secret',
                 'server_side_pagination'=>0,
                 'is_form'=>0,
+                'show_dashboard'=>0,
             ],
             [
                 'icon' => ' fa-user-secret',
@@ -253,6 +259,8 @@ class CmsServiceProvider extends ServiceProvider
                 'parent_icon' => 'fa-user-secret',
                 'server_side_pagination'=>0,
                 'is_form'=>0,
+                'show_dashboard'=>0,
+
             ],
             [
                 'icon' => 'fa-solid fa-house-user',
@@ -263,7 +271,7 @@ class CmsServiceProvider extends ServiceProvider
                 'model_name' => "HomePage",
                 'custom_page' => 0,
                 'fields' => '[{"name":"title","migration_type":"string","form_field":"text","form_field_configs_1":null,"additional_validations":null,"form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"0","unique":"0"}]',
-                'translatable_fields' => '[{"name":"seo_image","migration_type":"text","form_field":"image","description":null,"additional_validations":"max:1000","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_title","migration_type":"string","form_field":"text","description":null,"additional_validations":"max:60","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_description","migration_type":"string","form_field":"text","description":null,"additional_validations":"max:160","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_keywords","migration_type":"string","form_field":"text","description":null,"additional_validations":null,"can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"}]',
+                'translatable_fields' => '[{"name":"seo_image","migration_type":"text","form_field":"image","description":null,"additional_validations":"","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_title","migration_type":"string","form_field":"text","description":null,"additional_validations":"max:60","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_description","migration_type":"string","form_field":"text","description":null,"additional_validations":"max:160","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_keywords","migration_type":"string","form_field":"text","description":null,"additional_validations":null,"can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"}]',
                 'add' => 0,
                 'edit' => 1,
                 'delete' => 0,
@@ -274,6 +282,7 @@ class CmsServiceProvider extends ServiceProvider
                 'parent_icon' => null,
                 'server_side_pagination'=>0,
                 'is_form'=>0,
+                'show_dashboard'=>1,
             ],
             [
                 'icon' => 'fa-solid fa-message',
@@ -284,7 +293,7 @@ class CmsServiceProvider extends ServiceProvider
                 'model_name' => "ContactPage",
                 'custom_page' => 0,
                 'fields' => '[{"name":"send_form_messages_to","migration_type":"string","form_field":"email","form_field_configs_1":null,"additional_validations":"email","form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"0","unique":"0"}]',
-                'translatable_fields' => '[{"name":"seo_image","migration_type":"text","form_field":"image","description":null,"additional_validations":"max:1000","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_title","migration_type":"string","form_field":"text","description":null,"additional_validations":"max:60","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_description","migration_type":"string","form_field":"text","description":null,"additional_validations":"max:160","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_keywords","migration_type":"string","form_field":"text","description":null,"additional_validations":null,"can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"}]',
+                'translatable_fields' => '[{"name":"seo_image","migration_type":"text","form_field":"image","description":null,"additional_validations":","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_title","migration_type":"string","form_field":"text","description":null,"additional_validations":"max:60","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_description","migration_type":"string","form_field":"text","description":null,"additional_validations":"max:160","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_keywords","migration_type":"string","form_field":"text","description":null,"additional_validations":null,"can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"}]',
                 'add' => 0,
                 'edit' => 1,
                 'delete' => 0,
@@ -295,6 +304,7 @@ class CmsServiceProvider extends ServiceProvider
                 'parent_icon' => null,
                 'server_side_pagination'=>0,
                 'is_form'=>0,
+                'show_dashboard'=>1,
             ],
             [
                 'icon' => 'fa-solid fa-gear',
@@ -304,8 +314,8 @@ class CmsServiceProvider extends ServiceProvider
                 'route' => 'site-settings',
                 'model_name' => "SiteSetting",
                 'custom_page' => 0,
-                'translatable_fields' => '[{"name":"seo_image","migration_type":"text","form_field":"image","description":null,"additional_validations":"max:1000","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_title","migration_type":"string","form_field":"text","description":null,"additional_validations":"max:60","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_description","migration_type":"string","form_field":"text","description":null,"additional_validations":"max:160","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_keywords","migration_type":"string","form_field":"text","description":null,"additional_validations":null,"can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"}]',
-                'fields' => '[{"name":"instagram_url","migration_type":"text","form_field":"text","form_field_configs_1":null,"additional_validations":"","form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"1","unique":"0"},{"name":"facebook_url","migration_type":"text","form_field":"text","form_field_configs_1":null,"additional_validations":"","form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"1","unique":"0"},{"name":"twitter_url","migration_type":"text","form_field":"text","form_field_configs_1":null,"additional_validations":"","form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"1","unique":"0"},{"name":"linkedin_url","migration_type":"text","form_field":"text","form_field_configs_1":null,"additional_validations":"","form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"1","unique":"0"},{"name":"phone_number","migration_type":"string","form_field":"text","form_field_configs_1":null,"additional_validations":null,"form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"1","unique":"0"}]',
+                'translatable_fields' => '[{"name":"seo_image","migration_type":"text","form_field":"image","description":null,"additional_validations":"","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_title","migration_type":"string","form_field":"text","description":null,"additional_validations":"max:60","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_description","migration_type":"string","form_field":"text","description":null,"additional_validations":"max:160","can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"},{"name":"seo_keywords","migration_type":"string","form_field":"text","description":null,"additional_validations":null,"can_create":"1","hide_table":"0","can_read":"1","can_update":"1","nullable":"1"}]',
+                'fields' => '[{"name":"email","migration_type":"text","form_field":"text","form_field_configs_1":null,"additional_validations":"email|nullable","form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"1","unique":"0"},{"name":"instagram_url","migration_type":"text","form_field":"text","form_field_configs_1":null,"additional_validations":"","form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"1","unique":"0"},{"name":"facebook_url","migration_type":"text","form_field":"text","form_field_configs_1":null,"additional_validations":"","form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"1","unique":"0"},{"name":"twitter_url","migration_type":"text","form_field":"text","form_field_configs_1":null,"additional_validations":"","form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"1","unique":"0"},{"name":"linkedin_url","migration_type":"text","form_field":"text","form_field_configs_1":null,"additional_validations":"","form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"1","unique":"0"},{"name":"phone_number","migration_type":"string","form_field":"text","form_field_configs_1":null,"additional_validations":null,"form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"1","unique":"0"},{"name":"copyright_text","migration_type":"text","form_field":"text","form_field_configs_1":null,"additional_validations":"","form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"1","unique":"0"},{"name":"google_analytics_client_id","migration_type":"text","form_field":"text","form_field_configs_1":null,"additional_validations":"","form_field_configs_2":null,"description":null,"hide_table":"0","can_create":"1","can_read":"1","can_update":"1","nullable":"1","unique":"0"}]',
                 'add' => 0,
                 'edit' => 1,
                 'delete' => 0,
@@ -316,6 +326,7 @@ class CmsServiceProvider extends ServiceProvider
                 'parent_icon' => null,
                 'server_side_pagination'=>0,
                 'is_form'=>0,
+                'show_dashboard'=>1,
             ],
             [
                 'icon' => 'fa-solid fa-envelopes-bulk',
@@ -337,6 +348,7 @@ class CmsServiceProvider extends ServiceProvider
                 'parent_icon' => null,
                 'server_side_pagination'=>1,
                 'is_form'=>1,
+                'show_dashboard'=>1,
             ],
            
         ]);
@@ -406,11 +418,14 @@ class CmsServiceProvider extends ServiceProvider
 
         Schema::create('site_settings', function ($table) {
             $table->increments('id');
+            $table->text('email')->nullable();
             $table->text('instagram_url')->nullable();
             $table->text('phone_number')->nullable();
             $table->text('facebook_url')->nullable();
             $table->text('linkedin_url')->nullable();
             $table->text('twitter_url')->nullable();
+            $table->text('copyright_text')->nullable();
+            $table->text('google_analytics_client_id')->nullable();
             $table->integer('pos');
             $table->timestamps();
         });

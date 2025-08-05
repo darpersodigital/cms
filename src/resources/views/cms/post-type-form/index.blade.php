@@ -104,6 +104,19 @@
                                                 @endforeach
                                             @endif
                                         </td>
+                                     @elseif ($field['form_field'] == 'multiple files')
+                                        <td>
+                                            @if ($row[$field['name']])
+                                                @php
+                                                    $files = json_decode($row[$field['name']]);
+                                                @endphp
+                                                @foreach ($files as $file)
+                                                  <a href="{{ Storage::url($file) }}" target="_blank"><i
+                                                        class="fa fa-file" aria-hidden="true"></i></a>
+                                                <p style="font-size: 0;">{{ Storage::url($file) }}</p>
+                                                @endforeach
+                                            @endif
+                                        </td>
                                     @elseif ($field['form_field'] == 'file')
                                         <td>
                                             @if ($row[$field['name']])
@@ -136,7 +149,7 @@
                                         @if ($page['show'] || !request()->get('admin')['admin_role_id'])
                                             @if (request()->get('admin')['post_types'][$page['route']]['permissions']['read'])
                                                 <a href="{{ url(config('cms_config.route_path_prefix') . '/' . $page['route'] . '/' . $row['id']) }}"
-                                                    class="btn-action view mr-2"><i class="fa-solid fa-eye"></i></a>
+                                                    class="btn-action view mr-1 mr-lg-2"><i class="fa-solid fa-eye"></i></a>
                                             @endif
                                         @endif
 
@@ -147,7 +160,7 @@
                                                     onsubmit="return confirm('Are you sure?')">
                                                     @csrf
                                                     <input type="hidden" name="_method" value="DELETE">
-                                                    <button class="btn-action  delete ml-2" type="submit"><i
+                                                    <button class="btn-action  delete ml-1 ml-lg-2" type="submit"><i
                                                             class="fa-solid fa-trash-can"></i></button>
                                                 </form>
                                             @endif

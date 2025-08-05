@@ -8,9 +8,9 @@
 @endphp
 <div class="form-input-container">
     @include('darpersocms::cms.components/form-fields/label')
-    <input class="custom-form-input" name="{{ $input_name }}" type="password">
+    <input class="custom-form-input" name="{{ $input_name }}" type="password" value="" autocomplete="new-password">
 </div>
 <div class="form-input-container mt-2">
     @include('darpersocms::cms.components/form-fields/label', ['label' => 'Confirm ' . $label])
-    <input class="custom-form-input" name="{{ $input_confirmation_name }}" type="password">
+    <input class="custom-form-input" name="{{ $input_confirmation_name }}" type="password" value="" autocomplete="new-password">
 </div>

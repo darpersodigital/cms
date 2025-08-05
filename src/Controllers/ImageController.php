@@ -5,52 +5,72 @@ namespace Darpersodigital\Cms\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Imagick\Driver;
-use Intervention\Image\Decoders\DataUriImageDecoder;
-use Intervention\Image\Decoders\Base64ImageDecoder;
-use Intervention\Image\Decoders\FilePathImageDecoder;
-use Intervention\Image\Encoders\WebpEncoder;
-use Intervention\Image\Encoders\AutoEncoder;
+use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class ImageController extends BaseController
 {
 
-    public function compressAndUploadImage($file, $route) {
-        $imgSize = $file ->getSize();
-   
-        $quality = 10;
-        if($imgSize>=5101546) { 
-            $quality = 3;
-        }else if($imgSize>=2101546) { 
-            $quality = 10;
-        }else if($imgSize>=1101546) {
-            $quality = 8;
-        } else if($imgSize>=906791) {
-            $quality = 9;
-        }else if($imgSize>=506791) {
-            $quality = 12;
-        } else if($imgSize>=506791) {
-            $quality = 15;
-        }  else if($imgSize>=100727){
-            $quality = 20;
-        }else if($imgSize>=50727){
-            $quality = 80;
-        }else {
-            $quality = 95;
-        }
+    public function bytesToMegabytes($bytes, $binary = false, $precision = 2) {
+    if ($binary) {
+        return round($bytes / 1048576, $precision) ;
+    } else {
+        return round($bytes / 1000000, $precision) ;
+    }
+}
 
-        $imageName = $route.'/'.Str::uuid() .'.webp';
-        if(extension_loaded('imageick')) {
-            $manager = new ImageManager(new Driver());
-            $extension = $file->getClientOriginalExtension();
-            $resize = $manager->read($file)->encode(new WebpEncoder(quality: $quality));
-            Storage::disk('public')->put($imageName, (string) $resize->__toString());
-            return $imageName;
+    public function compressAndUploadImage($file, $route) {
+        
+        if ($file->getMimeType() === 'image/svg+xml') {
+          return $this->compressAndUploadFile($file,$route);
+        }
+        
+        $imgSize = +$this->bytesToMegabytes($file->getSize());
+
+        if($imgSize>= 10){
+            $quality = 1;
+        }else if($imgSize>= 9){
+            $quality = 4;
+        }else  if($imgSize>=8) { 
+            $quality = 6;
+        }else if($imgSize>=7) { 
+            $quality = 7;
+        }else if($imgSize>=5) {
+            $quality = 20;
+        } else if($imgSize>=4) {
+            $quality = 25;
+        }else if($imgSize>=3) {
+            $quality = 30;
+        } else if($imgSize>=2) {
+            $quality = 50;
+        }  else if($imgSize>=1){
+            $quality = 65;
+        }else if($imgSize>=0.7){
+            $quality = 75;
+        } else if($imgSize>=0.6){
+            $quality = 80;
+        } else if($imgSize>=0.5){
+            $quality = 85;
+        } else if($imgSize>=0.25){
+            $quality = 90;
         }else {
+            
+        }
+        $quality = 40;
+        $imageName = $route.'/'.Str::uuid() .'.webp';
+
+        try {
+            // ini_set('memory_limit', '512M');
+            $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver);
+            $image = $manager->read($file);
+            $webpData = (string) $image->toWebp(quality: $quality);
+            Storage::disk('public')->put($imageName, $webpData);
+        } catch (Exception $e){
             return $this->compressAndUploadFile($file,$route);
         }
+     
+        return $imageName;
     }
 
 

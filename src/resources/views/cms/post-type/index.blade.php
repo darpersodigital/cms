@@ -120,6 +120,18 @@
                                                 @endif
                                             @break
 
+                                            @case('multiple files')
+                                                @if ($row[$fieldName])
+                                                    @foreach (json_decode($row[$fieldName]) as $file)
+                                                      @if (getType($file)=='string') 
+                                                         <a href="{{ Storage::url($file) }}" target="_blank">
+                                                        <i class="fa fa-file" aria-hidden="true"></i>
+                                                    </a>
+                                                      @endif
+                                                    @endforeach
+                                                @endif
+                                            @break
+
                                             @case('image')
                                                 @if ($row[$fieldName])
                                                     <img src="{{ Storage::url($row[$fieldName]) }}" class="img-thumbnail">

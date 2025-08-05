@@ -310,12 +310,12 @@ class DatabaseController extends BaseController
             
         }
         Schema::rename($old_table['database_table'], $request['database_table']);
-
-
         
     }
 
     public function createModel($request) {
+
+            
         $head = '';
         $implements = '';
         $use = '';
@@ -327,21 +327,30 @@ class DatabaseController extends BaseController
             $translated_attributes = 'protected $hidden = [\'translations\'];
 
     public $translatedAttributes = ' . json_encode($request['translatable_name']) . ';';
-        }
+       $translated_attributes = $translated_attributes . '
+    protected $translationForeignKey ="'.  Str::singular($request['database_table']) ."_id" .'";';
+}
         
+       
         $body = 'protected static function booted(){}';
         foreach ($request['form_field'] as $f => $form_field) {
             $second_database_table = $request->form_field_configs_1[$f];
-            $second_page = PostType::where('database_table', $second_database_table)->firstOrFail();
-            $model_name = $second_page['model_name'];
-            $method_name = str_replace('_id', '', $request->name[$f]);
-            if ($form_field == 'select') {
-                $body .= 'public function ' . $method_name . '() { return $this->belongsTo' . "('App\\Models\\" .  $model_name . "')" . '; } ';
-            } elseif ($form_field == 'select multiple') {
-                $pivot_table = Str::singular($request->name[$f]) . '_' . Str::singular($request->database_table);
-                $column_name =  $second_database_table == $request->database_table ? 'other_' . Str::singular($second_database_table) . '_id' : Str::singular($second_database_table) . '_id';
-                $body .= 'public function ' . $method_name . '() { return $this->belongsToMany' . "('App\\Models\\" .  $model_name . "', '" . $pivot_table . "', '" . Str::singular($request->database_table) . '_id' . "', '" . $column_name . "')->orderBy('" . $pivot_table . ".pos')" . '; } ';
+            if(($form_field == 'select' || $form_field == 'select multiple') && $request->form_field_configs_1[$f]!=null ) {
+                 $second_page = PostType::where('database_table', $second_database_table)->firstOrFail();
+                $model_name = $second_page['model_name'];
+                $method_name = str_replace('_id', '', $request->name[$f]);
+    
+                if ($form_field == 'select') {
+                    $body .= '
+    public function ' . $method_name . '() { return $this->belongsTo' . "('App\\Models\\" .  $model_name . "')" . '; } ';
+                } elseif ($form_field == 'select multiple') {
+                    $pivot_table = Str::singular($request->name[$f]) . '_' . Str::singular($request->database_table);
+                    $column_name =  $second_database_table == $request->database_table ? 'other_' . Str::singular($second_database_table) . '_id' : Str::singular($second_database_table) . '_id';
+                    $body .= '
+    public function ' . $method_name . '() { return $this->belongsToMany' . "('App\\Models\\" .  $model_name . "', '" . $pivot_table . "', '" . Str::singular($request->database_table) . '_id' . "', '" . $column_name . "')->orderBy('" . $pivot_table . ".pos')" . '; } ';
+                }
             }
+           
         }
 
         $custom_functions = '

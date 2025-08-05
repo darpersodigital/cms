@@ -3,40 +3,96 @@
 @import "datatables";
 
 .multiple-image {
-    height: 60px;
-    width: 60px;
-    object-fit: contain;
+  height: 60px;
+  width: 60px;
+  object-fit: contain;
 }
 .session-popup {
-    position: fixed;
-    top: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    max-width: 300px;
-    transition: top 1s ease;
-    z-index: 999;
-    &.animate {
-        top: 30px;
-    }
+  position: fixed;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 300px;
+  transition: top 1s ease;
+  z-index: 999;
+  &.animate {
+    top: 30px;
+  }
 }
 @media (max-width: 767.98px) {
-    .side-menu {
-        width: 0px !important;
-        transform: translateX(-50%);
+  .btn-action.lg {
+    width: 30px !important;
+    height: 30px !important;
+    i {
+      font-size: 16px !important;
     }
-    .right-content {
-        width: 100% !important;
-    }
-
-    .btn-action.lg {
-        width: 30px !important;
-        height: 30px !important;
-        i {
-            font-size: 16px !important;
-        }
-    }
+  }
 }
 
 .loader-wrapper {
-    background-color: $primary;
+  background-color: $primary;
+}
+
+// XX-Large devices (larger desktops, 1400px and up)
+@media (max-width: 1400px) {
+}
+
+// X-Large devices (large desktops, 1200px and up)
+@media (max-width: 1200px) {
+  .login-page img.logo {
+    width: 50% !important;
+  }
+  .dataTables_wrapper {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+.floating-burger-menu {
+  display: none;
+}
+// Large devices (desktops, 992px and up)
+@media (max-width: 992px) {
+  .floating-burger-menu {
+    display: flex;
+  }
+  .side-menu {
+    width: 0px !important;
+    transform: translateX(-50%);
+
+    &.open {
+      width: 100% !important;
+      transform: translateX(0%);
+    }
+  }
+  .right-content {
+    width: 100% !important;
+  }
+  .footer {
+    width: 100%;
+  }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (max-width: 768px) {
+}
+
+@media (max-width: 576px) {
+  .admin-account-wrapper {
+    top: 15px;
+
+  }
+
+  body::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 2px;
+  }
+
+  body::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+  }
+
+  .logo-wrapper img {
+    height: 60px !important;
+  }
 }

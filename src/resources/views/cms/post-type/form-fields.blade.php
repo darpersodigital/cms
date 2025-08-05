@@ -21,7 +21,7 @@
 
     // Set dynamic path based on form field type
     $fieldComponent = match ($field['form_field']) {
-        'textarea', 'rich-textbox', 'file', 'image', 'multiple images', 'date', 'time', 'checkbox', 'password with confirmation' => 'cms.components/form-fields/' . str_replace(' ', '-', $field['form_field']),
+        'textarea', 'rich-textbox', 'file', 'image', 'multiple images', 'multiple files', 'date', 'time', 'checkbox', 'password with confirmation' => 'cms.components/form-fields/' . str_replace(' ', '-', $field['form_field']),
         default => 'cms.components/form-fields/input'
     };
 
@@ -43,9 +43,11 @@
     }
 
     // Special handling for slug field
-    if ($field['form_field'] === 'slug' && (!isset($row) || (isset($row) && $field['form_field_configs_2']))) {
+    if ($field['form_field'] === 'slug' && (!isset($row) || isset($locale) || (isset($row) && $field['form_field_configs_2']))) {
         $fieldAttributes['slug_origin'] = $field['form_field_configs_1'];
-        $fieldComponent = 'cms/components/form-fields/input';
+        $fieldAttributes['is_slug'] = true;
+        $fieldComponent = 'cms/components/form-fields/slug';
+   
     }
 
     // Special handling for password and color picker

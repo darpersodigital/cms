@@ -149,12 +149,14 @@ class PostTypesController extends BaseController
     private function storeOrUpdate(Request $rq,$id) {
         $this->validatePostType($rq,$id);
         $request = $rq;
+
+   
         $post_type = $id ? PostType::where('custom_page', 0)->findOrFail($id) : new PostType;
         if (isset($rq->with_seo) && $rq->with_seo) {
             $seoFields = ["seo_image", "seo_title", "seo_description", "seo_keywords"];
             $seoMigrationTypes = ["text", "string", "string", "string"];
             $seoFormFields = ["image", "text", "text", "text"];
-            $seoAdditionalValidations = ["max:1000", "max:60", "max:160", ""];
+            $seoAdditionalValidations = ["", "max:60", "max:160", ""];
             $defaultNulls = array_fill(0, 4, null);
             $defaultZeros = array_fill(0, 4, "0");
             $defaultOnes = array_fill(0, 4, "1");
@@ -194,17 +196,24 @@ class PostTypesController extends BaseController
             if (!is_null($edit_db_res)) return $edit_db_res;
             if ($post_type->database_table != $request->database_table) $this->db_controller->deleteModel($post_type);
         }
+
         $this->db_controller->createModel($request);
 
+     
         $post_type->icon = $request->icon;
         $post_type->display_name = $request->display_name;
         $post_type->display_name_plural = $request->display_name_plural;
         $post_type->database_table = $request->database_table;
+             
+
         $post_type->route = Str::slug($request->database_table);
         $post_type->model_name = $request->model_name;
         $post_type->order_display = $request->order_display;
         $post_type->sort_by = $request->sort_by;
         $post_type->sort_by_direction = $request->sort_by_direction;
+
+   
+
         $post_type->fields = json_encode($fields);
         $post_type->translatable_fields = json_encode($translatable_fields);
         $post_type->add = isset($request->single_record) ? 0 : (isset($request->add) ? 1 : 0);
@@ -213,9 +222,13 @@ class PostTypesController extends BaseController
         $post_type->show = isset($request->show) ? 1 : 0;
         $post_type->single_record = isset($request->single_record) ? 1 : 0;
         $post_type->server_side_pagination = isset($request->server_side_pagination) ? 1 : 0;
+        $post_type->show_dashboard = isset($request->show_dashboard) ? 1 : 0;
         $post_type->with_export = isset($request->with_export) ? 1 : 0;
         $post_type->hidden = isset($request->hidden) ? 1 : 0;
         $post_type->is_form = isset($request->is_form) ? 1 : 0;
+
+
+
         if($id) $post_type->pos = PostType::max('pos') + 1;
         $post_type->save();
         if(!$id){ 

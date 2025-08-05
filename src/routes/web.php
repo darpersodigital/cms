@@ -28,7 +28,7 @@ Route::get('/dashboard', [CmsController::class,'showDashboard'])->name('admin.da
 
 
 Route::prefix(config('cms_config.route_path_prefix'))->middleware(['web', 'admin'])->group(function () {
-    Route::get('home', [CmsController::class,'showHome'])->name('admin-home');
+    Route::get('dashboard', [CmsController::class,'showHome'])->name('admin-dashboard');
    
 
     // Admin Routes
@@ -39,9 +39,9 @@ Route::prefix(config('cms_config.route_path_prefix'))->middleware(['web', 'admin
     Route::get('logout', [CmsController::class,'logout'])->name('admin-logout');
 
     // Profile Routes
-    Route::get('profile', [CmsController::class,'showProfile'])->name('admin-profile');
-    Route::get('profile/edit', [CmsController::class,'showEditProfile'])->name('admin-profile-edit');
-    Route::post('profile/edit', [CmsController::class,'editProfile']);
+    Route::get('profile', [AdminsController::class,'showProfile'])->name('admin-profile');
+    Route::get('profile/edit', [AdminsController::class,'showEditProfile'])->name('admin-profile-edit');
+    Route::post('profile/edit', [AdminsController::class,'editProfile']);
 
 
     // site configurations 

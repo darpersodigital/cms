@@ -11,8 +11,11 @@ use Str;
 use Auth;
 use Hash;
 use File;
+use App\Models\SiteSetting;
+use Darpersodigital\Cms\Models\PostType;
 
-
+use Illuminate\Support\MessageBag;
+use Illuminate\Support\ViewErrorBag;
 use Illuminate\Support\Facades\Storage;
 class CmsController extends BaseController
 {
@@ -28,7 +31,9 @@ class CmsController extends BaseController
 
 
     public function showHome() {
-        return view('darpersocms::cms.dashboard.index');
+        $settings= SiteSetting::first();
+        $postTypes =  PostType::where('show_dashboard',1)->get();
+        return view('darpersocms::cms.dashboard.index', compact('settings','postTypes'));
     }
 
 
@@ -42,11 +47,17 @@ class CmsController extends BaseController
         if (Auth::guard('admin')->attempt(['email' => $request['email'], 'password' => $request['password']])) {
             $cookieValue = now(); // or \Carbon\Carbon::now() if you prefer Carbon
             $cookie = Cookie::make('loginDate', $cookieValue, 120); // 120 minutes expiration time
-
-            return redirect()->intended(route('admin-home'))->withCookie($cookie);
+            return redirect()->intended(route('admin-dashboard'))->withCookie($cookie);
         }
 
-        return redirect()->back()->withInput($request->only('email'))->with('error', 'Wrong credentials');;
+        $messageBag = new MessageBag([
+            'auth' => 'Trouble signing in? Double-check your email and password.',
+        ]);
+
+        $errors = new ViewErrorBag();
+        $errors->put('default', $messageBag);
+
+        return redirect()->back()->withInput($request->only('email'))->with('errors', $errors);;
     }
 
 
@@ -56,71 +67,24 @@ class CmsController extends BaseController
         return redirect(route('admin-login'));
     }
 
-    public function showProfile()
-    {
-       return response()->view('darpersocms::cms.profile.show')->withCookie(cookie('loginDate', now(), 120));
-    }
-
-
-    public function showEditProfile()
-    {
-        return view('darpersocms::cms.profile.edit');
-    }
-
-    public function editProfile(Request $request)
-    {
-      
-        $request->validate([
-            'name' => 'required',
-            'password' => 'confirmed',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
-        ]);
-
-        $admin = Auth::guard('admin')->user();
-        $admin->name = $request->name;
-
-        if ($request->password){
-            $admin->password = Hash::make($request->password);
-            $admin->reset_password_date = now();
-        }
-        if ($request->remove_file_image) {
-            Storage::delete($admin->image);
-            $admin->image = '';
-        } elseif ($request->image) {
-           if(isset($admin->image)) Storage::delete($admin->image);
-            $admin->image = $request->file('image')->store('admins','public');
-        }
-
-        $admin->save();
-
-        $request->session()->flash('success', 'Profile updated successfully');
-        return redirect(route('admin-profile'));
-    }
-
 
     public function getPageData(){
         $isLoggedIn = true;
-
         $globalPostTypes = array();
         $admin =  null;
-        // return compact('isLoggedIn','admin','globalPostTypes');
-    //     return compact('')
-
-
         $isLoggedIn =Auth::guard('admin')->check();
         $globalPostTypes= PostType::all();
-
         if($isLoggedIn) {
             $admin = Auth::guard('admin')->user();
         }
-   
        return compact('isLoggedIn','admin','globalPostTypes');
     }
 
     
     public function showDashboard(){
         $response= $this->getPageData();
-        return view('darpersocms::admin.dashboard')->with($response);
+ 
+        return view('darpersocms::admin.dashboard',compact('postTypes'))->with($response);
     }
 
     public function getAssets(Request $request)

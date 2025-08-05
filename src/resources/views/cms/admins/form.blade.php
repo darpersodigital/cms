@@ -54,6 +54,7 @@
                     'label' => 'Password',
                     'name' => 'password',
                     'locale' => null,
+                    'value'=>""
                 ])
                </div>
                 @include('darpersocms::cms.components/form-fields/select', [

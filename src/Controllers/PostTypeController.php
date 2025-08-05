@@ -145,11 +145,12 @@ class PostTypeController extends BaseController
                 $translation = $row->translateOrNew($langSlug);
 
                 match ($field['form_field']) {
-                    'password', 'password with confirmation' => ($translation->{$fieldName} = $inputValue ? Hash::make($inputValue) : null),
+                    'password', 'password with confirmation' => ($translation->{$fieldName} = $inputValue ? Hash::make($inputValue) : $row[$fieldName]),
                     'checkbox' => ($translation->{$fieldName} = isset($request[$langSlug][$fieldName]) ? 1 : 0),
                     'time' => ($translation->{$fieldName} = $inputValue ? date('H:i', strtotime($inputValue)) : null),
+                    'slug'=>($translation->{$fieldName} = $inputValue ?  Str::slug($inputValue) : $row[$fieldName]),
                     'image', 'file' => ($translation->{$fieldName} = $this->handleTranslatedFileUpload($request, $field, $row, $langSlug)),
-                    'multiple images' => ($translation->{$fieldName} = $this->handleTranslatedMultipleImagesUpload($request, $field, $row, $langSlug)),
+                    'multiple images', 'multiple files' => ($translation->{$fieldName} = $this->handleTranslatedMultipleImagesUpload($request, $field, $row, $langSlug)),
                     default => ($translation->{$fieldName} = $inputValue),
                 };
             }
@@ -188,7 +189,7 @@ class PostTypeController extends BaseController
         $allImages = array_merge($currentImages, $newImages);
 
         $translation = $row->translateOrNew($langSlug);
-        if (isset($translation->{$field['name']})) {
+        if (isset($translation->{$field['name']}) && json_decode($translation->{$field['name']})) {
             foreach (json_decode($translation->{$field['name']}) as $val) {
                 if (!in_array($val, $currentImages)) {
                     Storage::delete($val);
@@ -211,6 +212,7 @@ class PostTypeController extends BaseController
 
     private function saveOrUpdate(Request $request, $id, $route)
     {
+      
         // Fetch Page Info
         $page = PostType::where('route', $route)
             ->when(request()->get('admin')['admin_role_id'], function ($query) use ($id) {
@@ -250,6 +252,7 @@ class PostTypeController extends BaseController
             if ($this->shouldSkipField($field, $id)) {
                 continue;
             }
+        
             $query[$field['name']] = $this->handleFieldInput($request, $field, $route, $row);
         }
 
@@ -282,13 +285,13 @@ class PostTypeController extends BaseController
     {
         $fieldName = $field['name'];
         $formField = $field['form_field'];
-
+    
         return match ($formField) {
-            'password', 'password with confirmation' => $request[$fieldName] ? Hash::make($request[$fieldName]) : null,
+            'password', 'password with confirmation' => $request[$fieldName] ? Hash::make($request[$fieldName]) : $row[$fieldName],
             'checkbox' => isset($request[$fieldName]) ? 1 : 0,
             'time' => date('H:i', strtotime($request[$fieldName] ?? '')),
             'image', 'file' => $this->handleFileUpload($request, $field, $route, $row),
-            'multiple images' => $this->handleMultipleImagesUpload($request, $field, $route, $row),
+            'multiple images','multiple files' => $this->handleMultipleImagesUpload($request, $field, $route, $row),
             default => $request[$fieldName] ?? null,
         };
     }
@@ -319,7 +322,7 @@ class PostTypeController extends BaseController
         $newImages = $this->imageController->compressAndUploadMultipleImages($request, $fieldName, $route);
         $allImages = array_merge($currentImages, $newImages);
 
-        if (isset($row[$fieldName])) {
+        if (isset($row[$fieldName]) && !empty($row[$fieldName])) {
             foreach (json_decode($row[$fieldName]) as $existingImage) {
                 if (!in_array($existingImage, $currentImages)) {
                     Storage::delete($existingImage);
@@ -387,7 +390,7 @@ class PostTypeController extends BaseController
                     if (isset($record[$field->name])) {
                         Storage::delete($record[$field->name]);
                     }
-                } elseif ($field->form_field == 'multiple images') {
+                } elseif ($field->form_field == 'multiple images' || $field->form_field == 'multiple files') {
                     foreach (json_decode($record[$field->name]) as $val) {
                         Storage::delete($val);
                     }
@@ -402,7 +405,7 @@ class PostTypeController extends BaseController
                                 Storage::delete($translated_record[$field->name]);
                             }
                         }
-                    } elseif ($field->form_field == 'multiple images') {
+                    } elseif ($field->form_field == 'multiple images' || $field->form_field == 'multiple files') {
                         foreach ($translated_records as $translated_record) {
                             foreach (json_decode($translated_record[$field->name]) as $val) {
                                 Storage::delete($val);
@@ -445,7 +448,7 @@ class PostTypeController extends BaseController
     }
     private function applySearchFilter($query, $page_fields)
     {
-        $excludedFields = ['password', 'password with confirmation', 'select', 'select multiple', 'checkbox', 'image', 'multiple images', 'file'];
+        $excludedFields = ['password', 'password with confirmation', 'select', 'select multiple', 'checkbox', 'image', 'multiple images','multiple files', 'file'];
 
         foreach ($page_fields as $field) {
             if (in_array($field['form_field'], $excludedFields)) {
@@ -466,22 +469,24 @@ class PostTypeController extends BaseController
             'password with confirmation' => 'confirmed|',
             'number' => 'numeric|',
             'multiple images' => 'array|',
+            'multiple files' => 'array|',
             'email' => 'email|',
         ];
 
         foreach ($page_fields as $field) {
             // Skip fields based on specific conditions
             if ($field['form_field'] === 'slug' || (isset($field['can_update']) && $field['can_update'] == 0) || ($field['form_field'] === 'slug' && $field['form_field_configs_2'] == 0 && !$field['unique'])) {
+    
                 continue;
             }
             $fieldName = $field['name'];
             $validation_rules[$fieldName] = '';
 
-            if (isset($field['additional_validations']) && $field['additional_validations'] != '' && $field['form_field'] !== 'multiple images') {
+            if (isset($field['additional_validations']) && $field['additional_validations'] != '' && $field['form_field'] !== 'multiple images' && $field['form_field'] !== 'multiple files') {
                 $validation_rules[$fieldName] = $field['additional_validations'] . '|';
             }
 
-            if ($field['form_field'] == 'multiple images') {
+            if ($field['form_field'] == 'multiple images' || $field['form_field'] == 'multiple files') {
                 $validation_rules[$fieldName . '.*'] = $field['additional_validations'] ?? '';
             }
             // Add validation rules based on field properties
@@ -523,9 +528,10 @@ class PostTypeController extends BaseController
         $page_fields = json_decode($page['fields'], true);
         $translatable_fields = json_decode($page['translatable_fields'], true);
         $model = 'App\\Models\\' . $page['model_name'];
+        $translatedModel = 'App\\Models\\' . $page['model_name'].'Translation';
         $row = $model::findOrFail($id);
         $languages= Language::get();
-
+ 
         if (isset($page->is_form) && $page->is_form) {
             $row->read = 1;
             $row->save();

@@ -35,3 +35,13 @@
 		<pre>composer require darpersodigital/cms</pre>
 	</li>
 </ul>
+
+
+
+<h1>Publishables:</h1>
+<ul>
+	<li>
+		CMS config:
+		<pre>php artisan vendor:publish --tag=darperso --force</pre>
+	</li>
+</ul>

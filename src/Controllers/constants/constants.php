@@ -1608,6 +1608,7 @@ return [
         'checkbox',
         'image',
         'multiple images',
+        'multiple files',
         'file',
         'color picker',
     ]

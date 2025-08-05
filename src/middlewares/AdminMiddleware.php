@@ -54,7 +54,7 @@ class AdminMiddleware
 
         // Check if login page
         if (Route::currentRouteName() == 'admin-login') {
-            if ($admin) return redirect(route('admin-home'));
+            if ($admin) return redirect(route('admin-dashboard'));
             return $next($request);
         }
 

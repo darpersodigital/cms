@@ -57,7 +57,7 @@
             <option></option>
             @foreach ($form_fields as $form_field)
                 @if ($field_type =='translatable') 
-                     @if($form_field!='email' && $form_field!='password' && $form_field!='slug' && $form_field!='password with confirmation' )
+                     @if($form_field!='email' && $form_field!='password'  && $form_field!='password with confirmation'&& $form_field!='select'  && $form_field!='select multiple' )
                          <option value="{{ $form_field }}" {!! $row_field_form_field == $form_field ? 'selected=""' : '' !!}>{{ $form_field }}</option> --}}
                      @endif 
                 @else 

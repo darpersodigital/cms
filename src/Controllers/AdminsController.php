@@ -2,16 +2,40 @@
 
 namespace Darpersodigital\Cms\Controllers;
 use Illuminate\Routing\Controller as BaseController;
-
-
 use Illuminate\Http\Request;
 use Darpersodigital\Cms\Models\Admin;
 use Darpersodigital\Cms\Models\AdminRole;
 use Hash;
+use Auth;
 use Illuminate\Support\Facades\Storage;
+use Darpersodigital\Cms\Controllers\ImageController;
 
 class AdminsController extends BaseController
 {
+    private $imageController;
+
+    public function __construct(ImageController $imageController)
+    {
+        $this->imageController = $imageController;
+    }
+
+    public function showProfile()
+    {
+       return response()->view('darpersocms::cms.profile.show')->withCookie(cookie('loginDate', now(), 120));
+    }
+
+    public function editProfile(Request $request)
+    {
+        $admin = Auth::guard('admin')->user();
+        return $this->saveAdminData($request,$admin->id,true);
+    }
+    public function showEditProfile()
+    {
+        return view('darpersocms::cms.profile.edit');
+    }
+
+
+
     public function index() {
         $rows = Admin::whereNotNull('admin_role_id')->get();
         return view('darpersocms::cms.admins.index', compact('rows'));
@@ -31,29 +55,46 @@ class AdminsController extends BaseController
         return $this->saveAdminData($request);
     }
 
-    private function saveAdminData(Request $request, $id = null){
-        $request->validate([
+    private function saveAdminData(Request $request, $id = null, $isEditProfile=false){
+
+
+        $rules = [
             'name' => 'required',
             'image' => 'nullable|image',
-            'email' => 'required|unique:admins' . ($id ? ',email,' . $id : ''),
             'password' => $id ? 'nullable|confirmed' : 'required|confirmed',
-            'admin_role_id' => 'required',
-        ]);
+        ];
+
+        if (!$isEditProfile) {
+            $rules['email'] = 'required|unique:admins' . ($id ? ',email,' . $id : '');
+            $rules['admin_role_id'] = 'required';
+        }
+
+        $request->validate($rules);
+
+      
         $row = $id ? Admin::findOrFail($id) : new Admin();
         $row->name = $request->name;
         if ($request->remove_file_image) {
             Storage::delete($row->image);
             $row->image = '';
         } elseif ($request->image) {
-            $row->image = request()->file('image')->store('admins');
+    
+            $row->image =   $this->imageController->compressAndUploadImage($request->image, 'admins');
         }
-        $row->email = $request->email;
+        if(!$isEditProfile ){
+            $row->email = $request->email;
+               $row->admin_role_id = $request->admin_role_id;
+        }
+       
         if ($request->password) $row->password = Hash::make($request->password);
-        $row->admin_role_id = $request->admin_role_id;
+     
         $row->save();
-        $message = $id ? 'Record edited successfully' : 'Record added successfully';
-        $request->session()->flash('success', $message);
-        return redirect(config('cms_config.route_path_prefix') . '/admins');
+
+        $request->session()->flash('success', $id ? 'Profile edited successfully' : 'Profile added successfully');
+       
+        if($isEditProfile)  return redirect(route('admin-profile'));
+        else  return redirect(config('cms_config.route_path_prefix') . '/admins');
+
     }
 
     public function show($id){

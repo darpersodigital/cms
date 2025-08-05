@@ -5,21 +5,21 @@ $(document).ready(function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    setTimeout(function() {
+    setTimeout(function () {
         $('.loader-wrapper').addClass('loaded');
         $('html').addClass('loaded');
     }, 1000);
 
-    $('.dropdown-trigger').click(function() {
+    $('.dropdown-trigger').click(function () {
         $(this).parent().toggleClass('show');
     })
-    setTimeout(()=>{
+    setTimeout(() => {
         $('.session-popup').addClass('animate');
-        setTimeout(()=>{
+        setTimeout(() => {
             $('.session-popup').fadeOut();
-        },4000);
-    },1500);
-    
+        }, 4000);
+    }, 1500);
+
 
     $('.custom-popup,.close-popup').on('click', (e) => {
         e.stopPropagation();
@@ -50,19 +50,24 @@ $(document).ready(function () {
     }
 
     // Event listener to update the slug
-    $('input[name="slug"]').on('input', function () {
+    $('input[name="slug"],[data-slug-origin],.slugify').on('input', function () {
         const titleText = $(this).val(); // Get the input value
         const slug = slugify(titleText); // Generate the slug
         $(this).val(slug); // Set the slug in the slug input
     });
 
+
+
     $('[data-slug-origin]').each(function () {
         const rootThis = $(this);
         const origin_input_name = rootThis.data('slug-origin');
-        const origin_input = $('input[name="' + origin_input_name + '"]');
-        origin_input.on('keyup', function () {
-            rootThis.val(slugify(origin_input.val()));
-        });
+        if (origin_input_name && origin_input_name !== "") {
+            const origin_input = $('input[name="' + origin_input_name + '"]');
+            origin_input.on('keyup', function () {
+                rootThis.val(slugify(origin_input.val()));
+            });
+        }
+
     });
 
     $('.check-all-checkboxes input').on('click', function () {
@@ -264,24 +269,31 @@ $(document).ready(function () {
         const container = $(this).closest('.multiple-images-container');
         const toDeleteImage = $(this).data('image');
         let currentImages = JSON.parse(container.find('.current-multiple-images-value').val() || '[]');
-        
+
         // Filter out the image to delete
         const filteredImages = currentImages.filter(image => image !== toDeleteImage);
         container.find('.current-multiple-images-value').val(JSON.stringify(filteredImages));
-        
+
         // Hide the parent element of the delete button
         $(this).parent().hide();
     });
-    
+
     $('.images-sortable').sortable({
         update: function () {
             const updatedArr = $(this).find('.single-multiple-image').map(function () {
                 return $(this).data('image');
             }).get();
-            
+
             $(this).closest('.multiple-images-container').find('.current-multiple-images-value').val(JSON.stringify(updatedArr));
         }
     });
+
+    $('.floating-burger-menu').click(function () {
+        $('.side-menu').toggleClass('open')
+        $(this).toggleClass('open')
+    })
+
+
 
 
 });

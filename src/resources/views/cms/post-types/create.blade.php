@@ -93,6 +93,7 @@
                                 ['label' => 'Hide From Menu', 'name' => 'hidden'],
                                 ['label' => 'Single record page', 'name' => 'single_record'],
                                 ['label' => 'Is Form', 'name' => 'is_form'],
+                                ['label' => 'Show Dashboard', 'name' => 'show_dashboard'],
                             ],
                         ],
                     ];
@@ -289,6 +290,7 @@
             var form_field_config_1 = additional_field.find('input[name="form_field_configs_1[]"');
             var form_field_config_2 = additional_field.find('input[name="form_field_configs_2[]"');
             var additional_validations = additional_field.find('input[name="additional_validations[]"');
+            
             additional_field.slideUp(function() {
                 form_field_config_1.prop('required', false).hide();
                 form_field_config_2.prop('required', false).hide();;
