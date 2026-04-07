@@ -1,0 +1,25 @@
+.checkbox-container {
+  margin: 0;
+  input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    -webkit-appearance: none;
+    &:checked {
+      & + div {
+        border-color: $primary;
+        background-color: $primary;
+      }
+    }
+  }
+  div {
+    display: inline-block;
+    vertical-align: middle;
+    width: 15px;
+    height: 15px;
+    border: 2px solid $primary;
+    border-radius: 5px;
+    transition: 0.4s all;
+  }
+}

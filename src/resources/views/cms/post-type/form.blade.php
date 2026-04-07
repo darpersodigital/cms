@@ -5,11 +5,13 @@
     <form id="post-type-form" method="post" enctype="multipart/form-data"
         action="{{ isset($row) ? url(config('cms_config.route_path_prefix') . '/' . $page['route'] . '/' . $row['id'] . $appends_to_query) : url(config('cms_config.route_path_prefix') . '/' . $page['route'] . '') }}"
         ajax>
-        <div class="container-fluid px-md-5 mt-5 ">
-            @include('darpersocms::cms.components.breadcrumb.breadcrumb-action', [
+        <div class="container-fluid px-md-5  mt-3" data-testid="edit-post-type-{{ $page['route'] }}">
+
+            @include('darpersocms::cms.components.breadcrumb.ScreenTitleHeader', [
                 'title' => isset($row)
                     ? 'Edit ' . $page['display_name'] . ' #' . $row['id']
                     : 'Add ' . $page['display_name'],
+                'submit'=>isset($row) ? 'Update':'Create' 
             ])
 
             <div class="white-card">
@@ -19,8 +21,7 @@
 
 
                 @include('darpersocms::cms.components.errors.errors')
-
-                @if (isset($row))
+                @if (isset($row) && $page['single_record'] !== 1)
                     <div class="mb-3">
                         @include('darpersocms::cms.components/form-fields/checkbox', [
                             'label' => 'Published',
@@ -29,9 +30,9 @@
                             'required' => false,
                             'locale' => null,
                         ])
+
                     </div>
                 @endif
-
                 @foreach ($page_fields as $field)
                     @if ($field['name'] == 'slug' && isset($row))
                         @php
@@ -46,8 +47,8 @@
                         @include('darpersocms::cms/post-type/form-fields', ['locale' => null])
                     @endif
                 @endforeach
-                
-                @if (count($page_translatable_fields)>0)
+
+                @if (count($page_translatable_fields) > 0)
                     @foreach ($languages as $language)
                         <div class="form-input-container">
                             @if (count($languages) > 1)
@@ -55,7 +56,9 @@
                             @endif
                             <div class="{{ count($languages) > 1 ? 'pl-3 ' : '' }}">
                                 @foreach ($page_translatable_fields as $field)
-                                    @include('darpersocms::cms/post-type/form-fields', ['locale' => $language->slug])
+                                    @include('darpersocms::cms/post-type/form-fields', [
+                                        'locale' => $language->slug,
+                                    ])
                                 @endforeach
                             </div>
                         </div>
@@ -66,9 +69,12 @@
                 <div class="form-buttons-container justify-content-end d-flex mt-3">
                     @if (!isset($row))
                         <input type="number" name="published" id="isPublished" value="1" class="d-none">
-                        <button type="submit" class="btn btn-secondary btn-draft mr-1">Save As Draft</button>
+                        <button type="submit" class="theme-btn sm secondary btn-draft mr-1"
+                            data-testid="draft-post-type-{{ $page['route'] }}">Save As Draft</button>
                     @endif
-                    <button type="submit" class="btn btn-sm btn-primary btn-publish ml-1">
+
+                    <button type="submit" class="theme-btn sm submit btn-publish ml-1"
+                        data-testid="submit-post-type-{{ $page['route'] }}">
                         @if (!isset($row))
                             Publish
                         @else

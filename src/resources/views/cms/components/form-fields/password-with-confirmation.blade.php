@@ -6,11 +6,28 @@
         $input_confirmation_name = $locale . '[' . $name . '_confirmation]';
     }
 @endphp
-<div class="form-input-container">
-    @include('darpersocms::cms.components/form-fields/label')
-    <input class="custom-form-input" name="{{ $input_name }}" type="password" value="" autocomplete="new-password">
-</div>
-<div class="form-input-container mt-2">
-    @include('darpersocms::cms.components/form-fields/label', ['label' => 'Confirm ' . $label])
-    <input class="custom-form-input" name="{{ $input_confirmation_name }}" type="password" value="" autocomplete="new-password">
-</div>
+
+
+@include('darpersocms::cms.components.form-fields.TextInput', [
+    'label' => $label,
+    'name' => $input_name,
+    'testID' => $input_name,
+    'type' => 'password',
+    'value' => "",
+    'locale' => null,
+    'locale' => null,
+    'error' => $errors->first($input_name),
+    'required' => isset($required) ? $required : true,
+])
+
+
+@include('darpersocms::cms.components.form-fields.TextInput', [
+    'label' => "Confirm " .$label,
+    'name' => $input_confirmation_name,
+    'type' => 'password',
+    'value' => "",
+    'locale' => null,
+    'testID' => $input_confirmation_name,
+    'error' => $errors->first($input_confirmation_name),
+    'required' => isset($required) ? $required : true,
+])

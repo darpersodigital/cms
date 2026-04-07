@@ -27,6 +27,8 @@
 </head>
 
 <body>
+
+    <div data-testid="darperso-cms-dashboard"></div>
     @if (session('success'))
         <div class="alert alert-success session-popup">
             {{ session('success') }}
@@ -40,101 +42,14 @@
     @endif
 
     <div class="page-wrapper ">
-      <div class="floating-burger-menu">
-          <div class="burger-menu">
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-      </div>
-        <div class="side-menu expanded">
-            <div class="logo-wrapper  d-flex py-3">
-                <img src="{{ url('asset?path=cms-images/' . config('cms_config.logo')) }}" alt=""
-                    class="mx-auto">
-            </div>
-
-            <div class="admin-menu ">
-                <div style="height:7.5px;width:50px;"></div>
-                <a class="admin-menu-item-wrapper" href="{{ route('admin-dashboard') }}">
-                    <div class="admin-menu-item @if (Route::current()->getName() === 'dashboard') active @endif">
-                        <i class="fa-solid fa-house"></i>
-                        <div class="title">Dashboard</div>
-                    </div>
-                </a>
-
-                @foreach (request()->get('admin')['post_types_grouped'] as $group)
-                    @if (!$group['icon'] && !$group['title'])
-                        @foreach ($group['pages'] as $page)
-                            @if (!$page['display_name_plural'])
-                                @continue
-                            @endif
-                            <a class="admin-menu-item-wrapper"
-                                href="{{ url(config('cms_config.route_path_prefix') . '/' . $page['route']) }}"
-                                title="{{ $page['display_name_plural'] }}">
-                                <div
-                                    class="admin-menu-item {{ request()->is(config('cms_config.route_path_prefix') . '/' . $page['route']) || request()->is(config('cms_config.route_path_prefix') . '/' . $page['route'] . '/*') ? 'active' : '' }}">
-                                    <i class="text-center mr-2 fa {{ $page['icon'] }}" aria-hidden="true"></i>
-                                    <div class="title"> {{ $page['display_name_plural'] }}</div>
-                                </div>
-                            </a>
-                        @endforeach
-                    @else
-                        <div class="admin-menu-item-wrapper   ">
-                            <div
-                                class="admin-menu-item with-children flex-column w-100 justify-content-start @foreach ($group['pages'] as $page){{ request()->is(config('cms_config.route_path_prefix') . '/' . $page['route'] . '*') ? 'active' : '' }} @endforeach">
-                                <div class="d-flex  w-100 justify-content-between align-items-center">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <i class="text-center mr-2 fa {{ $group['icon'] }}" aria-hidden="true"></i>
-                                        <div class="title">{{ $group['title'] }} </div>
-                                    </div>
-                                    <i class="fa-solid fa-chevron-down"></i>
-                                </div>
-
-                                <div class="children mr-auto mt-1">
-                                    @foreach ($group['pages'] as $page)
-                                        @if (!$page['display_name_plural'])
-                                            @continue
-                                        @endif
-                                        <a class="title"
-                                            href="{{ url(config('cms_config.route_path_prefix') . '/' . $page['route']) }}"
-                                            title="{{ $page['display_name_plural'] }}">{{ $page['display_name_plural'] }}</a>
-                                    @endforeach
-
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                @endforeach
 
 
-            </div>
-        </div>
+        @include('darpersocms::cms.components.navigation.side-menu')
 
         <div class="right-content">
-
             <div class="floating-bg bg-primary"></div>
+            @include('darpersocms::cms.components.navigation.top-menu')
 
-            <div class="admin-account-wrapper custom-dropdown-wrapper ml-auto pointer ">
-                <div class=" dropdown-trigger d-flex align-items-center">
-                    <p class="text-white mr-2"><b>Seroujkh</b></p>
-                    <img class="avatar"
-                        src="{{ request()->get('admin')['image'] ? Storage::url(request()->get('admin')['image']) : url('asset?path=cms-images/placeholder.png') }}">
-                </div>
-                <div class="custom-dropdown-wrapper-items admin-profile ">
-
-                    <div class="d-flex flex-column">
-                        <a href="{{ route('admin-profile-edit') }}">
-                            <i class="fa fa-user mr-2" aria-hidden="true"></i>
-                            My Profile
-                        </a>
-                        <div class="line"></div>
-                        <a href="{{ route('admin-logout') }}">
-                            <i class="fa fa-sign-out mr-2" aria-hidden="true"></i>
-                            Logout
-                        </a>
-                    </div>
-                </div>
-            </div>
             @yield('dashboard-content')
         </div>
 
@@ -144,25 +59,8 @@
     @include('darpersocms::cms/components/footer')
 
 
-    <div class="loader-wrapper bg-primary"
-        style="position: fixed;
-    height: 100vh;
-    width: 100%;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999999999999999999999999;
-    transition: all 1s;">
-        <div class="spinner">
-            <div class="spinner-item"></div>
-            <div class="spinner-item"></div>
-            <div class="spinner-item"></div>
-            <div class="spinner-item"></div>
-            <div class="spinner-item"></div>
-        </div>
-    </div>
+    @include('darpersocms::layouts.AdminLoader')
+
 
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>

@@ -1,0 +1,97 @@
+.custom-file-wrapper {
+  //   display: block;
+  //   position: relative;
+  //   width: 100%;
+  //   min-height: 35px;
+  //   width: 100%;
+  //   padding: 0rem 0.75rem;
+  //   border: 1px solid #ced4da;
+  //   border-radius: 0.25rem;
+  //   font-size: 1rem !important;
+  //   font-weight: 400;
+  //   line-height: 35px;
+  //   cursor: pointer;
+
+  margin-top: 0px;
+  padding: 10px 15px !important;
+  color: black;
+  height: 41px;
+  width: 100%;
+  line-height: 42px !important;
+  font-size: 16px !important;
+  background-color: #f5f5f5 !important;
+  border: 1px solid #f5f5f5 !important;
+  border-radius: 8px;
+  color: black;
+  margin-bottom: 0px !important;
+  position: relative;
+  font-weight: 500 !important;
+
+  &.placeholder {
+    color: #6c757d;
+  }
+  &:after {
+    content: attr(data-text);
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+  }
+  input {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    -webkit-appearance: none;
+  }
+}
+
+.remove-current-image,
+.remove-current-file {
+  cursor: pointer;
+  input {
+    display: none;
+  }
+}
+
+.single-multiple-image,
+.single-image,
+.file-input-container {
+  position: relative;
+  
+  .delete-btn {
+    position: absolute;
+    top: -7.5px;
+    right: 7.5px;
+    cursor: pointer;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    border-radius: 50%;
+    i {
+      font-size: 14px;
+    }
+  }
+  .remove-current-file {
+
+  }
+  .remove-current-image {
+    left: 90px;
+    right: unset !important;
+  }
+}
+  .img-thumbnail {
+    max-width: 100px;
+  }
+  
+
+
+.multiple-image {
+  height: 60px;
+  width: 60px;
+  object-fit: contain;
+}

@@ -1,0 +1,158 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h5,
+p,
+span,
+a {
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: 0px !important;
+  font-weight: 800;
+  font-family: "Google Sans Flex", sans-serif;
+}
+
+.h1,
+h1 {
+  font-size: 2.5rem;
+}
+
+.h2,
+h2 {
+  font-size: 2rem;
+  line-height: 1.8rem;
+}
+
+.h3,
+h3 {
+  font-size: 1.75rem;
+}
+
+.h4,
+h4 {
+  font-size: 1.5rem;
+}
+
+.h5,
+h5 {
+  font-size: 1.25rem;
+}
+
+.h6,
+h6 {
+  font-size: 1rem;
+}
+
+.fs-18 {
+  font-size: 18px !important;
+}
+.fs-16 {
+  font-size: 16px !important;
+}
+
+.fs-14 {
+  font-size: 14px !important;
+}
+
+.fs-12 {
+  font-size: 12px !important;
+}
+
+ul {
+  margin: 0px;
+  padding: 0px;
+  &.list-none {
+    list-style: none;
+  }
+}
+
+label {
+  font-weight: 800;
+}
+
+a {
+  text-decoration: none !important;
+  transition: 0.5s;
+}
+i {
+  transition: 0.5s;
+}
+
+.font-1 {
+  font-family: "Epilogue" !important;
+}
+.font-2 {
+  font-family: "Sora";
+}
+
+.fw-bold {
+  font-weight: 800;
+}
+.fw-500 {
+  font-weight: 500;
+}
+
+.fw-600 {
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .btn-action.lg {
+    width: 35px !important;
+    height: 35px !important;
+    i {
+      font-size: 16px !important;
+    }
+  }
+  p {
+    font-size: 16px;
+  }
+  .h1,
+  h1 {
+    font-size: 2rem;
+    line-height: 2rem;
+  }
+
+  .h2,
+  h2 {
+    font-size: 1.6rem;
+    line-height: 1.6rem;
+  }
+
+  .h3,
+  h3 {
+    font-size: 1.4rem;
+  }
+
+  .h4,
+  h4 {
+    font-size: 1.5rem;
+  }
+
+  .h5,
+  h5 {
+    font-size: 1.25rem;
+  }
+
+  .h6,
+  h6 {
+    font-size: 1rem;
+  }
+
+}

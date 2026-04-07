@@ -1,6 +1,6 @@
 <?php
 
-namespace Darpersodigital\Cms\Controllers;
+namespace Darpersodigital\Cms\Controllers\admin;
 use Illuminate\Routing\Controller as BaseController;
 
 use Illuminate\Http\Request;
@@ -80,7 +80,7 @@ class AdminRolesController extends BaseController
     }
     
     private function saveAdminRole(Request $request, $id = null) {
-        $request->validate(['title' => 'required']);
+        $request->validate(['title' => 'required|min:3|max:36']);
         $adminRole = $id ? AdminRole::findOrFail($id) : new AdminRole();
         $adminRole->title = $request->title;
         $adminRole->save();

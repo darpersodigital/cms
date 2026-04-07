@@ -1,0 +1,51 @@
+.analytics {
+  .small-box {
+    margin-top:15px;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    h3,
+    p {
+      color: #fff;
+    }
+    p {
+        font-size:14px;
+        margin-top:6px;
+    }
+
+    .icon {
+        margin-left:15px;
+      i {
+        color: #f9f9f9;
+        font-size: 50px;
+      }
+    }
+  }
+
+  .card {
+     border-radius: 8px !important;
+     .card-title {
+        font-size:18px !important
+     }
+  }
+}
+
+@media(max-width:1024px){
+    .analytics {
+  .small-box {
+    margin-top:12px;
+    padding: 12px;
+    .icon {
+        margin-left:15px;
+      i {
+        color: #f9f9f9;
+        font-size: 25px;
+      }
+    }
+  }
+
+}
+
+}

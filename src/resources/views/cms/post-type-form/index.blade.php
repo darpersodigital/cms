@@ -1,25 +1,31 @@
 @php
     $filters = [];
-
     foreach ($page_fields as $field) {
         if ($field['form_field'] == 'select' || $field['form_field'] == 'select multiple') {
             $filters[] = $field;
         }
     }
-    $base_url = config('cms_config.route_path_prefix') . '/' . $page['route'] . '/';
+    $base_url = config('cms_config.route_path_prefix') . '/' . $page['route'];
 @endphp
 
 @extends('darpersocms::layouts/dashboard')
 
 @section('dashboard-content')
+    <div class="container-fluid px-md-5  mt-3 {{ $page->server_side_pagination ? ' server-side-pagination ' : '' }}">
 
-    <div class="container-fluid px-md-5 mt-5  {{ $page->server_side_pagination ? ' server-side-pagination ' : '' }}">
-
-        @include('darpersocms::cms.components.breadcrumb.breadcrumb-action',[
-            'title'=>$page['display_name_plural'],
-            'can_delete'=> request()->get('admin')['post_types'][$page['route']]['permissions']['delete'] &&   $page['delete'] && count($rows) > 1
+        @include('darpersocms::cms.components.breadcrumb.ScreenTitleHeader', [
+            'title' => $page['display_name_plural'],
+            'can_delete' =>
+                request()->get('admin')['post_types'][$page['route']]['permissions']['delete'] &&
+                $page['delete'] &&
+                count($rows) > 1,
+            'testID' => $page['route'],
+        
+            'can_add' =>
+                $page['add'] && request()->get('admin')['post_types'][$page['route']]['permissions']['add'],
+            'can_order' => $page['order_display'] && count($rows) > 1,
+            'base_url' => $base_url,
         ])
-
 
         <div class="white-card">
             @include('darpersocms::cms.post-type._includes.server-side-pagination-filter')
@@ -57,7 +63,7 @@
                     </thead>
                     <tbody class="cf-body">
                         @foreach ($rows as $row)
-                            <tr class="{{ $row->read ? ' read ' : ' ' }} clickable-row"
+                            <tr class="{{ $row->read == 1 ? ' read ' : ' ' }} clickable-row"
                                 data-href="{{ url(config('cms_config.route_path_prefix') . '/' . $page['route'] . '/' . $row['id']) }}">
                                 <td>
                                     <label class="checkbox-container checkbox-delete-container">
@@ -74,7 +80,8 @@
                                 </td>
 
                                 <td class="">
-                                    <div class="isStar text-primary" data-id="{{ $row['id'] }}">
+                                    <div class="isStar text-primary" data-id="{{ $row['id'] }}"
+                                        data-testid="{{ !$row->star ? 'star' : 'unstar' }}-{{ $page['route'] }}">
                                         @if ($row->star)
                                             <i class="fa-solid fa-star" aria-hidden="true"></i>
                                         @else
@@ -104,20 +111,28 @@
                                                 @endforeach
                                             @endif
                                         </td>
-                                     @elseif ($field['form_field'] == 'multiple files')
+                                    @elseif ($field['form_field'] == 'multiple files')
                                         <td>
                                             @if ($row[$field['name']])
                                                 @php
                                                     $files = json_decode($row[$field['name']]);
                                                 @endphp
                                                 @foreach ($files as $file)
-                                                  <a href="{{ Storage::url($file) }}" target="_blank"><i
-                                                        class="fa fa-file" aria-hidden="true"></i></a>
-                                                <p style="font-size: 0;">{{ Storage::url($file) }}</p>
+                                                    <a href="{{ Storage::url($file) }}" target="_blank"><i
+                                                            class="fa fa-file" aria-hidden="true"></i></a>
+                                                    <p style="font-size: 0;">{{ Storage::url($file) }}</p>
                                                 @endforeach
                                             @endif
                                         </td>
                                     @elseif ($field['form_field'] == 'file')
+                                        <td>
+                                            @if ($row[$field['name']])
+                                                <a href="{{ Storage::url($row[$field['name']]) }}" target="_blank"><i
+                                                        class="fa fa-file" aria-hidden="true"></i></a>
+                                                <p style="font-size: 0;">{{ Storage::url($row[$field['name']]) }}</p>
+                                            @endif
+                                        </td>
+                                    @elseif ($field['form_field'] == 'video')
                                         <td>
                                             @if ($row[$field['name']])
                                                 <a href="{{ Storage::url($row[$field['name']]) }}" target="_blank"><i
@@ -149,7 +164,18 @@
                                         @if ($page['show'] || !request()->get('admin')['admin_role_id'])
                                             @if (request()->get('admin')['post_types'][$page['route']]['permissions']['read'])
                                                 <a href="{{ url(config('cms_config.route_path_prefix') . '/' . $page['route'] . '/' . $row['id']) }}"
-                                                    class="btn-action view mr-1 mr-lg-2"><i class="fa-solid fa-eye"></i></a>
+                                                    data-testid="btn-action-view-{{ $page['route'] }}"
+                                                    class="btn-action view cf-view-btn mr-1 mr-lg-2"><i
+                                                        class="fa-solid fa-eye"></i></a>
+                                            @endif
+                                        @endif
+
+
+                                        @if ($page['edit'] || !request()->get('admin')['admin_role_id'])
+                                            @if (request()->get('admin')['post_types'][$page['route']]['permissions']['edit'])
+                                                <a href="{{ url($base_url . '/' . $row['id'] . '/edit' . $appends_to_query) }}"
+                                                    data-testid="btn-action-edit-{{ $page['route'] }}"
+                                                    class="btn-action edit mx-2"><i class="fa-solid fa-pen"></i></a>
                                             @endif
                                         @endif
 
@@ -160,7 +186,8 @@
                                                     onsubmit="return confirm('Are you sure?')">
                                                     @csrf
                                                     <input type="hidden" name="_method" value="DELETE">
-                                                    <button class="btn-action  delete ml-1 ml-lg-2" type="submit"><i
+                                                    <button class="btn-action  delete ml-1 ml-lg-2" type="submit"
+                                                        data-testid="btn-action-delete-{{ $page['route'] }}"><i
                                                             class="fa-solid fa-trash-can"></i></button>
                                                 </form>
                                             @endif
@@ -195,8 +222,6 @@
 
         </div>
     </div>
-
-
 @endsection
 
 

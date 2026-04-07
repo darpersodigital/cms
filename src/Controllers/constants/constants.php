@@ -1607,8 +1607,10 @@ return [
         'select multiple',
         'checkbox',
         'image',
+        'video',
         'multiple images',
         'multiple files',
+        'multiple videos',
         'file',
         'color picker',
     ]

@@ -7,7 +7,7 @@
 <div class="form-input-container">
     @include('darpersocms::cms.components/form-fields/label')
 
-    <div class="select-multiple-custom-container  ">
+    <div class="select-multiple-custom-container  " data-testid="select-multiple-container-{{$testID ?? ""}}">
         <select class="custom-form-input select-multiple-custom custom-form-input w-100" data-name="{{ $name }}"
             multiple>
             @foreach ($options as $option)
@@ -31,4 +31,6 @@
             @endforeach
         </div>
     </div>
+	  @include('darpersocms::cms.components.form-fields.field-error')
+
 </div>

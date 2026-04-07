@@ -1,0 +1,121 @@
+// SIZES
+.h-100v {
+  min-height: 100vh;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+.mt-3.mt-0 {
+  margin-top: 0px !important;
+}
+
+.transition-5 {
+  transition: 0.5s;
+}
+
+.pos-z {
+  position: relative;
+  z-index: 999999999;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.prevent-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+.admin-loader-wrapper.loaded {
+  opacity: 0;
+  pointer-events: none;
+  background-color: $primary;
+  z-index: -100;
+}
+
+:root {
+  --size: 75px;
+  --clr-bg: #272324;
+  --clr1: #fff;
+  --clr2: #fff;
+  --clr3: #fff;
+  --clr4: #fff;
+  --clr5: #fff;
+}
+
+.spinner {
+  --animation-duration: 650ms;
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+  .spinner-item {
+    position: absolute;
+    width: var(--item-size);
+    height: var(--item-size);
+    top: calc(50% - var(--item-size) / 2);
+    left: calc(50% - var(--item-size) / 2);
+    border: 4px solid transparent;
+    border-left: 4px solid var(--clr-spinner);
+    border-right: 4px solid var(--clr-spinner);
+    border-radius: 50%;
+    animation: spinner2 var(--animation-duration) linear infinite;
+    @keyframes spinner2 {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  }
+  .spinner-item:nth-of-type(1) {
+    --item-size: var(--size);
+    --clr-spinner: var(--clr1);
+    border-top: 4px solid var(--clr1);
+  }
+  .spinner-item:nth-of-type(2) {
+    --item-size: calc(var(--size) - 15px);
+    --clr-spinner: var(--clr5);
+    border-bottom: 4px solid var(--clr5);
+  }
+  .spinner-item:nth-of-type(3) {
+    --item-size: calc(var(--size) - 30px);
+    --clr-spinner: var(--clr3);
+    border-top: 4px solid var(--clr3);
+  }
+}
+
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+
+.footer {
+  // position: fixed;
+  // bottom: 15px;
+  // z-index: -1;
+  // right:0px;
+  div {
+    font-size: 12px;
+    a:hover {
+      color: #007ac2 !important;
+    }
+  }
+}
+
+.white-card {
+  background-color: white;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  padding: 15px;
+  position: relative;
+  box-shadow: 7px 0px 15px 0px rgba(0, 0, 0, 0.1);
+}

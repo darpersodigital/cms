@@ -1,9 +1,14 @@
 @extends('darpersocms::layouts/dashboard')
 
 @section('dashboard-content')
-    <div class="container-fluid px-md-5 mt-5 ">
+
+    <div class="container-fluid px-md-5  mt-3">
+          @include('darpersocms::cms.components.breadcrumb.ScreenTitleHeader', ['title' => 'Side Menu',
+ 
+          ])
+
         <div class="white-card">
-            @include('darpersocms::cms.components.breadcrumb.index', ['title' => 'Side Menu'])
+          
             @if (count(request()->get('admin')['post_types_grouped']))
                 <div class="mt-3">
                     <form id="add-column">
@@ -19,7 +24,7 @@
                             <div class="col-lg-3">
                                 <label></label>
                                 <div class="text-left mt-1">
-                                    <button type="submit" class="btn btn-primary btn-sm px-3">Add Dropdown</button>
+                                    <button type="submit" class="theme-btn  sm ">Add Dropdown</button>
                                 </div>
                             </div>
                         </div>
@@ -81,9 +86,11 @@
                             @endif
                         @endforeach
                     </ul>
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-sm btn-primary">Update</button>
-                    </div>
+
+                      <button type="submit" class="theme-btn sm submit btn-publish ml-1"
+                        data-testid="submit-post-type-{{ $page['route'] }}">
+                       Update
+                    </button>
                 </form>
             @endif
         </div>

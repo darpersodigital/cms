@@ -1,0 +1,44 @@
+@import "fonts";
+@import "misc";
+@import "buttons";
+
+.text-red {
+  color: #fa2a00 !important;
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.bg-primary {
+  background-color:  var(--cms-primary-color);
+}
+.border-error {
+  border-color: #dc3545 !important ;
+}
+.bg-light {
+  background-color: #f3f3f3 !important;
+}
+
+.text-success {
+  color: #2ecc71 !important;
+}
+
+.text-primary {
+  color:  var(--cms-primary-color) !important;
+}
+
+.text-error {
+  font-size: 14px !important;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.border-primary {
+  border-color:  var(--cms-primary-color) !important;
+}
+
+.text-67 {
+  color: #676767 !important;
+}
+

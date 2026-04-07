@@ -4,13 +4,14 @@
     <form method="post"
         action="{{ isset($post_type) ? url(config('cms_config.route_path_prefix') . '/post-types/' . $post_type['id']) : url(config('cms_config.route_path_prefix') . '/post-types') }}"
         ajax>
+        @csrf
 
-        <div class="container-fluid px-md-5 mt-5 ">
-            <div class="white-card">
-                @include('darpersocms::cms.components.breadcrumb.index', [
-                    'title' => isset($post_type) ? 'Edit CMS page #' . $post_type['id'] : 'Add CMS page',
-                ])
-            </div>
+        <div class="container-fluid px-md-5  mt-3">
+            @include('darpersocms::cms.components.breadcrumb.ScreenTitleHeader', [
+                'title' => isset($post_type) ? 'Edit CMS page #' . $post_type['id'] : 'Add CMS page',
+                'submit' => isset($post_type) ? 'Update' : 'Create',
+                'testID' => 'post-type',
+            ])
 
             <div class="white-card">
                 @if (isset($post_type))
@@ -36,11 +37,12 @@
                     @foreach ($fields as $field)
                         <div class="col-lg-4 mb-3">
                             @if ($field['label'] != '')
-                                @include('darpersocms::cms.components/form-fields/input', [
+                                @include('darpersocms::cms.components/form-fields/TextInput', [
                                     'label' => $field['label'],
                                     'name' => $field['name'],
                                     'type' => 'text',
                                     'value' => $post_type[$field['name']] ?? '',
+                                    'error' => $errors->first($field['name']),
                                     'locale' => null,
                                     'description' => '',
                                     'required' => $field['required'],
@@ -52,18 +54,21 @@
                     <div class="col-lg-4 mb-3">
                         @foreach ($fields2 as $field)
                             <div class="mb-3">
-                                @include('darpersocms::cms.components/form-fields/input', [
+                                @include('darpersocms::cms.components/form-fields/TextInput', [
                                     'label' => $field['label'],
                                     'name' => $field['name'],
                                     'type' => 'text',
                                     'value' => $post_type[$field['name']] ?? '',
+                                    'error' => $errors->first($field['name']),
                                     'locale' => null,
                                     'description' => '',
                                     'required' => $field['required'],
                                 ])
                             </div>
                         @endforeach
-                        @include('darpersocms::cms.components.form-fields.label', ['label' => 'Sort By Direction'])
+                        @include('darpersocms::cms.components.form-fields.label', [
+                            'label' => 'Sort By Direction',
+                        ])
                         <select name="sort_by_direction" class="w-100">
                             @foreach (['asc', 'desc'] as $direction)
                                 <option value="{{ $direction }}"
@@ -74,61 +79,64 @@
                         </select>
                     </div>
                     @php
-                    $checkboxGroups = [
-                        [
-                            'columns' => 'col-lg-4 post-type-checkboxes',
-                            'checkboxes' => [
-                                ['label' => 'With Add', 'name' => 'add'],
-                                ['label' => 'With Edit', 'name' => 'edit'],
-                                ['label' => 'With Delete', 'name' => 'delete'],
-                                ['label' => 'With Show', 'name' => 'show'],
-                                ['label' => 'With Export', 'name' => 'with_export'],
+                        $checkboxGroups = [
+                            [
+                                'columns' => 'col-lg-4 post-type-checkboxes',
+                                'checkboxes' => [
+                                    ['label' => 'With Add', 'name' => 'add'],
+                                    ['label' => 'With Edit', 'name' => 'edit'],
+                                    ['label' => 'With Delete', 'name' => 'delete'],
+                                    ['label' => 'With Show', 'name' => 'show'],
+                                    ['label' => 'With Export', 'name' => 'with_export'],
+                                ],
                             ],
-                        ],
-                        [
-                            'columns' => 'col-lg-4 post-type-checkboxes',
-                            'checkboxes' => [
-                                ['label' => 'Server side paginate', 'name' => 'server_side_pagination'],
+                            [
+                                'columns' => 'col-lg-4 post-type-checkboxes',
+                                'checkboxes' => [
+                                    ['label' => 'Server side paginate', 'name' => 'server_side_pagination'],
 
-                                ['label' => 'Hide From Menu', 'name' => 'hidden'],
-                                ['label' => 'Single record page', 'name' => 'single_record'],
-                                ['label' => 'Is Form', 'name' => 'is_form'],
-                                ['label' => 'Show Dashboard', 'name' => 'show_dashboard'],
+                                    ['label' => 'Hide From Menu', 'name' => 'hidden'],
+                                    ['label' => 'Single record page', 'name' => 'single_record'],
+                                    ['label' => 'Is Form', 'name' => 'is_form'],
+                                    ['label' => 'Has Sitemap', 'name' => 'has_sitemap'],
+                                    ['label' => 'Show Dashboard', 'name' => 'show_dashboard'],
+                                    ['label' => 'Custom CRUD', 'name' => 'custom_crud'],
+                                ],
                             ],
-                        ],
-                    ];
-
-                    if (!isset($translatable_fields['seo_title'])) {
-                        $checkboxGroups[1]['checkboxes'][] = [
-                            'label' => 'Generate SEO Fields',
-                            'name' => 'with_seo',
-                            'checked' => false,
                         ];
-                    }
-                @endphp
 
-                @foreach ($checkboxGroups as $group)
-                    <div class="{{ $group['columns'] }}">
-                        @foreach ($group['checkboxes'] as $checkbox)
-                            @include('darpersocms::cms/components/form-fields/checkbox', [
-                                'label' => $checkbox['label'],
-                                'name' => $checkbox['name'],
-                                'inline_label' => true,
-                                'checked' => $checkbox['checked'] ?? ($post_type[$checkbox['name']] ?? ''),
-                                'locale' => null,
-                            ])
-                        @endforeach
-                    </div>
-                @endforeach
+                        if (!isset($translatable_fields['seo_title'])) {
+                            $checkboxGroups[1]['checkboxes'][] = [
+                                'label' => 'Generate SEO Fields',
+                                'name' => 'with_seo',
+                                'checked' => false,
+                            ];
+                        }
+                    @endphp
+
+                    @foreach ($checkboxGroups as $group)
+                        <div class="{{ $group['columns'] }}">
+                            @foreach ($group['checkboxes'] as $checkbox)
+                                @include('darpersocms::cms/components/form-fields/checkbox', [
+                                    'label' => $checkbox['label'],
+                                    'name' => $checkbox['name'],
+                                    'inline_label' => true,
+                                    'checked' => $checkbox['checked'] ?? ($post_type[$checkbox['name']] ?? ''),
+                                    'locale' => null,
+                                ])
+                            @endforeach
+                        </div>
+                    @endforeach
 
                 </div>
-              
+
             </div>
 
             <div class="white-card">
                 <div class="d-flex justify-content-between">
                     <h4>Fields</h4>
-                    <div class="btn-action lg add btn-add"><i class="fa-solid fa-plus"></i></div>
+                    <div class="btn-action lg add btn-add" data-testid="add-field-row"><i class="fa-solid fa-plus"></i>
+                    </div>
                 </div>
 
                 <div class="table-responsive mt-3">
@@ -154,11 +162,20 @@
                                     $fields = json_decode($post_type['fields'], true);
                                 @endphp
                                 @foreach ($fields as $field_key => $field)
-                                    @include('darpersocms::cms/post-types/post-types-field-row', ['field_type' => ''])
+                                    @include('darpersocms::cms/post-types/post-types-field-row', [
+                                        'field_type' => '',
+                                    ])
                                 @endforeach
                             @else
-                                @include('darpersocms::cms/post-types/post-types-field-row', ['field_type' => ''])
+                                @include('darpersocms::cms/post-types/post-types-field-row', [
+                                    'field_type' => '',
+                                    'post_type' => null,
+                                ])
                             @endif
+                            @include('darpersocms::cms/post-types/post-types-field-row', [
+                                'field_type' => '',
+                                'post_type' => null,
+                            ])
                         </tbody>
                     </table>
                 </div>
@@ -167,11 +184,12 @@
             <div class="white-card">
                 <div class="d-flex justify-content-between">
                     <h4>Translatable Fields</h4>
-                    <div class="btn-action lg add  btn-add"><i class="fa-solid fa-plus"></i></div>
+                    <div class="btn-action lg add  btn-add" data-testid="add-field-tr-row"><i class="fa-solid fa-plus"></i>
+                    </div>
                 </div>
 
                 <div class="table-responsive mt-3">
-                    <table class="fields table" data-type="translatable">
+                    <table class="fields table translatable" data-type="translatable">
                         <thead>
                             <tr>
                                 <th class="text-center">NAME <span class="text-danger">*</span></th>
@@ -198,25 +216,15 @@
                                         ])
                                     @endforeach
                                 @else
-                                    @include('darpersocms::cms/post-types/post-types-field-row', [
-                                        'field_type' => 'translatable',
-                                        'post_type' => null,
-                                    ])
                                 @endif
-                            @else
-                                @include('darpersocms::cms/post-types/post-types-field-row', [
-                                    'field_type' => 'translatable',
-                                    'post_type' => null,
-                                ])
                             @endif
-
+                            @include('darpersocms::cms/post-types/post-types-field-row', [
+                                'field_type' => 'translatable',
+                                'post_type' => null,
+                            ])
 
                         </tbody>
                     </table>
-                </div>
-                <div class="px-4 text-right">
-                    @csrf
-                    <button type="submit" class="btn btn-sm btn-primary">Submit</button>
                 </div>
             </div>
         </div>
@@ -229,7 +237,6 @@
 
         var translateableHTMLField = $('[name="translatable_name[]"]').closest('.field').last().html();
 
-
         $('input[name="database_table"]').on("keyup", function() {
             var v = $(this).val();
             $('input[name="display_name"]').val(displayName(v));
@@ -237,83 +244,110 @@
             $('input[name="model_name"]').val(modelName(v));
         });
 
-        @if (!isset($post_type) || (isset($post_type) && isset($translatable_fields) && !count($translatable_fields)))
-            $('[name="translatable_name[]"]').closest('.field').remove();
-        @endif
-
-        $(document).on('change', '[name="form_field[]"]', function() {
+        $(document).on('change', '[name="form_field[]"], [name="translatable_form_field[]"]', function() {
             var select = $(this);
-            var additional_field = select.closest('td').find('.form-field-configs');
-            var form_field_validation_config = select.closest('td').find('.form-field-additional-validation');
-
-            var form_field_config_1 = additional_field.find('input[name="form_field_configs_1[]"');
-            var form_field_config_2 = additional_field.find('input[name="form_field_configs_2[]"');
-
-            var additional_validations = additional_field.find('input[name="additional_validations[]"');
+            var row = select.closest('tr');
+            var isTranslatable = select.attr('name') === 'translatable_form_field[]';
+            var prefix = isTranslatable ? 'translatable_' : '';
+            var additional_field = row.find('.form-field-configs');
+            var form_field_validation_config = row.find('.form-field-additional-validation');
+            var form_field_config_1 = additional_field.find(`input[name="${prefix}form_field_configs_1[]"]`);
+            var form_field_config_2 = additional_field.find(`input[name="${prefix}form_field_configs_2[]"]`);
+            var additional_validations = row.find(`input[name="${prefix}additional_validations[]"]`);
 
             function resetFields() {
-                form_field_config_1.prop('required', false).hide().val('');
-                form_field_config_2.prop('required', false).hide().val('');
+                form_field_config_1.prop('required', false).hide().val('').removeAttr('placeholder');
+                form_field_config_2.prop('required', false).hide().val('').removeAttr('placeholder type min max');
                 additional_validations.hide().val('');
-                additional_field.slideUp();
-                form_field_validation_config.slideUp();
+                additional_field.hide();
+                form_field_validation_config.hide();
             }
 
-
-            function configureFields(placeholder1, placeholder2, type2) {
-                form_field_config_1.prop('required', true).attr('placeholder', placeholder1).show();
-                form_field_config_2.prop('required', true).attr('placeholder', placeholder2).attr('type', type2)
+            function configureFields(placeholder1, placeholder2, type2, required1, required2) {
+                form_field_config_1.prop('required', required1).attr('placeholder', placeholder1).show();
+                form_field_config_2.prop('required', required2).attr('placeholder', placeholder2).attr('type',
+                        type2)
                     .show();
-                if (type2 == 'number') form_field_config_2.attr('min', 0).attr('max', 1);
+                if (type2 === 'number') {
+                    form_field_config_2.attr('min', 0).attr('max', 1);
+                } else {
+                    form_field_config_2.removeAttr('min max');
+                }
                 additional_field.slideDown();
             }
 
-            additional_field.slideUp(function() {
-                var value = select.val();
-                if (value === 'slug') {
-                    resetFields();
-                    configureFields('Slug origin', 'Editable', 'number');
-                } else if (value === 'select' || value === 'select multiple') {
-                    resetFields();
-                    configureFields('DB table', 'DB column', 'text');
-                } else {
-                    additional_validations.attr('placeholder', 'Validations').show();
-                    form_field_validation_config.slideDown();
+            function configureDropdownFields(field1, field2) {
+                form_field_config_1.prop('required', field1?.required).attr('placeholder', field1?.placeholder)
+                    .show();
+                if (field2) {
+                    form_field_config_2.prop('required', field2?.required).attr('placeholder', field2?.placeholder)
+                        .attr('type', field2?.type).show();
+                    if (field2?.type === 'number') {
+                        form_field_config_2.attr('min', 0).attr('max', 1);
+                    } else {
+                        form_field_config_2.removeAttr('min max');
+                    }
                 }
-            });
-        });
-
-        $(document).on('change', '[name="translatable_form_field[]"]', function() {
-            var select = $(this);
-            var additional_field = select.closest('td').find('.form-field-configs');
-            var form_field_validation_config = select.closest('td').find('.form-field-additional-validation');
-            var form_field_config_1 = additional_field.find('input[name="form_field_configs_1[]"');
-            var form_field_config_2 = additional_field.find('input[name="form_field_configs_2[]"');
-            var additional_validations = additional_field.find('input[name="additional_validations[]"');
-            
-            additional_field.slideUp(function() {
-                form_field_config_1.prop('required', false).hide();
-                form_field_config_2.prop('required', false).hide();;
-                additional_validations.attr('placeholder', 'Validations').val('').show();
+                additional_field.slideDown();
+            }
+            resetFields();
+            var value = select.val();
+            if (value === 'slug') {
+                configureDropdownFields({
+                    placeholder: "Slug origin",
+                    required: true
+                }, {
+                    placeholder: "Editable",
+                    required: true,
+                    type: "number"
+                })
+            } else if (value === 'time') {
+                configureDropdownFields({
+                    placeholder: "Validation",
+                    required: false
+                }, {
+                    placeholder: "is24Hour",
+                    required: false,
+                    type: "number"
+                })
+            } else if (!isTranslatable && (value === 'select' || value === 'select multiple')) {
+                configureDropdownFields({
+                    placeholder: "DB table",
+                    required: true,
+                    type: "text"
+                }, {
+                    placeholder: "DB column",
+                    required: true,
+                    type: "text"
+                })
+            } else {
+                additional_validations.attr('placeholder', 'Validations').show();
                 form_field_validation_config.slideDown();
-            });
+            }
         });
 
 
 
         $('.btn-add').on('click', function() {
             var fields_wrapper = $(this).parent().parent().find('table.fields');
-            console.log("fields_wrapper.attr('data-type') ", fields_wrapper.attr('type'));
+
             fields_wrapper.append('<tr class="field">' + (fields_wrapper.attr('data-type') == 'translatable' ?
                 translateableHTMLField : HTMLField) + '</tr>');
-            fields_wrapper.find('.field:last input').val('');
-            fields_wrapper.find('.field:last input[name="number"]').val(0);
+
+            const lastRow = fields_wrapper.find('.field:last');
+
+            lastRow.find('input[type="text"], input[type="hidden"]').val('');
+
             fields_wrapper.find('.field:last input[name="can_create[]"]').val(1);
             fields_wrapper.find('.field:last input[name="can_update[]"]').val(1);
             fields_wrapper.find('.field:last input[name="can_read[]"]').val(1);
+
+            fields_wrapper.find('.field:last input[name="nullable[]"]').val(0);
+            fields_wrapper.find('.field:last input[name="unique[]"]').val(0);
             fields_wrapper.find('.field:last select').val('');
             fields_wrapper.find('.field:last').find('.form-field-configs').hide();
         });
+
 
         function removeField(btn) {
             $(btn).closest('.field').remove();
@@ -344,13 +378,51 @@
             if (tableName.endsWith('s')) return tableName.slice(0, -1);
             return tableName;
         }
-
-
         $(document).ready(function() {
-            $('.checkbox-number input[type="checkbox"]').on('change', function() {
-                $(this).closest('.checkbox-number').find('input[type="number"]').val($(this).is(
-                    ':checked') ? 1 : 0)
+            function toggleFormDefaults() {
+                const isChecked = $('input[name="is_form"]').is(':checked');
+                if (isChecked) {
+                    $('input[name="show"]').prop('checked', true);
+                    $('input[name="delete"]').prop('checked', true);
+                    $('input[name="server_side_pagination"]').prop('checked', true);
+                }
+            }
+            $('input[name="is_form"]').on('change', function() {
+                toggleFormDefaults();
             });
+
+            toggleFormDefaults();
+        });
+
+          $(document).ready(function() {
+            function toggleFormDefaults() {
+                const isChecked = $('input[name="single_record"]').is(':checked');
+                if (isChecked) {
+                    $('input[name="add"]').prop('checked', true);
+                    $('input[name="edit"]').prop('checked', true);
+                    $('input[name="show"]').prop('checked', true);
+                }
+            }
+            $('input[name="single_record"]').on('change', function() {
+                toggleFormDefaults();
+            });
+
+            toggleFormDefaults();
+        });
+
+
+
+
+        
+        $(document).ready(() => {
+            $('[name="translatable_name[]"]').closest('.field').last().remove();
+            $('[name="name[]"]').closest('.field').last().remove();
+        })
+     
+        $(document).on('change', '.checkbox-number input[type="checkbox"]', function() {
+            $(this).closest('.checkbox-number')
+                .find('input[type="number"], input[type="hidden"]')
+                .val($(this).is(':checked') ? 1 : 0);
         });
     </script>
 @endsection

@@ -1,0 +1,44 @@
+
+@import "inputs";
+
+@import "customDropdown";
+@import "checkbox";
+@import "select";
+@import "files";
+@import "dateTimePicker";
+@import "datatables";
+
+.form-check-radio,
+.form-check-checkbox {
+  display: flex;
+  align-items: center;
+  input {
+    height: 20px !important;
+    width: 20px !important;
+    margin-right: 10px;
+  }
+}
+.color-picker-container {
+  position: relative;
+  .clear-icon {
+    position: absolute;
+    cursor: pointer;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 15px;
+    z-index: 888888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    width: 25px;
+    height: 25px;
+    padding: 5px;
+    border-radius: 50%;
+  }
+}
+
+.time-picker {
+  position: relative !important;
+}
+

@@ -3,53 +3,48 @@
 
 
 @section('dashboard-content')
-    <div class="container-fluid px-md-5 mt-5 ">
+    <div class="container-fluid px-md-5  mt-3">
+        @component('darpersocms::cms.components.breadcrumb.ScreenTitleHeader', [
+            'title' => 'SHOW ' . $page['display_name'] . '#' . $row->id,
+            'testID'=>$page['route']
 
-        <div class="white-card">
-            <div class="row ">
-                <div class="col-lg-6">
-                    @include('darpersocms::cms.components.breadcrumb.index', [
-                        'title' => 'SHOW ' . $page['display_name'] . '#' . $row->id,
-                    ])
-                </div>
+        ])
+            @slot('children')
+                <div class="actions d-flex justify-content-end align-items-center pr-3">
 
-
-                <div class="col-lg-6 text-right">
-                    <div class="actions d-flex justify-content-end align-items-center">
-
-                        <div class="isRead mr-3 {{ $row->read ? ' read ' : ' ' }}" data-id="{{ $row['id'] }}">
-
-                            <p class="mark-unread"> <span class="mr-2">Mark as unread </span> <i
-                                    class="fa-solid fa-envelope-open"></i> </p>
-                            <p class="mark-read"> <span class="mr-2">Mark as read </span> <i
-                                    class="fa-solid fa-envelope"></i> </p>
-                        </div>
-
-                        <div class="isStar mr-2 text-primary" data-id="{{ $row['id'] }}">
-                            <div class="btn-action lg edit ">
-                                @if ($row->star)
-                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
-                                @else
-                                    <i class="fa-regular fa-star" aria-hidden="true"></i>
-                                @endif
-                            </div>
-                        </div>
-                        @if ($page['delete'])
-                            @if (request()->get('admin')['post_types'][$page['route']]['permissions']['delete'])
-                                <form class="d-inline" onsubmit="return confirm('Are you sure?')" method="post"
-                                    action="{{ url(config('cms_config.route_path_prefix') . '/' . $page['route'] . '/' . $row['id']) }}">
-                                    @csrf
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button class="btn-action lg delete "><i class="fa-solid fa-trash-can"></i></button>
-                                </form>
-                            @endif
-                        @endif
+                    <div class="isRead mr-3 {{ $row->read==1 ? ' read ' : ' ' }}" data-id="{{ $row['id'] }}" 
+                      data-testid="mark-{{ $page['route'] }}-{{ $row->read == 1 ? 'unread' : 'read' }}"
+                        >
+                        <p class="mark-unread" > <span class="mr-2">Mark as unread </span> <i class="fa-solid fa-envelope-open"></i>
+                        </p>
+                        <p class="mark-read" > <span class="mr-2">Mark as read </span> <i class="fa-solid fa-envelope"></i> </p>
                     </div>
+
+                    <div class="isStar mr-2 text-primary" data-id="{{ $row['id'] }}" data-testid="{{ !$row->star ? 'star' : 'unstar' }}-{{ $page['route'] }}">
+                        <div class="btn-action lg edit ">
+                            @if ($row->star)
+                                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                            @else
+                                <i class="fa-regular fa-star" aria-hidden="true"></i>
+                            @endif
+                        </div>
+                    </div>
+                    @if ($page['delete'])
+                        @if (request()->get('admin')['post_types'][$page['route']]['permissions']['delete'])
+                            <form class="d-inline" onsubmit="return confirm('Are you sure?')" method="post"
+                                action="{{ url(config('cms_config.route_path_prefix') . '/' . $page['route'] . '/' . $row['id']) }}">
+                                @csrf
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button class="btn-action lg delete " 
+                                data-testid="delete-{{$page['route']}}"
+                                ><i class="fa-solid fa-trash-can"></i></button>
+                            </form>
+                        @endif
+                    @endif
                 </div>
-            </div>
-
-
-        </div>
+            @endslot
+        @endcomponent
+        
         <div class="white-card">
             @foreach ($page_fields as $field)
                 @if ($field['name'] == 'star' || $field['name'] == 'read' || $field['hide_table'] == 1)

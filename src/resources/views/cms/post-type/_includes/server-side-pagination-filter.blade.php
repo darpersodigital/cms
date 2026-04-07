@@ -1,12 +1,12 @@
 @if ($page->server_side_pagination)
-<div class="row">
+<div class="row" data-testid="server-side-pagination">
     <div class="col-md-4">
         <div class="server-side-showing-nbr">
             <form>
                 <div class="dataTables_length">
                     <label>
                         Show
-                        <select name="per_page" class="w-auto">
+                        <select name="per_page" class="w-auto default-select">
                             <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25
                             </option>
                             <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50
@@ -21,21 +21,24 @@
                         entries
                     </label>
                 </div>
+            
             </form>
         </div>
     </div>
-    <div class="col-md-8  dataTables_length text-right ">
-        <div class="d-flex justify-content-start justify-content-lg-end align-items-center ">
+    <div class="col-md-8  dataTables_filter text-right mb-3">
+        <div class="d-flex justify-content-start justify-content-lg-end align-items-lg-center ">
             <form>
                 <label>
                     Search: <input type="search" name="search" value="{{ request('search') }}">
                 </label>
-            </form>
+         
             <label class="filter-wrapper">
                 @if (count($filters))
                     <i class="fa fa-filter ml-3"></i>
                 @endif
             </label>
+                <button class="theme-btn sm ml-3" type="submit">Search</button>
+               </form>
         </div>
     </div>
 </div>

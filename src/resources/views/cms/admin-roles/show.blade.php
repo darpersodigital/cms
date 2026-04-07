@@ -2,18 +2,26 @@
 
 
 @section('dashboard-content')
-    <div class="container-fluid px-md-5 mt-5 ">
-
-        @include('darpersocms::cms.components.breadcrumb.breadcrumb-action',[
-            'title'=> "Role: ".$row->title,
-                'can_delete'=>request()->get('admin')['post_types']['admin-roles']['permissions']['delete'],
-            'can_edit'=>request()->get('admin')['post_types']['admin-roles']['permissions']['edit'],
-            'base_url' => config('cms_config.route_path_prefix') . '/admin-roles/' . $row['id']
+    <div class="container-fluid px-md-5  mt-3">
+        @include('darpersocms::cms.components.breadcrumb.ScreenTitleHeader', [
+            'title' => 'Role: ' . $row->title,
+            'can_delete' => request()->get('admin')['post_types']['admin-roles']['permissions']['delete'],
+            'can_edit' => request()->get('admin')['post_types']['admin-roles']['permissions']['edit'],
+            'base_url' => config('cms_config.route_path_prefix') . '/admin-roles/' . $row['id'],
+            'testID' => 'admin-roles',
         ])
 
         <div class="white-card">
             <div class="row">
-                <div class="col-12 d-flex justify-content-center">
+
+                <div class="col-12">
+                    @include('darpersocms::cms.components/show-fields/text', [
+                        'label' => 'Title',
+                        'value' => $row->title,
+                        'testID' => 'title',
+                    ])
+                </div>
+                <div class="col-12 d-flex justify-content-center mt-3">
                     <table class="table table-responsive w-100">
                         <thead>
                             <tr>
@@ -39,8 +47,8 @@
                                             class="fa fa-{{ $permission->edit ? 'check' : 'times' }}"
                                             aria-hidden="true"></i></td>
                                     <td class="text-center {{ $permission->add ? 'text-success' : 'text-danger' }}"><i
-                                            class="fa fa-{{ $permission->add ? 'check' : 'times' }}"
-                                            aria-hidden="true"></i></td>
+                                            class="fa fa-{{ $permission->add ? 'check' : 'times' }}" aria-hidden="true"></i>
+                                    </td>
                                     <td class="text-center {{ $permission->delete ? 'text-success' : 'text-danger' }} "><i
                                             class="fa fa-{{ $permission->delete ? 'check' : 'times' }}"
                                             aria-hidden="true"></i>

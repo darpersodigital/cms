@@ -1,6 +1,6 @@
 <div class="footer">
-	<div class="container-fluid px-md-5 mt-5 ">
-		<div class="text-center text-lg-right pr-lg-3">
+	<div class="p-3 ">
+		<div class="text-center text-lg-right ">
 			{!! config('cms_config.footer_copyright') !!}
 		</div>
 	</div>

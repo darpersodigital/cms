@@ -1,6 +1,6 @@
 <div class="checkbox-number">
     <div class="form-input-container">
-        <label class="checkbox-container ">
+        <label class="checkbox-container "data-testid="checkbox-number-{{$name }}" >
             <input type="checkbox" class="custom-form-input" name="" {!! $checked == 1 ? 'checked=""' : '' !!}>
             <div></div>
         </label>

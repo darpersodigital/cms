@@ -9,67 +9,84 @@
         enctype="multipart/form-data" ajax>
 
         <div class="container-fluid px-md-5 mt-5">
-
-            @include('darpersocms::cms.components.breadcrumb.breadcrumb-action', [
+            @include('darpersocms::cms.components.breadcrumb.ScreenTitleHeader', [
                 'title' => isset($row) ? "EDIT ADMIN #{$row->id}" : 'ADD ADMIN',
+                'submit' => isset($row) ? 'Update' : 'Add',
+                'testID' => 'admins',
             ])
 
             <div class="white-card">
-               
-                @include('darpersocms::cms.components.errors.errors')
-
                 @csrf
                 @isset($row)
                     @method('PUT')
                 @endisset
 
-               <div class="mb-3">
-                @include('darpersocms::cms.components/form-fields/input', [
-                    'label' => 'Name',
-                    'name' => 'name',
+
+                @include('darpersocms::cms.components.form-fields.TextInput', [
+                    'label' => 'Full Name',
+                    'name' => 'full_name',
                     'type' => 'text',
-                    'value' => old('name') ?? $row->name ?? '',
+                    'testID' => 'full_name',
+                    'styles' => 'mt-0',
+                    'value' => old('full_name') ?? ($row->full_name ?? ''),
                     'locale' => null,
+                    'error' => $errors->first('full_name'),
+                    'required' => true,
                 ])
-               </div>
-               <div class="mb-3">
-                @include('darpersocms::cms.components/form-fields/image', [
-                    'label' => 'Image',
-                    'name' => 'image',
-                    'value' => $row->image ?? '',
+
+
+                @include('darpersocms::cms.components.form-fields.TextInput', [
+                    'label' => 'Username',
+                    'name' => 'user_name',
+                    'testID' => 'user_name',
+                    'type' => 'text',
+                    'value' => old('user_name') ?? ($row->user_name ?? ''),
                     'locale' => null,
+                    'error' => $errors->first('user_name'),
+                    'required' => true,
                 ])
-               </div>
-              <div class="mb-3">
-                @include('darpersocms::cms.components/form-fields/input', [
+
+                @include('darpersocms::cms.components.form-fields.TextInput', [
                     'label' => 'Email',
                     'name' => 'email',
                     'type' => 'text',
-                    'value' => old('email') ?? $row->email ?? '',
+                    'testID' => 'email',
+                    'value' => old('email') ?? ($row->email ?? ''),
+                    'locale' => null,
+                    'locale' => null,
+                    'error' => $errors->first('email'),
+                    'required' => true,
+                ])
+
+                @include('darpersocms::cms.components/form-fields/image', [
+                    'label' => 'Image',
+                    'name' => 'image',
+                    'testID' => 'image',
+                    'value' => $row->image ?? '',
                     'locale' => null,
                 ])
-              </div>
-               <div class="mb-3">
+
+
                 @include('darpersocms::cms.components/form-fields/password-with-confirmation', [
                     'label' => 'Password',
                     'name' => 'password',
+                    'testID' => 'password',
                     'locale' => null,
-                    'value'=>""
+                    'value' => '',
                 ])
-               </div>
+
                 @include('darpersocms::cms.components/form-fields/select', [
                     'label' => 'Admin Role',
                     'name' => 'admin_role_id',
                     'options' => $admin_roles,
                     'store_column' => 'id',
+                    'testID' => 'admin_role_id',
                     'display_column' => 'title',
-                    'value' => old('admin_role_id') ?? $row->admin_role_id ?? '',
+                    'value' => old('admin_role_id') ?? ($row->admin_role_id ?? ''),
+                    'error' => $errors->first('admin_role_id'),
                     'locale' => null,
                 ])
 
-                <div class="text-right mt-3">
-                    <button type="submit" class="btn btn-sm btn-primary "> {{ isset($row) ? 'Update' : 'Add' }}</button>
-                </div>
             </div>
         </div>
 

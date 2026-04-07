@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Darpersodigital\Cms\Controllers\PostTypeController;
+use Darpersodigital\Cms\Models\PostType;
+
+
+class %%controller_name%%Controller extends Controller
+{
+	
+    private PostTypeController $postTypeController;
+    
+    public function __construct(PostTypeController $postTypeController)
+    {
+        $this->postTypeController = $postTypeController;
+    }
+    public function index()
+    {
+        $data = $this->postTypeController->index('%%route%%');
+        return view('cms.%%route%%.index', $data);
+    }
+
+    public function create()
+    {
+        $data = $this->postTypeController->create('%%route%%');
+        return view('cms.%%route%%.form', $data);
+    }
+
+    public function store(Request $request)
+    {
+        return $this->postTypeController->store($request, '%%route%%');
+    }
+
+    public function show($id)
+    {
+        $data = $this->postTypeController->show($id, '%%route%%');
+        return view('cms.%%route%%.show', $data);
+    }
+
+    public function edit($id)
+    {
+        $data = $this->postTypeController->edit($id, '%%route%%');
+        return view('cms.%%route%%.form', $data);
+    }
+
+    public function update(Request $request, $id)
+    {
+        return $this->postTypeController->update($request, $id, '%%route%%');
+    }
+
+    public function destroy($id)
+    {
+        return $this->postTypeController->destroy($id, '%%route%%');
+    }
+}

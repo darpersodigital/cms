@@ -6,7 +6,7 @@ $(document).ready(function () {
         }
     });
     setTimeout(function () {
-        $('.loader-wrapper').addClass('loaded');
+        $('.admin-loader-wrapper').addClass('loaded');
         $('html').addClass('loaded');
     }, 1000);
 
@@ -33,6 +33,10 @@ $(document).ready(function () {
         $('.filter-popup').fadeIn();
     })
 
+    $('.cf-view-btn').on('click', () => {
+        $(this).parent('tr').addClass('read');
+    })
+
 
     $('.admin-menu-item.with-children').on('click', function () {
         $(this).parent().find('.children').slideToggle();
@@ -50,7 +54,7 @@ $(document).ready(function () {
     }
 
     // Event listener to update the slug
-    $('input[name="slug"],[data-slug-origin],.slugify').on('input', function () {
+    $('[data-slug-origin],.slugify').on('input', function () {
         const titleText = $(this).val(); // Get the input value
         const slug = slugify(titleText); // Generate the slug
         $(this).val(slug); // Set the slug in the slug input
@@ -119,42 +123,91 @@ $(document).ready(function () {
             }
         }
     });
-
     $('.time-picker .change-time-container span').on('click', function () {
         let container = $(this).closest('.change-time-container');
         let timeFormContainer = container.closest('.time-picker').find('.time-form-container');
-        let hourInput = timeFormContainer.find('input:nth-child(1)');
-        let minInput = timeFormContainer.find('input:nth-child(2)');
-        let periodInput = timeFormContainer.find('input:nth-child(3)');
+
+        let hourInput = timeFormContainer.find('.hour');
+        let minInput = timeFormContainer.find('.minutes');
+        let periodInput = timeFormContainer.find('.period');
+
+        const is24 = String(timeFormContainer.data('format')) === '24';
         const index = $(this).index();
+
         if (index === 0) {
-            updateTime(hourInput, container.hasClass('upper'), 1, 12);
+            updateTime(hourInput, container.hasClass('upper'), is24 ? 0 : 1, is24 ? 23 : 12);
         } else if (index === 1) {
             updateTime(minInput, container.hasClass('upper'), 0, 59);
-        } else {
+        } else if (!is24 && index === 2) {
             periodInput.val(periodInput.val() === 'AM' ? 'PM' : 'AM');
         }
-        timeFormContainer.find('input[type="hidden"]').val(`${hourInput.val()}:${minInput.val()} ${periodInput.val()}`);
+
+        let value = is24
+            ? `${hourInput.val()}:${minInput.val()}`
+            : `${hourInput.val()}:${minInput.val()} ${periodInput.val()}`;
+
+        timeFormContainer.find('input[type="hidden"]').val(value);
     });
 
     function updateTime(input, increase, min, max) {
-        let value = +input.val();
+        let value = parseInt(input.val(), 10) || 0;
         value = increase ? value + 1 : value - 1;
+
         if (value > max) value = min;
         if (value < min) value = max;
+
         input.val(value.toString().padStart(2, '0'));
     }
+
     let timeout, interval;
     $('.time-picker .change-time-container span')
         .on('mousedown', function () {
+            const el = this;
             timeout = setTimeout(() => {
-                interval = setInterval(() => $(this).trigger('click'), 50);
+                interval = setInterval(() => $(el).trigger('click'), 50);
             }, 500);
         })
         .on('mouseup mouseleave', function () {
             clearTimeout(timeout);
             clearInterval(interval);
         });
+    // $('.time-picker .change-time-container span').on('click', function () {
+    //     let container = $(this).closest('.change-time-container');
+    //     let timeFormContainer = container.closest('.time-picker').find('.time-form-container');
+    //     let hourInput = timeFormContainer.find('input:nth-child(1)');
+    //     let minInput = timeFormContainer.find('input:nth-child(2)');
+    //     let periodInput = timeFormContainer.find('input:nth-child(3)');
+    //     const index = $(this).index();
+    //     if (index === 0) {
+    //         updateTime(hourInput, container.hasClass('upper'), 1, 12);
+    //     } else if (index === 1) {
+    //         updateTime(minInput, container.hasClass('upper'), 0, 59);
+    //     } else {
+    //         periodInput.val(periodInput.val() === 'AM' ? 'PM' : 'AM');
+    //     }
+    //     timeFormContainer.find('input[type="hidden"]').val(`${hourInput.val()}:${minInput.val()} ${periodInput.val()}`);
+    // });
+
+    // function updateTime(input, increase, min, max) {
+    //     let value = +input.val();
+    //     value = increase ? value + 1 : value - 1;
+    //     if (value > max) value = min;
+    //     if (value < min) value = max;
+    //     input.val(value.toString().padStart(2, '0'));
+    // }
+
+
+    // let timeout, interval;
+    // $('.time-picker .change-time-container span')
+    //     .on('mousedown', function () {
+    //         timeout = setTimeout(() => {
+    //             interval = setInterval(() => $(this).trigger('click'), 50);
+    //         }, 500);
+    //     })
+    //     .on('mouseup mouseleave', function () {
+    //         clearTimeout(timeout);
+    //         clearInterval(interval);
+    //     });
 
     $('.date-picker').datepicker({
         dateFormat: 'yy-mm-dd',
@@ -241,18 +294,25 @@ $(document).ready(function () {
         $(this).parent('.items').slideToggle();
     });
 
-    $('.dropdown-trigger').on('click', function () {
-        $(this).parent().find('.custom-dropdown-wrapper-items').slideToggle();
-    });
+    // $('.dropdown-trigger').on('click', function () {
+    //     $(this).parent().find('.custom-dropdown-wrapper-items').slideToggle();
+    // });
 
     $('.datatable-table').each(function () {
         const table = $(this);
+
+        if( $(this).hasClass('post-type-datatable-table')) return;
         let params = new URLSearchParams(window.location.search);
         let value = params.get('per_page');
         var options = {
             pageLength: value ? value : 25,
+            searching: !$(this).hasClass('table'),
+            paging: !$(this).hasClass('table'),
+            info: !$(this).hasClass('table'),
+
         };
         if (!table.hasClass('no-export')) {
+            options.dom = "Blfrtip"
             options.buttons = [
                 'csv',
                 "pdfHtml5"
@@ -288,12 +348,12 @@ $(document).ready(function () {
         }
     });
 
-    $('.floating-burger-menu').click(function () {
+    $('.burger-menu').click(function () {
         $('.side-menu').toggleClass('open')
         $(this).toggleClass('open')
     })
 
-
+    $('.default-select').select2('destroy');
 
 
 });

@@ -9,26 +9,31 @@
         enctype="multipart/form-data" ajax>
 
         <div class="container-fluid px-md-5 mt-5">
-            @include('darpersocms::cms.components.breadcrumb.breadcrumb-action', [
+
+            @include('darpersocms::cms.components.breadcrumb.ScreenTitleHeader', [
                 'title' => isset($row) ? "EDIT ADMIN ROLE #{$row['id']}" : 'ADD New ADMIN ROLE',
+                'submit' => isset($row) ? 'Update' : 'Add',
+                'testID' => 'admin-roles',
             ])
-
             <div class="white-card">
-                @include('darpersocms::cms.components.errors.errors')
-
                 @csrf
                 @isset($row)
                     @method('PUT')
                 @endisset
 
-             <div class="mb-3">
-                @include('darpersocms::cms.components/form-fields/input', [
-                    'label' => 'Title',
-                    'name' => 'title',
-                    'type' => 'text',
-                    'value' => $row->title ?? '',
-                ])
-             </div>
+                <div class="mb-4">
+                    @include('darpersocms::cms.components.form-fields.TextInput', [
+                        'label' => 'Title',
+                        'name' => 'title',
+                        'testID'=>'title',
+                        'type' => 'text',
+                        'error' => $errors->first('title'),
+                        'styles' => 'mt-0',
+                        'required' => true,
+                        'value' => $row->title ?? '',
+                    ])
+
+                </div>
 
                 @include('darpersocms::cms.components/form-fields/checkbox', [
                     'label' => 'Select All',
@@ -37,20 +42,21 @@
                     'checked' => false,
                 ])
 
-                <div class="row mt-1">
+                <div class="row mt-3">
                     @foreach ($post_types_permissions as $post_type)
                         @continue($post_type['route'] === 'post-types')
 
-                        <div class="form-input-container col admin-role-container">
+                        <div class="form-input-container col admin-role-container" data-testid="permission-{{$post_type['route']}}">
                             <label>{{ $post_type['display_name_plural'] }}</label><br>
                             @php
                                 $permissions = ['browse', 'read', 'edit', 'add', 'delete'];
                             @endphp
 
                             @foreach ($permissions as $permission)
-                                <div class="post-type-permission">
+                                <div class="post-type-permission" >
                                     @include('darpersocms::cms.components/form-fields/checkbox', [
                                         'label' => ucfirst($permission),
+                                        'testID' => 'admin-roles',
                                         'inline_label' => true,
                                         'name' => "{$permission}_{$post_type['id']}",
                                         'checked' => isset($row) ? $post_type['permissions'][$permission] : false,
@@ -61,11 +67,6 @@
                     @endforeach
                 </div>
 
-                <div class="text-right">
-                    <button type="submit" class="btn btn-sm btn-primary ">
-                        {{ isset($row) ? 'Update' : 'Add' }}
-                    </button>
-                </div>
 
             </div>
         </div>

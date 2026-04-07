@@ -57,7 +57,6 @@ class AdminMiddleware
             if ($admin) return redirect(route('admin-dashboard'));
             return $next($request);
         }
-
         if (!$admin) return redirect()->guest(route('admin-login'));
         $admin = $admin->toArray();
 
@@ -146,7 +145,8 @@ class AdminMiddleware
             $request_path_array[0] = $request_path_array[0] ?? 'home';  // Set default 'home' if the first element is missing or empty
 
             $route = $request_path_array[0];
-            if (!in_array($route, ['home', 'profile', 'logout'])) {
+    
+            if (!in_array($route, [ 'profile', 'logout','dashboard'])) {
                 if (!isset($admin['post_types'][$route])) abort(403);
                 $admin_page_permission = $admin['post_types'][$route]['permissions'];
                 // Define the permission needed for the current request method

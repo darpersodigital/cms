@@ -1,12 +1,14 @@
-@import "template";
-@import "navbar";
-@import "datatables";
-
-.multiple-image {
-  height: 60px;
-  width: 60px;
-  object-fit: contain;
+:root {
+  --cms-primary-color: #1786f9;
 }
+
+@import "template";
+@import "postTypes/postTypes";
+@import "forms/forms";
+@import "typography/typography";
+@import "navigation/navigation";
+@import "custom/analytics";
+
 .session-popup {
   position: fixed;
   top: -100px;
@@ -19,80 +21,23 @@
     top: 30px;
   }
 }
-@media (max-width: 767.98px) {
-  .btn-action.lg {
-    width: 30px !important;
-    height: 30px !important;
-    i {
-      font-size: 16px !important;
-    }
-  }
-}
-
-.loader-wrapper {
-  background-color: $primary;
-}
-
-// XX-Large devices (larger desktops, 1400px and up)
-@media (max-width: 1400px) {
-}
-
-// X-Large devices (large desktops, 1200px and up)
-@media (max-width: 1200px) {
-  .login-page img.logo {
-    width: 50% !important;
-  }
-  .dataTables_wrapper {
+.dt-buttons {
+    padding:0px !important;
     display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-  }
-}
-.floating-burger-menu {
-  display: none;
-}
-// Large devices (desktops, 992px and up)
-@media (max-width: 992px) {
-  .floating-burger-menu {
-    display: flex;
-  }
-  .side-menu {
-    width: 0px !important;
-    transform: translateX(-50%);
-
-    &.open {
-      width: 100% !important;
-      transform: translateX(0%);
+    margin-bottom: 15px;
+    justify-content: end;
+    &:before {
+        content: "Export:";
+        padding-right: 5px;
+        font-size: 14px !important;
     }
-  }
-  .right-content {
-    width: 100% !important;
-  }
-  .footer {
-    width: 100%;
-  }
-}
+    .dt-button {
+        background-color: $primary;
+        border: 0px !important;
+        margin-left: 5px !important;
+        color: white !important;
+        border-radius: 3px !important;
+        font-size: 14px;
+    }
 
-// Medium devices (tablets, 768px and up)
-@media (max-width: 768px) {
-}
-
-@media (max-width: 576px) {
-  .admin-account-wrapper {
-    top: 15px;
-
-  }
-
-  body::-webkit-scrollbar {
-    width: 5px;
-    border-radius: 2px;
-  }
-
-  body::-webkit-scrollbar-thumb {
-    border-radius: 5px;
-  }
-
-  .logo-wrapper img {
-    height: 60px !important;
-  }
 }

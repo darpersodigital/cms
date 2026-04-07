@@ -1,0 +1,78 @@
+
+.ui-datepicker {
+background-color: #fff;
+box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+
+.ui-datepicker-header {
+span,
+select {
+color: white !important;
+}
+}
+.ui-datepicker-header {
+position: relative;
+background: $primary;
+padding: 10px 0;
+margin-bottom: 15px;
+.ui-datepicker-prev,
+.ui-datepicker-next {
+position: absolute;
+top: 50%;
+transform: translateY(-50%);
+cursor: pointer;
+}
+.ui-datepicker-prev {
+left: 10px;
+}
+.ui-datepicker-next {
+right: 10px;
+}
+.ui-datepicker-title {
+text-align: center;
+padding: 0 30px;
+}
+select {
+background-color: transparent;
+border: none;
+}
+}
+table {
+margin-bottom: 15px;
+th,
+td {
+padding: 10px;
+text-align: center;
+}
+td {
+&:not(.ui-state-disabled) {
+cursor: pointer;
+transition: 0.2s all;
+&:hover {
+background-color: $primary;
+}
+}
+}
+}
+}
+
+.time-picker {
+.change-time-container {
+span {
+position: relative;
+display: inline-block;
+width: 40px;
+cursor: pointer;
+text-align: center;
+
+}
+}
+.time-form-container {
+input {
+display: inline-block;
+width: 40px;
+text-align: center;
+border: none;
+padding: 10px 0;
+}
+}
+}

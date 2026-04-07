@@ -4,19 +4,20 @@
 @endphp
 
 @section('dashboard-content')
-    <div class="container-fluid px-md-5 mt-5 ">
+    <div class="container-fluid px-md-5  mt-3">
 
-        @include('darpersocms::cms.components.breadcrumb.breadcrumb-action',[
-            'title'=>"languages",
+        @include('darpersocms::cms.components.breadcrumb.ScreenTitleHeader',[
+            'title'=>"Languages",
             'can_add'=> request()->get('admin')['post_types']['languages']['permissions']['add'],
+            'testID'=> 'languages'
         ])
+  
         
         <div class="white-card ">
             <div class=" datatable-container mt-3">
                 <table class="datatable-table no-export ">
                     <thead>
                         <tr>
-                            <th></th>
                             <th>#</th>
                             <th>Title</th>
                             <th>Slug</th>
@@ -27,12 +28,6 @@
                     <tbody>
                         @foreach ($rows as $row)
                             <tr>
-                                <td>
-                                    <label class="checkbox-container checkbox-delete-container">
-                                        <input type="checkbox" value="{{ $row->id }}">
-                                        <div></div>
-                                    </label>
-                                </td>
                                 <td>{{ $row->id }}</td>
                                 <td>{{ $row->title }}</td>
                                 <td>{{ $row->slug }}</td>
@@ -42,6 +37,7 @@
                                 @include('darpersocms::cms.post-type._includes.row-actions',[
                                     'can_edit'=>request()->get('admin')['post_types']['languages']['permissions']['edit'],
                                     'can_delete'=>request()->get('admin')['post_types']['languages']['permissions']['delete'],
+                                    'testID'=>'languages'
                                 ])
 
                                 {{-- <td >

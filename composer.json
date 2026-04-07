@@ -1,30 +1,32 @@
 {
-    "name": "darpersodigital/cms",
-    "description": "Darperso CMS",
-    "type": "package",
-    "autoload": {
-        "psr-4": {
-            "Darpersodigital\\Cms\\": "src/",
-            "Darpersodigital\\Cms\\Middlewares\\": "src/middlewares",
-            "Darpersodigital\\Cms\\Models\\": "src/models"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Darpersodigital\\Cms\\Providers\\CmsServiceProvider"
-            ]
-        }
-    },
-    "authors": [
-        {
-            "name": "darpersodigital"
-        }
-    ],
-    "license": "MIT",
-    "minimum-stability": "stable",
-    "require": {
-        "astrotomic/laravel-translatable": "^11.15",
-        "intervention/image-laravel": "^1.5"
+  "name": "darpersodigital/cms",
+  "description": "Darperso CMS",
+  "type": "package",
+  "autoload": {
+    "psr-4": {
+      "Darpersodigital\\Cms\\": "src/",
+      "Darpersodigital\\Cms\\Middlewares\\": "src/middlewares",
+      "Darpersodigital\\Cms\\Models\\": "src/models"
     }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Darpersodigital\\Cms\\Providers\\CmsServiceProvider"
+      ]
+    }
+  },
+  "authors": [
+    {
+      "name": "darpersodigital"
+    }
+  ],
+  "license": "MIT",
+  "minimum-stability": "stable",
+  "require": {
+    "astrotomic/laravel-translatable": "^11.15",
+    "intervention/image-laravel": "^1.5",
+    "consoletvs/charts": "^6.9",
+    "spatie/laravel-analytics": "^5.6"
+  }
 }

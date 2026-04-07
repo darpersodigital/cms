@@ -1,0 +1,292 @@
+table.dataTable {
+  margin-bottom: 30px;
+}
+
+.dataTables_info,
+.server-pagination-numbers,
+.dataTables_paginate {
+  font-size: 0.7rem;
+}
+
+.dataTables_filter .paginate_button,
+.dataTables_paginate .paginate_button,
+.filter-wrapper .paginate_button {
+  position: relative;
+  vertical-align: middle;
+  width: 40px !important;
+  height: 40px !important;
+  line-height: 38px !important;
+  border: 1px solid #e9ecef !important;
+  border-radius: 100%;
+  padding: 0 !important;
+  background-image: unset !important;
+}
+
+.dataTables_filter .paginate_button.previous,
+.dataTables_filter .paginate_button.next,
+.dataTables_paginate .paginate_button.previous,
+.dataTables_paginate .paginate_button.next,
+.filter-wrapper .paginate_button.previous,
+.filter-wrapper .paginate_button.next {
+  font-size: 0;
+}
+
+.dataTables_filter .paginate_button.previous:before,
+.dataTables_filter .paginate_button.next:before,
+.dataTables_paginate .paginate_button.previous:before,
+.dataTables_paginate .paginate_button.next:before,
+.filter-wrapper .paginate_button.previous:before,
+.filter-wrapper .paginate_button.next:before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+}
+
+.dataTables_filter .paginate_button.previous:before,
+.dataTables_paginate .paginate_button.previous:before,
+.filter-wrapper .paginate_button.previous:before {
+  border-right: 8px solid $primary;
+  margin-right: 3px;
+}
+
+.dataTables_filter .paginate_button.next:before,
+.dataTables_paginate .paginate_button.next:before,
+.filter-wrapper .paginate_button.next:before {
+  border-left: 8px solid $primary;
+  margin-left: 3px;
+}
+
+.dataTables_filter .paginate_button.current,
+.dataTables_paginate .paginate_button.current,
+.filter-wrapper .paginate_button.current {
+  background: $primary;
+  border-color: $primary;
+}
+
+.dataTables_filter .paginate_button.disabled,
+.dataTables_paginate .paginate_button.disabled,
+.filter-wrapper .paginate_button.disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.pagination-btns {
+  p {
+    display: none;
+  }
+
+  svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+  a {
+    color: #000 !important;
+  }
+  span {
+    display: flex;
+    align-items: center;
+  }
+  a,
+  span[aria-current="page"],
+  span[aria-disabled="true"] {
+    display: flex;
+    width: 40px !important;
+    height: 40px !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0px !important;
+    border: 1px solid #dee2e6 !important;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  span[aria-current="page"],
+  span[aria-disabled="true"] {
+    span {
+      padding: 0px !important;
+      border: unset !important;
+    }
+  }
+  span[aria-current="page"] {
+    color: $primary !important;
+  }
+  div {
+    width: auto !important;
+    display: flex;
+    justify-content: center;
+    > span {
+      display: flex;
+      justify-content: center;
+    }
+  }
+  nav div:first-of-type {
+    display: none !important;
+  }
+
+  span[aria-disabled="true"] {
+    opacity: 0.4 !important;
+  }
+}
+
+.server-pagination-numbers {
+  font-size: 0.7rem;
+}
+
+.p-checkbox:not(.p-disabled):has(.p-checkbox-input:hover) .p-checkbox-box {
+  border-color: var(--cms-primary-color);
+}
+
+.p-checkbox.p-highlight .p-checkbox-box {
+  border-color: var(--cms-primary-color);
+  background: var(--cms-primary-color);
+}
+
+.data-search input {
+  background-color: white !important;
+}
+.p-datatable .p-datatable-thead > tr > th {
+  background-color: transparent !important;
+}
+.p-datatable .p-datatable-tbody > tr:last-child > td,
+.p-datatable .p-paginator-bottom {
+  border-bottom: 0px !important;
+}
+
+.p-paginator {
+  padding-top: 15px !important;
+  .p-dropdown:not(.p-disabled).p-focus {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: unset !important;
+    border-color: transparent !important;
+  }
+
+  .p-dropdown {
+    height: 50px;
+    display: flex;
+    padding: 5px 10px !important;
+    border-width: 0px !important;
+    align-items: center;
+    justify-content: center;
+
+    .p-dropdown-trigger {
+      width: auto !important;
+    }
+    .p-dropdown-label {
+      padding-right: 8px !important;
+    }
+  }
+
+  .p-paginator-first,
+  .p-paginator-prev,
+  .p-paginator-next,
+  .p-paginator-last {
+    min-width: fit-content !important;
+    padding: 5px !important;
+  }
+
+  .p-paginator-pages .p-paginator-page.p-highlight {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: var(--cms-primary-color) !important;
+  }
+}
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight.p-focus {
+  color: #fff !important;
+  background-color: var(--cms-primary-color) !important;
+}
+
+.p-datatable {
+  overflow: hidden;
+  td {
+    color: black !important;
+  }
+  input[type="checkbox"] {
+    // display: none;
+    width: 15px !important;
+    height: 15px !important;
+  }
+  .p-selection-column {
+    padding: 0px !important;
+    padding-left: 10px !important;
+  }
+  .p-checkbox .p-checkbox-box {
+    margin: 0px !important;
+    width: 15px !important;
+
+    height: 15px !important;
+  }
+  .p-checkbox.p-component {
+    display: flex;
+    align-items: center;
+  }
+  .p-datatable-thead {
+    .p-column-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: black !important;
+    }
+    .p-column-header-content {
+      display: flex;
+      // justify-content: space-between;
+      svg {
+        width: 12px;
+        color: rgba(0, 0, 0, 0.9) !important;
+        height: 12px;
+      }
+    }
+  }
+}
+
+.dataTables_length label {
+  line-height: 30px;
+  font-size: 12px;
+  select {
+    float: right !important;
+    padding: 3px !important;
+    margin-left: 3px !important;
+    border-radius: 6px !important;
+    height: 30px !important;
+    font-size: 12px !important;
+    width: auto !important;
+  }
+}
+
+.dataTables_filter {
+  label {
+    line-height: 30px;
+    font-size: 12px;
+    input {
+      height: 30px !important;
+      float: right;
+      padding: 3px !important;
+      margin-left: 3px !important;
+      border-radius: 6px !important;
+    }
+  }
+  input,
+  textarea:not(.select2-search__field),
+  select:not(.ui-datepicker-month):not(.ui-datepicker-year),
+  .custom-file-input {
+    width: auto !important;
+   width: 125px !important;
+   font-size: 14px !important;
+  }
+}
+
+.datatable-container {
+  overflow-x: auto !important;
+}
+.datatable-container tr,
+.datatable-container td {
+  vertical-align: middle;
+}
+
+@media (max-width: 767.98px) {
+  .dataTables_length,
+  .dataTables_filter {
+    display: flex !important;
+  }
+}

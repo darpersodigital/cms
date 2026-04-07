@@ -1,0 +1,213 @@
+input,
+textarea:not(.select2-search__field),
+select:not(.ui-datepicker-month):not(.ui-datepicker-year),
+.custom-file-input {
+  margin-top: 0px;
+  padding: 10px 15px ;
+  color: black;
+  height: 41px;
+  width: 100%;
+  line-height: 42px !important;
+  font-size: 16px !important;
+  background-color: #f5f5f5 !important;
+  border: 1px solid #f5f5f5 !important;
+  border-radius: 8px;
+  color: black;
+}
+.custom-file-label {
+  background-color: #f5f5f5 !important;
+  border: 1px solid #f5f5f5 !important;
+}
+
+.input-wrapper {
+  position: relative;
+  label {
+    font-weight: 800;
+  }
+
+  &.with-icon input {
+    padding-left: 35px !important;
+  }
+
+
+  .required {
+    font-size: 12px !important;
+    color: #dc3545 !important;
+    display: inline-block;
+    transform: translateY(-5px);
+  }
+}
+
+.form-input-container:has(.text-error) {
+   input,
+   textarea,
+   select,
+   .custom-file-label,
+   .custom-file-wrapper ,
+   .select2-selection.select2-selection--single {
+    border-color: #dc3545 !important;
+  }
+}
+
+.required-star {
+  font-size: 12px !important;
+  color: #dc3545 !important;
+  display: inline-block;
+  transform: translateY(-5px);
+}
+input,
+select,
+textarea,
+.custom-file-input {
+  &:focus,
+  .custom-file-input:focus ~ .custom-file-label {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
+.password-eye {
+  position: absolute;
+  bottom: 8px;
+  right: 15px;
+  background-color: #f5f5f5;
+  z-index: 9;
+  &:hover {
+    i {
+      color: var(--cms-primary-color);
+    }
+  }
+}
+
+textarea {
+  height: 210px !important;
+  resize: none;
+}
+
+input::placeholder {
+  text-transform: capitalize;
+  font-weight: 300 !important;
+  font-size: 12px !important;
+}
+
+.floating-icon {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  height: 41px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9;
+  cursor: pointer;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  background: transparent;
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: auto;
+}
+
+input,
+select,
+textarea {
+  &:focus,
+  .custom-file-input:focus ~ .file-label {
+    border-color: var(--cms-primary-color) !important;
+  }
+}
+
+input::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.time-picker {
+  .change-time-container {
+    span {
+      position: relative;
+      display: inline-block;
+      width: 40px !important;
+      cursor: pointer;
+      text-align: center;
+    }
+  }
+  .time-form-container {
+    input {
+      display: inline-block;
+      width: 40px;
+      text-align: center;
+      border: none;
+      padding: 10px 0 !important;
+    }
+  }
+}
+
+.rtl {
+  .custom-file-label::after {
+    right: unset !important;
+    left: 0;
+    border-radius: 0px;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+    border-left: 0px;
+  }
+  .floating-icon {
+    left: unset !important;
+    right: 0px;
+  }
+  .input-wrapper.with-icon input {
+    padding-right: 35px !important;
+    padding-left: 0px !important;
+  }
+  input,
+  textarea,
+  select,
+  .custom-file-input {
+    text-align: right;
+  }
+  .PhoneInputCountry {
+    margin-right: 0px;
+    margin-left: 5px;
+  }
+  .PhoneInputCountrySelectArrow {
+    margin-right: 10px;
+  }
+
+  .form-check-radio input,
+  .checkbox-wrapper-19 .check-box,
+  .form-check-checkbox input {
+    margin-left: 10px !important;
+    margin-right: 0px !important;
+  }
+}
+.sub-card {
+  background: #eeeeee;
+  margin: 0px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+
+  input,
+  textarea,
+  select,
+  .custom-file-input {
+    background-color: white !important;
+  }
+  .input-wrapper.mt-3 {
+    margin-top: 0px !important;
+  }
+}
+
+.text-error {
+  margin-top: 4px;
+  font-size: 14px;
+}

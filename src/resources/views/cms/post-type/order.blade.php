@@ -5,10 +5,11 @@
 @endphp
 @section('dashboard-content')
 
-    <div class="container-fluid px-md-5 mt-5 ">
-        @include('darpersocms::cms.components.breadcrumb.breadcrumb-action', [
+    <div class="container-fluid px-md-5  mt-3">
+        @include('darpersocms::cms.components.breadcrumb.ScreenTitleHeader', [
             'title' => 'Order ' . $page['display_name_plural'],
         ])
+
         <div class="white-card">
             <div class="row">
                 <div class="col-12">
@@ -76,4 +77,3 @@
     </div>
 
 @endsection
-

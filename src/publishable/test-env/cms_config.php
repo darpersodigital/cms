@@ -1,6 +1,7 @@
 <?php
 
 return [
+      'id'=>'test-env',
     'route_path_prefix' => 'admin',
     'logo' => 'test.png',
     'footer_copyright' => 'v1.0 All Right Reserved Copyright &copy; <a href="https://google.com" target="_blank" class="text-primary" ><b>Client Digital</b></a>',
@@ -12,4 +13,6 @@ return [
     'additional_methods'=>[
 
     ],
+    'build_number'=> 1,
+
 ];

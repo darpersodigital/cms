@@ -2,13 +2,15 @@
     if (!isset($appends_to_query)) $appends_to_query='';
 @endphp
 <td>
-    <div class="d-flex justify-content-end">
+    <div class="d-flex ">
         @if (isset($can_view) && $can_view)
             <a href="{{ url($base_url . '/' . $row['id']) }}"
+                data-testid="btn-action-view-{{$testID ?? ""}}"
                 class="btn-action view mr-2"><i class="fa-solid fa-eye"></i></a>
         @endif
         @if (isset($can_edit) && $can_edit)
             <a href="{{ url($base_url . '/' . $row['id'] . '/edit' . $appends_to_query) }}"
+              data-testid="btn-action-edit-{{$testID ?? ""}}"
                 class="btn-action edit mr-2"><i class="fa-solid fa-pen"></i></a>
         @endif
         @if (isset($can_delete) && $can_delete)
@@ -17,7 +19,9 @@
                 onsubmit="return confirm('Are you sure?')">
                 @csrf
                 <input type="hidden" name="_method" value="DELETE">
-                <button class="btn-action  delete "><i
+                <button class="btn-action  delete "
+                 data-testid="btn-action-delete-{{$testID ?? ""}}"
+                ><i
                         class="fa-solid fa-trash-can"></i></button>
             </form>
         @endif

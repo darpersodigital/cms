@@ -8,7 +8,7 @@
 	@if (!isset($inline_label))
         @include('darpersocms::cms.components/form-fields/label')
 	@endif
-	<label class="checkbox-container">
+	<label class="checkbox-container" data-testid="checkbox-{{$input_name }}">
 		<input type="checkbox" class="custom-form-input" name="{{ $input_name }}" {!! $checked ? 'checked=""' : '' !!}>
 		<div></div>
 		@if (isset($inline_label))

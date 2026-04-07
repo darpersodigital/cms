@@ -4,15 +4,20 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>{{config('cms_config.seo_title')}}</title>
+    <title>{{ config('cms_config.seo_title') }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
         integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
+
+
+
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 
@@ -31,25 +36,9 @@
 
     @yield('content')
 
-    <div class="loader-wrapper bg-primary"
-        style="position: fixed;
-    height: 100vh;
-    width: 100%;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999999999999999999999999;
-    transition: all 1s;">
-        <div class="spinner">
-            <div class="spinner-item"></div>
-            <div class="spinner-item"></div>
-            <div class="spinner-item"></div>
-            <div class="spinner-item"></div>
-            <div class="spinner-item"></div>
-        </div>
-    </div>
+    @include('darpersocms::layouts.AdminLoader')
+
+  
     <div class="custom-bg"></div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>

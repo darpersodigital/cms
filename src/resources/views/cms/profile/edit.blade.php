@@ -1,56 +1,61 @@
 @extends('darpersocms::layouts/dashboard')
 
-
 @section('dashboard-content')
-    <div class="container-fluid px-md-5 mt-5 ">
-        <div class="white-card">
-            <form method="post" enctype="multipart/form-data" ajax>
-                <div class="d-flex align-items-center mb-3">
-                    @include('darpersocms::cms.components.breadcrumb.index', ['title' => 'EDIT PROFILE'])
-                </div>
-                @include('darpersocms::cms.components.errors.errors')
+    <form method="post" enctype="multipart/form-data" ajax>
+
+
+        <div class="container-fluid px-md-5  mt-3">
+
+            @include('darpersocms::cms.components.breadcrumb.ScreenTitleHeader', [
+                'title' => 'EDIT PROFILE',
+                'submit' => 'Update Profile',
+                'testID'=>'update-profile'
+            ])
+
+            <div class="white-card">
+
+
                 @csrf
 
-                <div class="mb-3">
-                    @include('darpersocms::cms.components/form-fields/input', [
-                    'label' => 'Name',
-                    'name' => 'name',
+                @include('darpersocms::cms.components.form-fields.TextInput', [
+                    'label' => 'Full Name',
+                    'name' => 'full_name',
+                    'styles'=>'mt-0',
+                    'testID'=>'full_name',
                     'type' => 'text',
-                    'value' => request()->get('admin')['name'],
+                    'value' => request()->get('admin')['full_name'],
                     'locale' => '',
+                    'required' => true,
                 ])
-                </div>
-                 <div class="mb-3">
-                    @include('darpersocms::cms.components/form-fields/input', [
-                    'label' => 'Password',
-                    'name' => 'password',
-                    'type' => 'password',
-                    'value' => '',
+
+                @include('darpersocms::cms.components.form-fields.TextInput', [
+                    'label' => 'Username',
+                    'name' => 'user_name',
+                    'testID'=>'user_name',
+                    'type' => 'text',
+                    'value' => request()->get('admin')['user_name'],
                     'locale' => '',
+                    'required' => true,
                 ])
-                </div>
-                <div class="mb-3">
-                    @include('darpersocms::cms.components/form-fields/input', [
-                    'label' => 'Confirm Password',
-                    'name' => 'password_confirmation',
-                    'type' => 'password',
-                    'value' => '',
-                    'locale' => '',
-                ])
-                </div>
-             <div class="mb-3">
+
                 @include('darpersocms::cms.components/form-fields/image', [
                     'label' => 'Image',
                     'name' => 'image',
+                    'testID'=>'image',
                     'value' => request()->get('admin')['image'],
                     'locale' => '',
                 ])
-             </div>
 
-                <div class="text-right">
-                    <button type="submit" class="btn btn-sm btn-primary">Update</button>
-                </div>
-            </form>
+                @include('darpersocms::cms.components/form-fields/password-with-confirmation', [
+                    'label' => 'Password',
+                    'name' => 'password',
+                    'required'=>false,
+                    'testID'=>'password',
+                    'locale' => null,
+                    'value' => '',
+                ])
+
+            </div>
         </div>
-    </div>
+    </form>
 @endsection

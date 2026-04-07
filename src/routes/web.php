@@ -4,9 +4,12 @@ use Illuminate\Support\Facades\Route;
 use Darpersodigital\Cms\Controllers\CmsController;
 use Darpersodigital\Cms\Controllers\PostTypesController;
 use Darpersodigital\Cms\Controllers\PostTypeController;
-use Darpersodigital\Cms\Controllers\LanguaguesController;
-use Darpersodigital\Cms\Controllers\AdminRolesController;
-use Darpersodigital\Cms\Controllers\AdminsController;
+use Darpersodigital\Cms\Controllers\LanguagesController;
+use Darpersodigital\Cms\Controllers\seo\SitemapsController;
+use Darpersodigital\Cms\Controllers\seo\RobotsTXTController;
+use Darpersodigital\Cms\Controllers\seo\GoogleAnalyticsController;
+use Darpersodigital\Cms\Controllers\admin\AdminRolesController;
+use Darpersodigital\Cms\Controllers\admin\AdminsController;
 use Darpersodigital\Cms\Controllers\FormsController;
 use Darpersodigital\Cms\Models\PostType;
 
@@ -23,7 +26,6 @@ Route::prefix(config('cms_config.route_path_prefix'))->middleware(['web'])->grou
 });
 
 Route::get('/asset', [CmsController::class,'getAssets']);
-Route::get('/dashboard', [CmsController::class,'showDashboard'])->name('admin.dashboard');
 
 
 
@@ -45,7 +47,13 @@ Route::prefix(config('cms_config.route_path_prefix'))->middleware(['web', 'admin
 
 
     // site configurations 
-    Route::resource('languages', LanguaguesController::class);
+    Route::resource('languages', LanguagesController::class);
+    Route::resource('sitemaps', SitemapsController::class);
+    Route::resource('robots-txts', RobotsTXTController::class);
+    Route::resource('google-analytics', GoogleAnalyticsController::class);
+    Route::get('google-analytics/guide-assets/{filename}', [GoogleAnalyticsController::class, 'guideAsset'])
+        ->where('filename', '[^/]+')
+        ->name('google-analytics.guide-asset');
 
 
     // CMS Pages
@@ -71,7 +79,7 @@ Route::prefix(config('cms_config.route_path_prefix'))->middleware(['web', 'admin
     Route::delete('/post-types/{id}', [PostTypesController::class,'destroy']);
 
 
-    foreach (PostType::where('custom_page', 0)->get() as $postType) {
+    foreach (PostType::where('custom_page', 0)->where('custom_crud',0)->get() as $postType) {
        
         Route::get('/' . $postType->route, [PostTypeController::class,'index'])->defaults('route', $postType->route);
 

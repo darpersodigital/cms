@@ -1,15 +1,22 @@
 @extends('darpersocms::layouts/dashboard')
 
+
+@php
+    $permissions = request()->get('admin')['post_types'];
+@endphp
+
 @section('dashboard-content')
-    <div class="container-fluid px-md-5 mt-5  ">
+    <div class="container-fluid px-md-5  mt-3 ">
 
         <div class="row white-card">
             @foreach ($postTypes as $postType)
+          
+            @if ($postType['show'] && $permissions[$postType['route']]['permissions']['browse'])
                 <div class="col-lg-4 mt-3 h-100">
                     <a class="white-card bg-primary w-100 d-flex align-items-center justify-content-center flex-column"
                         href="{{ url(config('cms_config.route_path_prefix') . '/' . $postType->route) }}">
-                        <h3 class="text-center text-white"><i class="{{ $postType->icon }}"></i></h3>
-                        <h6 class="text-center text-white mt-3">
+                        @if(isset($postType->icon) && $postType->icon!=='')<h3 class="text-center text-white mb-3"><i class="{{ $postType->icon }}"></i></h3> @endif
+                        <h6 class="text-center text-white">
                             @if ($postType->is_form || $postType->add == 1)
                                 {{ $postType->display_name_plural }}
                             @else
@@ -25,6 +32,7 @@
                         @endif
                     </a>
                 </div>
+            @endif
             @endforeach
         </div>
 

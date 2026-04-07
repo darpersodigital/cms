@@ -1,0 +1,217 @@
+.btn-action {
+  display: flex;
+  position: relative;
+  z-index: 10;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  i {
+    transition: 0.5s;
+    pointer-events: none;
+  }
+  border-radius: 50%;
+  padding: 10px;
+  border-width: 0px;
+  transform-origin: center;
+  cursor: pointer;
+  transition: 0.5s;
+
+  &.lg {
+    width: 40px;
+    height: 40px;
+    i {
+      font-size: 18px;
+    }
+  }
+
+  &.delete {
+    &:not(.invert) {
+      background-color: rgba(226, 107, 133, 0.4);
+      i {
+        color: #e30031;
+      }
+      &:hover {
+        background-color: #e30031;
+      }
+    }
+    &.invert {
+      background-color: #e30031 !important;
+      i {
+        color: white !important;
+      }
+      &:hover {
+        background-color: #b22222 !important;
+      }
+    }
+  }
+
+  &.add {
+    background-color: rgba(95, 199, 149, 0.4);
+    i {
+      color: #2faa7e;
+    }
+     &:not(.hover-disabled):hover {
+      background-color: #2faa7e;
+    }
+  }
+
+  &.edit {
+    &.invert {
+      background-color: #007ac2;
+      i {
+        color: white;
+      }
+      &:hover {
+        background-color: rgba(95, 155, 190, 0.4) !important;
+      }
+    }
+    &:not(.invert) {
+      background-color: rgba(95, 155, 190, 0.4);
+      i {
+        color: #007ac2;
+      }
+      &:hover {
+        background-color: #007ac2;
+      }
+    }
+  }
+
+  &.drag {
+    &.invert {
+      background-color: #fff;
+      i {
+        color: #141414;
+      }
+    }
+    &:not(.invert) {
+      background-color: #141414;
+      i {
+        color: #fff;
+      }
+      &:hover {
+        background-color: #141414;
+      }
+    }
+  }
+  &:not(.hover-disabled):hover {
+    i {
+      color: white !important;
+    }
+  }
+
+  &.view {
+    background-color: #e9e9e9;
+    i {
+      color: #141414;
+    }
+    &:hover {
+      background-color: #141414;
+    }
+  }
+  &:not(.hover-disabled):hover {
+    i {
+      color: white !important;
+    }
+  }
+}
+
+.theme-btn {
+  border: 0px;
+  padding: 0px 10px !important;
+  background-color:  var(--cms-primary-color);
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  min-width: 150px !important;
+  line-height: 40px !important ;
+  color: white !important;
+  display: inline-block;
+  text-align: center;
+  height: unset !important;
+  transition: 0.5s;
+  cursor: pointer;
+  &:not(.hover-disabled):hover {
+    color: white !important;
+  }
+  &.sm {
+    font-size: 12px !important;
+    min-width: 120px !important;
+    line-height: 33px !important;
+    height: 33px;
+  }
+  &.disabled {
+    cursor: default !important;
+    background-color: #acacac !important;
+  }
+
+  &.delete {
+    background-color: rgba(226, 107, 133, 0.4);
+    color: #e30031 !important;
+    &:hover {
+      background-color: #e30031;
+      color: #fff !important;
+    }
+  }
+
+  &.view {
+    background-color: #141414 !important;
+    color: white !important;
+    &:hover {
+      background-color: #e9e9e9 !important;
+      color: #141414 !important;
+    }
+  }
+
+  &.outline {
+    background-color: transparent !important;
+    border: 1px solid  var(--cms-primary-color) !important;
+    color:  var(--cms-primary-color) !important;
+    &.disabled {
+      cursor: default !important;
+      border-color: #acacac !important;
+      background-color: #acacac !important;
+      color: white !important;
+    }
+  }
+
+  &.submit {
+    background-color: rgba(95, 199, 149, 0.4) !important;
+    color: #2faa7e !important;
+    span {
+      color: #2faa7e !important;
+      transition: 0.5s;
+    }
+    &:hover {
+      background-color: #2faa7e !important;
+      color: white !important;
+      span {
+        color: white !important;
+      }
+    }
+  }
+  &.secondary {
+    background-color: #6c757d !important;
+  }
+}
+
+.arrow-btn svg {
+  width: 30px;
+  height: 30px;
+}
+.rtl {
+  .arrow-btn {
+    transform: rotate(0deg);
+  }
+}
+@media (max-width: 768px) {
+  .theme-btn {
+    min-width: 125px !important;
+  }
+  .btn-action:not(.arrow-btn) {
+    width: 22px;
+    height: 22px;
+    i {
+      font-size: 12px;
+    }
+  }
+}
