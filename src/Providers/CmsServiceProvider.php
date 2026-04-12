@@ -59,7 +59,7 @@ class CmsServiceProvider extends ServiceProvider
         $databaseServiceProvider->generateDatabase();
         // Publish cms assets
 
-        $files = ['CfMessage.php', 'ContactPage.php', 'ContactPageTranslation.php', 'HomePage.php', 'HomePageTranslation.php', 'SiteSetting.php', 'SiteSettingTranslation.php'];
+        $files = ['CfMessage.php', 'ContactPage.php', 'ContactPageTranslation.php', 'HomePage.php', 'HomePageTranslation.php', 'SiteSetting.php','SeoSetting.php', 'SeoSettingTranslation.php'];
         foreach ($files as $file) {
             File::copy(__DIR__ . "/../static/models/{$file}", base_path("app/Models/{$file}"));
         }

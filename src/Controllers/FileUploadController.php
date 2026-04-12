@@ -142,66 +142,40 @@ class FileUploadController extends BaseController
         }
     }
 
-    public function handleMultipleFilesUpload($request, $field_name, $route, $form_field, $locale = null)
+    public function handleMultipleFilesUpload($request, $field_name, $route, $form_field, $with_alt = false, $locale = null)
     {
         $files = [];
         if ($locale) {
             if ($request->hasFile($locale . '.' . $field_name)) {
                 foreach ($request->file($locale . '.' . $field_name) as $file) {
-                    $file_path = $this->handleSingleFileUpload($file, $route,$form_field);
+                    if ($with_alt) {
+                        $file_path = [
+                            'file' => $this->handleSingleFileUpload($file, $route, $form_field),
+                            'alt' => '',
+                        ];
+                    } else {
+                        $file_path = $this->handleSingleFileUpload($file, $route, $form_field);
+                    }
+
                     $files[] = $file_path;
                 }
             }
         } else {
             if ($request->hasFile($field_name)) {
-                foreach ($request->file($field_name) as $file) {
-                    $file_path = $this->handleSingleFileUpload($file, $route,$form_field);
+                foreach ($request->file($field_name) as $index => $file) {
+                    if ($with_alt) {
+                        $file_path = [
+                            'file' => $this->handleSingleFileUpload($file, $route, $form_field),
+                            'alt' => '',
+                        ];
+                    } else {
+                        $file_path = $this->handleSingleFileUpload($file, $route, $form_field);
+                    }
+
                     $files[] = $file_path;
                 }
             }
         }
         return $files;
     }
-
-    // public function compressAndUploadMultipleImages($request, $field_name, $route, $locale = null)
-    // {
-    //     $files = [];
-    //     if ($locale) {
-    //         if ($request->hasFile($locale . '.' . $field_name)) {
-    //             foreach ($request->file($locale . '.' . $field_name) as $file) {
-    //                 $file_path = $this->compressAndUploadImage($file, $route);
-    //                 $files[] = $file_path;
-    //             }
-    //         }
-    //     } else {
-    //         if ($request->hasFile($field_name)) {
-    //             foreach ($request->file($field_name) as $file) {
-    //                 $file_path = $this->compressAndUploadImage($file, $route);
-    //                 $files[] = $file_path;
-    //             }
-    //         }
-    //     }
-    //     return $files;
-    // }
-
-    // public function compressAndUploadMultipleFiles($request, $field_name, $route, $locale = null)
-    // {
-    //     $files = [];
-    //     if ($locale) {
-    //         if ($request->hasFile($locale . '.' . $field_name)) {
-    //             foreach ($request->file($locale . '.' . $field_name) as $file) {
-    //                 $file_path = $this->compressAndUploadFile($file, $route);
-    //                 $files[] = $file_path;
-    //             }
-    //         }
-    //     } else {
-    //         if ($request->hasFile($field_name)) {
-    //             foreach ($request->file($field_name) as $file) {
-    //                 $file_path = $this->compressAndUploadFile($file, $route);
-    //                 $files[] = $file_path;
-    //             }
-    //         }
-    //     }
-    //     return $files;
-    // }
 }

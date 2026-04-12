@@ -15,7 +15,7 @@
         $value = '';
     }
 
-    if ($field['form_field'] != 'multiple images' && $field['form_field'] != 'multiple files' && !$value) {
+    if (!in_array($field['form_field'], ['multiple images', 'multiple images with alt', 'image with alt', 'multiple files']) && !$value) {
         if ($locale) {
             $value = old($locale . '.' . $field['name']);
         } else {
@@ -41,7 +41,9 @@
         'file',
         'video',
         'image',
+        'image with alt',
         'multiple images',
+        'multiple images with alt',
         'multiple files',
         'multiple videos',
         'date',
@@ -110,7 +112,74 @@
         $fieldAttributes = null;
     }
 @endphp
-@if (isset($fieldComponent) && isset($fieldAttributes))
+
+@if ($field['name'] == 'seo_robots')
+    <div class="mb-3 seo-robots-wrapper ">
+        <div class="d-none ">
+            @php
+                $fieldAttributes['value'] = isset($fieldAttributes['value']) ? $fieldAttributes['value']:"index, follow"
+            @endphp
+            @include('darpersocms::' . $fieldComponent, $fieldAttributes)
+        </div>
+
+      @php
+        $seo_robots_value = isset($row)  ? ($locale
+            ? (isset($row->translate($locale)['seo_robots']) && $row->translate($locale)['seo_robots'] != ''
+                ? $row->translate($locale)['seo_robots']
+                : '')
+            : $row['seo_robots'])
+        : '';
+        $unavailable_after_date = null;
+
+        if (preg_match('/unavailable_after: (\d{4}-\d{2}-\d{2})/', $seo_robots_value, $matches)) {
+        // If a match is found, extract the date
+        $unavailable_after_date = $matches[1];
+        }
+      @endphp
+        @include('darpersocms::cms/components/form-fields/select-multiple', [
+            'name' => $locale . '[select_seo_robots]',
+            'testID'=>$locale."-select-seo-robots",
+                'required'=>$fieldAttributes['required'],
+            'display_column' => 'label',
+            'store_column' => 'value',
+            'options' => [
+                ['value' => 'index', 'label' => 'Index'],
+                ['value' => 'follow', 'label' => 'Follow'],
+                ['value' => 'noindex', 'label' => 'Noindex'],
+                ['value' => 'nofollow', 'label' => 'Nofollow'],
+                ['value' => 'noarchive', 'label' => 'Noarchive'],
+                ['value' => 'nosnippet', 'label' => 'Nosnippet'],
+                ['value' => 'unavailable_after', 'label' => 'Unavailable After'],
+            ],
+           'value' => isset($row)
+    ? ($locale
+        ? (isset($row->translate($locale)['seo_robots']) &&
+            $row->translate($locale)['seo_robots'] != ''
+            ? (strpos($row->translate($locale)['seo_robots'], 'unavailable_after') !== false
+                ? array_merge(explode(', ', $row->translate($locale)['seo_robots']), ['unavailable_after'])
+                : explode(', ', $row->translate($locale)['seo_robots'])
+            )
+            : ['index', 'follow'])
+        : (strpos($row['seo_robots'], 'unavailable_after') !== false
+            ? array_merge(explode(', ', $row['seo_robots']), ['unavailable_after'])
+            : explode(', ', $row['seo_robots'])
+        )
+    )
+    : ['index', 'follow'],
+        ])
+
+        <div class="mt-3 seo-robots-unavailable-after-container pos-z">
+            @include('darpersocms::cms/components/form-fields/date', [
+                'label' => 'Seo Robots Unavailable After',
+                'required'=>true,
+                'name' => 'unavailable_after',
+                'value' => isset( $unavailable_after_date)
+                    ? str_replace(' ', '', $unavailable_after_date)  
+                    : '',
+            ])
+        </div>
+    </div>
+@elseif (isset($fieldComponent) && isset($fieldAttributes))
     <div class="mb-3">
         @include('darpersocms::' . $fieldComponent, $fieldAttributes)
     </div>

@@ -7,12 +7,12 @@ use Darpersodigital\Cms\Controllers\PostTypeController;
 use Darpersodigital\Cms\Controllers\LanguagesController;
 use Darpersodigital\Cms\Controllers\seo\SitemapsController;
 use Darpersodigital\Cms\Controllers\seo\RobotsTXTController;
+use Darpersodigital\Cms\Controllers\seo\SeoAIController;
 use Darpersodigital\Cms\Controllers\seo\GoogleAnalyticsController;
 use Darpersodigital\Cms\Controllers\admin\AdminRolesController;
 use Darpersodigital\Cms\Controllers\admin\AdminsController;
 use Darpersodigital\Cms\Controllers\FormsController;
 use Darpersodigital\Cms\Models\PostType;
-
 
 
 Route::prefix(config('cms_config.route_path_prefix'))->middleware(['web', 'admin'])->group(function () {
@@ -31,7 +31,9 @@ Route::get('/asset', [CmsController::class,'getAssets']);
 
 Route::prefix(config('cms_config.route_path_prefix'))->middleware(['web', 'admin'])->group(function () {
     Route::get('dashboard', [CmsController::class,'showHome'])->name('admin-dashboard');
-   
+
+
+    Route::post('/analyze-seo', [SeoAIController::class, 'analyze'])->name('analyze-seo');
 
     // Admin Routes
     Route::resource('admins', AdminsController::class);

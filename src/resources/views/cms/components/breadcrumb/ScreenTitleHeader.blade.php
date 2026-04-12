@@ -45,6 +45,8 @@
                     @if ($_can_add || $_can_order || $_can_edit || $_can_delete)
                         <div class="col-12 col-md-auto text-right">
                             <div class="d-flex align-items-center flex-row flex-wrap justify-content-end ">
+
+
                                 @if ($_can_add)
                                     @if (!$_disable_header_actions)
                                         <a href="{{ isset($add_url) ? $add_url : url($base_url . '/create') }}"
@@ -77,12 +79,12 @@
                                     @if (!$_disable_header_actions)
                                         <a href="{{ isset($edit_url) ? $edit_url : url($base_url . '/edit') }}"
                                             class="btn-action lg edit ml-2 mb-1 mb-sm-0"
-                                             data-testid="header-btn-edit-{{ $testID ?? '' }}"
-                                            >
+                                            data-testid="header-btn-edit-{{ $testID ?? '' }}">
                                             <i class="fa-solid fa-pen"></i>
                                         </a>
                                     @else
-                                        <div class="btn-action lg edit ml-2 mb-1 mb-sm-0" data-testid="header-btn-edit-{{ $testID ?? '' }}">
+                                        <div class="btn-action lg edit ml-2 mb-1 mb-sm-0"
+                                            data-testid="header-btn-edit-{{ $testID ?? '' }}">
                                             <i class="fa-solid fa-pen"></i>
                                         </div>
                                     @endif
@@ -96,7 +98,8 @@
                                             onsubmit="return confirm('{{ $delete_confirm_message ?? 'Are you sure you want to delete this item?' }}')">
                                             @csrf
                                             <input type="hidden" name="_method" value="DELETE">
-                                            <button type="submit" class="btn-action lg delete"  data-testid="header-btn-delete-{{ $testID ?? '' }}">
+                                            <button type="submit" class="btn-action lg delete"
+                                                data-testid="header-btn-delete-{{ $testID ?? '' }}">
                                                 <i class="fa-solid fa-trash-can"></i>
                                             </button>
                                         </form>
@@ -115,7 +118,15 @@
                     @endif
 
                     @if (isset($submit) && $submit)
-                        <div class="col-auto text-right">
+                        <div class="col-auto text-right d-flex">
+
+                            @if (isset($seo_check_function) && $seo_check_function)
+                                <div class="btn-action lg edit ml-2 mb-1 mb-sm-0 seo-check-btn mr-3"
+                                    data-testid="header-btn-seo-{{ $testID ?? '' }}">
+                                    <i class="fa-brands fa-searchengin"></i>
+                                </div>
+                            @endif
+
                             <button type="submit" class="theme-btn sm submit"
                                 data-testid="header-submit-action-{{ $testID ?? '' }}">
                                 {{ $submit }}

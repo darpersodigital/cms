@@ -109,12 +109,14 @@ class DatabaseServiceProvider
                 'display_name_plural' => 'Post Types',
                 'route' => 'post-types',
                 'hidden' => 1,
+                'pos' => 1,
             ]),
             $this->db_helpers->createPostType('custom', [
                 'icon' => 'fa-language',
                 'display_name_plural' => 'Languages',
                 'route' => 'languages',
                 'hidden' => 1,
+                'pos' => 2,
             ]),
             $this->db_helpers->createPostType('custom', [
                 'icon' => 'fa-solid fa-sitemap',
@@ -123,6 +125,7 @@ class DatabaseServiceProvider
                 'hidden' => 1,
                 'parent_icon' => 'fa-brands fa-searchengin',
                 'parent_title' => 'SEO',
+                'pos' => 4,
             ]),
             $this->db_helpers->createPostType('custom', [
                 'icon' => 'fa-brands fa-bots',
@@ -131,14 +134,16 @@ class DatabaseServiceProvider
                 'hidden' => 1,
                 'parent_icon' => 'fa-brands fa-searchengin',
                 'parent_title' => 'SEO',
+                'pos' => 5,
             ]),
-               $this->db_helpers->createPostType('custom', [
+            $this->db_helpers->createPostType('custom', [
                 'icon' => 'fa-solid fa-chart-simple',
                 'display_name_plural' => 'Google Analytics',
                 'route' => 'google-analytics',
                 'hidden' => 1,
                 'parent_icon' => 'fa-brands fa-searchengin',
                 'parent_title' => 'SEO',
+                'pos' => 6,
             ]),
             $this->db_helpers->createPostType('custom', [
                 'icon' => 'fa-lock',
@@ -147,6 +152,7 @@ class DatabaseServiceProvider
                 'hidden' => 1,
                 'parent_title' => 'Admins',
                 'parent_icon' => 'fa-user-secret',
+                'pos' => 7,
             ]),
             $this->db_helpers->createPostType('custom', [
                 'icon' => 'fa-user-secret',
@@ -155,6 +161,7 @@ class DatabaseServiceProvider
                 'hidden' => 1,
                 'parent_title' => 'Admins',
                 'parent_icon' => 'fa-user-secret',
+                'pos' => 8,
             ]),
             $this->db_helpers->createPostType('single', [
                 'icon' => 'fa-solid fa-house-user',
@@ -163,6 +170,8 @@ class DatabaseServiceProvider
                 'database_table' => 'home_pages',
                 'route' => 'home-pages',
                 'model_name' => 'HomePage',
+                'pos' => 9,
+
                 'fields' => json_encode($this->db_helpers->generateDefaultSingleRecordData()),
                 'translatable_fields' => json_encode($this->db_helpers->getSeoFields()),
             ]),
@@ -172,6 +181,8 @@ class DatabaseServiceProvider
                 'display_name_plural' => 'Contact Pages',
                 'database_table' => 'contact_pages',
                 'route' => 'contact-pages',
+                'pos' => 10,
+
                 'model_name' => 'ContactPage',
                 'fields' => json_encode($this->db_helpers->generateDefaultSingleRecordData()),
                 'translatable_fields' => json_encode($this->db_helpers->getSeoFields()),
@@ -183,6 +194,8 @@ class DatabaseServiceProvider
                 'database_table' => 'site_settings',
                 'route' => 'site-settings',
                 'model_name' => 'SiteSetting',
+                'pos' => 11,
+
                 'fields' => json_encode([
                     $this->db_helpers->generateFormField('email', 'text', 'email', [
                         'nullable' => 1,
@@ -195,6 +208,17 @@ class DatabaseServiceProvider
                     $this->db_helpers->generateFormField('copyright_text', 'text', 'text', ['nullable' => 1]),
                     $this->db_helpers->generateFormField('send_form_messages_to', 'string', 'email', ['nullable' => 1]),
                 ]),
+            ]),
+            $this->db_helpers->createPostType('single', [
+                'icon' => 'fa-brands fa-sistrix',
+                'display_name' => 'SEO Setting',
+                'display_name_plural' => 'SEO Settings',
+                'database_table' => 'seo_settings',
+                'route' => 'seo-settings',
+                'model_name' => 'SeoSetting',
+                'parent_icon' => 'fa-brands fa-searchengin',
+                'parent_title' => 'SEO',
+                'pos' => 3,
                 'translatable_fields' => json_encode($this->db_helpers->getSeoFields()),
             ]),
             $this->db_helpers->createPostType('form', [
@@ -203,6 +227,7 @@ class DatabaseServiceProvider
                 'display_name_plural' => 'Contact Form Messages',
                 'database_table' => 'cf_messages',
                 'route' => 'cf-message',
+                'pos' => 12,
                 'model_name' => 'CfMessage',
                 'fields' => json_encode([
                     $this->db_helpers->generateFormField('full_name', 'string', 'text', [
@@ -261,9 +286,15 @@ class DatabaseServiceProvider
             $table->integer('pos')->default(0);
             $table->timestamps();
         });
-        $this->db_helpers->createSeoTranslationTable('site_settings_translations', 'site_setting_id', 'site_settings');
-        $siteSettingId = DB::table('site_settings')->insertGetId([]);
-        $this->db_helpers->insertDefaultTranslation('site_settings_translations', 'site_setting_id', $siteSettingId);
+
+        Schema::create('seo_settings', function ($table) {
+            $table->increments('id');
+            $table->timestamps();
+            $table->integer('pos')->default(0);
+        });
+        $this->db_helpers->createSeoTranslationTable('seo_settings_translations', 'seo_setting_id', 'seo_settings');
+        // $siteSettingId = DB::table('site_settings')->insertGetId([]);
+        // $this->db_helpers->insertDefaultTranslation('site_settings_translations', 'site_setting_id', $siteSettingId);
         // ------------------ END SITE SETTINGS ------------------- //
     }
 
@@ -294,7 +325,8 @@ class DatabaseServiceProvider
             User-agent: *
             Disallow: /admin/
             Sitemap: https://example.com/sitemap.xml
-            TXT,
+            TXT
+        ,
         ]);
 
         Schema::create('google_analytics', function (Blueprint $table) {
@@ -331,7 +363,8 @@ class DatabaseServiceProvider
             $this->db_helpers->generatePermissions(1, 7),
             $this->db_helpers->generatePermissions(1, 8),
             $this->db_helpers->generatePermissions(1, 9),
-            $this->db_helpers->generatePermissions(1, 10, [
+            $this->db_helpers->generatePermissions(1, 10),
+            $this->db_helpers->generatePermissions(1, 11, [
                 'edit' => 0,
                 'add' => 0,
             ]),
@@ -367,6 +400,8 @@ class DatabaseServiceProvider
         Schema::dropIfExists('contact_pages');
         Schema::dropIfExists('site_settings_translations');
         Schema::dropIfExists('site_settings');
+        Schema::dropIfExists('seo_settings_translations');
+        Schema::dropIfExists('seo_settings');
         Schema::dropIfExists('languages');
 
         $this->generateAdminDatabases();

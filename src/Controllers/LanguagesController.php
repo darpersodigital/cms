@@ -9,6 +9,7 @@ use Darpersodigital\Cms\Models\Language;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Storage;
 use Darpersodigital\Cms\Services\SitemapServices;
+use Darpersodigital\Cms\Controllers\PostTypeController;
 
 class LanguagesController extends BaseController
 {
@@ -19,10 +20,12 @@ class LanguagesController extends BaseController
     }
 
     protected SitemapServices $sitemap_services;
+    protected PostTypeController $postTypeController;
 
-    public function __construct(SitemapServices $sitemap_services)
+    public function __construct(SitemapServices $sitemap_services, PostTypeController $postTypeController)
     {
         $this->sitemap_services = $sitemap_services;
+        $this->postTypeController = $postTypeController;
     }
 
     public function create()
@@ -39,6 +42,8 @@ class LanguagesController extends BaseController
         ]);
         $row = $id ? Language::findOrFail($id) : new Language();
         $row->title = $request->title;
+        $row->published = isset($request['published']) && in_array($request['published'], [1, '1', 'on']) ? 1 : 0;
+
         $row->slug = $request->slug;
         $row->direction = $request->direction;
         $row->save();
@@ -77,9 +82,10 @@ class LanguagesController extends BaseController
             return redirect(config('cms_config.route_path_prefix') . '/languages')->with('error', 'Record can not be deleted');
         }
         $postTypes = PostType::where('custom_page', 0)->where('translatable_fields', '!=', '[]')->get();
-        $targetFields = ['image', 'file', 'multiple images', 'multiple files','video','multiple videos'];
+        $targetFields = ['image', 'image with alt', 'multiple images with alt', 'file', 'multiple images', 'multiple files', 'video', 'multiple videos'];
         foreach ($array as $id) {
             $locale = Language::findOrFail($id)->slug;
+
             foreach ($postTypes as $postType) {
                 $translatable_fields = json_decode($postType['translatable_fields'], true);
                 $translation_table = $postType['database_table'] . '_translations';
@@ -99,15 +105,24 @@ class LanguagesController extends BaseController
                     foreach ($rows as $row) {
                         foreach ($modelUploadRows as $uploadFieldName) {
                             if (isset($row[$uploadFieldName['name']])) {
-                                if ($uploadFieldName['form_field'] == 'multiple files' || $uploadFieldName['form_field'] == 'multiple videos' || $uploadFieldName['form_field'] == 'multiple images') {
+                                // Check for multiple file cases
+                                if ($uploadFieldName['form_field'] == 'multiple files' || $uploadFieldName['form_field'] == 'multiple videos' || $uploadFieldName['form_field'] == 'multiple images' || $uploadFieldName['form_field'] == 'multiple images with alt') {
                                     $multiple_upload_list = json_decode($row[$uploadFieldName['name']], true);
                                     foreach ($multiple_upload_list as $file) {
-                                        if (isset($file)) {
+                                        if ($uploadFieldName['form_field'] == 'multiple images with alt') {
+                                            Storage::delete($file['file']);
+                                        } elseif (isset($file)) {
                                             Storage::delete($file);
                                         }
                                     }
                                 } elseif (isset($row[$uploadFieldName['name']])) {
-                                    Storage::delete($row[$uploadFieldName['name']]);
+                                    if ($uploadFieldName['form_field'] == 'image with alt') {
+                                        if (json_decode($row[$uploadFieldName['name']])) {
+                                            Storage::delete(json_decode($row[$uploadFieldName['name']])->file);
+                                        }
+                                    } else {
+                                        Storage::delete($row[$uploadFieldName['name']]);
+                                    }
                                 }
                             }
                         }

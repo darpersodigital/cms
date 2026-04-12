@@ -25,9 +25,6 @@
                                     'options' => $extra_variables[$filter['form_field_configs_1']],
                                     'store_column' => 'id',
                                     'display_column' => $filter['form_field_configs_2'],
-                                
-                                    // 'value' => isset($row) ? ($locale ? $row->translate($locale)[str_replace(['_id'], [''], $field['name'])]->pluck('id')->toArray() : $row[str_replace(['_id'], [''], $field['name'])])->pluck('id')->toArray() : '',
-                                
                                     'value' =>
                                         isset(request('search_by_relationships')[$i]['value']) &&
                                         request('search_by_relationships')[$i]['value']

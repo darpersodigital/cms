@@ -135,6 +135,15 @@
                                                 @endif
                                             @break
 
+                                               @case('multiple images with alt')
+                                                @if ($row[$fieldName])
+                                                    @foreach (json_decode($row[$fieldName] ?? '[]', true) ?? [] as $file)
+                                                            <img src="{{ Storage::url($file['file']) }}"
+                                                                class="img-thumbnail multiple-image">
+                                                    @endforeach
+                                                @endif
+                                            @break
+
                                             @case('multiple files')
                                                 @if ($row[$fieldName])
                                                     @foreach (json_decode($row[$fieldName] ?? '[]', true) ?? [] as $file)
@@ -165,6 +174,11 @@
                                                 @endif
                                             @break
 
+                                            @case('image with alt')
+                                                @if (json_decode($row[$fieldName]))
+                                                    <img src="{{ Storage::url(json_decode($row[$fieldName])->file) }}" class="img-thumbnail">
+                                                @endif
+                                            @break
                                             @case('file')
                                                 @if (isset($row[$fieldName]) && $row[$fieldName])
                                                     <a href="{{ Storage::url($row[$fieldName]) }}" target="_blank">

@@ -21,6 +21,7 @@
                             <th>#</th>
                             <th>Title</th>
                             <th>Slug</th>
+                            <th>Published</th>
                             <th>Direction</th>
                             <th>Actions</th>
                         </tr>
@@ -31,6 +32,12 @@
                                 <td>{{ $row->id }}</td>
                                 <td>{{ $row->title }}</td>
                                 <td>{{ $row->slug }}</td>
+                                  <td>
+                                    <span
+                                        class="badge badge-pill {{ $row['published'] ? 'badge-primary' : 'badge-secondary' }}">
+                                        {{ $row['published'] ? 'Published' : 'Draft' }}
+                                    </span>
+                                </td>
 
                                 <td>{{ $row->direction }}</td>
 

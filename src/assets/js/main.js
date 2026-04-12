@@ -171,43 +171,6 @@ $(document).ready(function () {
             clearTimeout(timeout);
             clearInterval(interval);
         });
-    // $('.time-picker .change-time-container span').on('click', function () {
-    //     let container = $(this).closest('.change-time-container');
-    //     let timeFormContainer = container.closest('.time-picker').find('.time-form-container');
-    //     let hourInput = timeFormContainer.find('input:nth-child(1)');
-    //     let minInput = timeFormContainer.find('input:nth-child(2)');
-    //     let periodInput = timeFormContainer.find('input:nth-child(3)');
-    //     const index = $(this).index();
-    //     if (index === 0) {
-    //         updateTime(hourInput, container.hasClass('upper'), 1, 12);
-    //     } else if (index === 1) {
-    //         updateTime(minInput, container.hasClass('upper'), 0, 59);
-    //     } else {
-    //         periodInput.val(periodInput.val() === 'AM' ? 'PM' : 'AM');
-    //     }
-    //     timeFormContainer.find('input[type="hidden"]').val(`${hourInput.val()}:${minInput.val()} ${periodInput.val()}`);
-    // });
-
-    // function updateTime(input, increase, min, max) {
-    //     let value = +input.val();
-    //     value = increase ? value + 1 : value - 1;
-    //     if (value > max) value = min;
-    //     if (value < min) value = max;
-    //     input.val(value.toString().padStart(2, '0'));
-    // }
-
-
-    // let timeout, interval;
-    // $('.time-picker .change-time-container span')
-    //     .on('mousedown', function () {
-    //         timeout = setTimeout(() => {
-    //             interval = setInterval(() => $(this).trigger('click'), 50);
-    //         }, 500);
-    //     })
-    //     .on('mouseup mouseleave', function () {
-    //         clearTimeout(timeout);
-    //         clearInterval(interval);
-    //     });
 
     $('.date-picker').datepicker({
         dateFormat: 'yy-mm-dd',
@@ -301,7 +264,7 @@ $(document).ready(function () {
     $('.datatable-table').each(function () {
         const table = $(this);
 
-        if( $(this).hasClass('post-type-datatable-table')) return;
+        if ($(this).hasClass('post-type-datatable-table')) return;
         let params = new URLSearchParams(window.location.search);
         let value = params.get('per_page');
         var options = {
@@ -330,18 +293,26 @@ $(document).ready(function () {
         const toDeleteImage = $(this).data('image');
         let currentImages = JSON.parse(container.find('.current-multiple-images-value').val() || '[]');
 
+        $(this).closest('.single-multiple-file').find('.alt-input').remove();
         // Filter out the image to delete
-        const filteredImages = currentImages.filter(image => image !== toDeleteImage);
+        const filteredImages = currentImages.filter(image => typeof image == 'object' ? image.file !== toDeleteImage : image !== toDeleteImage);
+
         container.find('.current-multiple-images-value').val(JSON.stringify(filteredImages));
 
         // Hide the parent element of the delete button
         $(this).parent().hide();
     });
 
-    $('.images-sortable').sortable({
+    $('.sortable-file-input').sortable({
         update: function () {
-            const updatedArr = $(this).find('.single-multiple-image').map(function () {
-                return $(this).data('image');
+            const updatedArr = $(this).find('.single-multiple-file').map(function () {
+                if ($(this).hasClass("with-alt")) {
+                    return {
+                        file: $(this).data('image'),
+                        alt: $(this).data('alt')
+                    };
+                } else return $(this).data('image')
+
             }).get();
 
             $(this).closest('.multiple-images-container').find('.current-multiple-images-value').val(JSON.stringify(updatedArr));
@@ -354,6 +325,113 @@ $(document).ready(function () {
     })
 
     $('.default-select').select2('destroy');
+
+
+    /****  START FILE WITH ALT ******/
+    $('.file-with-alt').each(function () {
+        if ($(this).find('.img-thumbnail').length == 0) {
+            $(this).find('.alt-input').hide();
+        }
+    });
+    $('.file-with-alt .delete-btn').on('click', function () {
+        $(this).closest('.file-with-alt').find('.alt-input').hide();
+    });
+    $('.file-with-alt input[type="file"]').on('change', function () {
+        if (this.files.length > 0) {
+            $(this).closest('.file-with-alt').find('.alt-input').show();
+        } else {
+            $(this).closest('.file-with-alt').find('.alt-input').hide();
+        }
+    });
+    /****  END FILE WITH ALT ******/
+
+
+    /****  START SEO ROBOTS ******/
+
+    $('input[name*="[unavailable_after]"]').each(function () {
+        if ($(this).val() === '') {
+            $(this).closest('.seo-robots-unavailable-after-container').hide();
+        }
+    });
+
+    $('input[name*="[unavailable_after]"]').on('change', function () {
+        const input = $(this).closest('.seo-robots-wrapper').find('input[name*="[seo_robots]"]');
+        const currentValue = input.val();
+        // Use a regular expression to replace the old date with the new one
+        const updatedValue = currentValue.replace(/unavailable_after:\s*\d{4}-\d{2}-\d{2}/, 'unavailable_after: ' + $(this).val());
+        // Set the new value back to the input
+        input.val(updatedValue);
+    });
+    $('select[data-name*="[select_seo_robots]"]').on('change', function () {
+        // Get the selected values as an array
+        var selectedValues = $(this).val()
+        const storedValues = $(this).closest('.seo-robots-wrapper').find(
+            'input[name*="[seo_robots]"]').val()
+        var hasUnavailableAfter = storedValues.match(/unavailable_after: [\d\-]+/);
+
+        if (selectedValues && selectedValues.includes('unavailable_after')) {
+            $(this).closest('.seo-robots-wrapper').find('.seo-robots-unavailable-after-container').show();
+            $(this).closest('.seo-robots-wrapper').find('.seo-robots-unavailable-after-container').find('input').val(new Date().toISOString().split('T')[0])
+            const input = $(this).closest('.seo-robots-wrapper').find('input[name*="[seo_robots]"]')
+            const currentValue = input.val().split(", ")
+            const newVal = "unavailable_after: " + new Date().toISOString().split('T')[0]
+            currentValue.push(newVal)
+            hasUnavailableAfter = [[newVal]]
+            input.val(currentValue.join(", "))
+
+        } else {
+            $(this).closest('.seo-robots-wrapper').find('input[name*="[unavailable_after]"]').val(
+                "");
+            $(this).closest('.seo-robots-wrapper').find('.seo-robots-unavailable-after-container')
+                .hide();
+            hasUnavailableAfter = undefined
+        }
+        if (selectedValues && selectedValues.length > 0) {
+            if (hasUnavailableAfter) {
+                selectedValues = selectedValues.filter(v => v != 'unavailable_after')
+                selectedValues.push(hasUnavailableAfter[0])
+            }
+            $(this).closest('.seo-robots-wrapper').find('input[name*="[seo_robots]"]').val(
+                selectedValues.join(", "));
+        } else {
+            // If no values are selected, clear the input field
+            $(this).closest('.seo-robots-wrapper').find('input[name*="[seo_robots]"]').val('');
+        }
+    });
+    /****  END FILE WITH ALT ******/
+
+
+    /**** START CHAR-WORD COUNTER ******/
+    function countWords(text) {
+        text = text.trim().replace(/\s+/g, ' ');
+        if (text === '') return 0;
+        return text.split(' ').length;
+    }
+
+    function updateCounts($field) {
+        const value = $field.val();
+        const charCount = value.length;
+        const wordCount = countWords(value);
+
+        $field.closest('.form-input-container')
+            .find('.character-word-count .character')
+            .text(charCount);
+
+        $field.closest('.form-input-container')
+            .find('.character-word-count .word')
+            .text(wordCount);
+    }
+
+    // Listen to input changes
+    $('input[type="text"], textarea').on('input', function () {
+        updateCounts($(this));
+    });
+
+    // Initialize counts on page load for pre-filled values
+    $('input[type="text"], textarea').each(function () {
+        updateCounts($(this));
+    });
+    /**** END CHAR-WORD COUNTER ******/
 
 
 });

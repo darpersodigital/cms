@@ -18,10 +18,10 @@
         value="{{ $currentValue }}">
     @if (count($value) >=1)
         <div class="images-preview  py-2" {!! count($value) ? '' : 'style="display: none;"' !!}>
-            <div class="row images-sortable">
+            <div class="row sortable-file-input">
                 @foreach ($value as $file)
                     @if (getType($file) == 'string')
-                        <div class="col-auto single-multiple-image mb-3" data-image="{!! $file !!}">
+                        <div class="col-auto single-multiple-file mb-3" data-image="{!! $file !!}">
                             {{-- <img class="img-thumbnail" src="{{ Storage::url($file) }}"> --}}
                             <a href="{{ Storage::url($file) }}" target="_blank" class="theme-btn sm"><i
                                     class="fa fa-file" aria-hidden="true"></i><span class="ml-2">View File</span></a>

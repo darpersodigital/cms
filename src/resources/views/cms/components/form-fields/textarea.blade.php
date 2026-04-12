@@ -7,8 +7,10 @@
 
 <div class="form-input-container">
     @include('darpersocms::cms.components/form-fields/label')
-    <div class="">
+    <div class="position-relative">
         <textarea class="custom-form-input" name="{{ $input_name }}" rows="5" {{-- onkeyup="wordCount(this)" --}}>{{ $value }}</textarea>
+       @include('darpersocms::cms.components.form-fields.character-word-count')
+
     </div>
 	@include('darpersocms::cms.components.form-fields.field-error')
 </div>

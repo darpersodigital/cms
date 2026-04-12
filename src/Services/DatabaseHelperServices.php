@@ -42,7 +42,7 @@ class DatabaseHelperServices
     }
     public function getSeoFields(): array
     {
-        return [$this->generateFormField('seo_image', 'text', 'image', [], true), $this->generateFormField('seo_title', 'string', 'text', ['additional_validations' => 'max:60'], true), $this->generateFormField('seo_description', 'string', 'text', ['additional_validations' => 'max:160'], true), $this->generateFormField('seo_keywords', 'string', 'text', [], true)];
+        return [$this->generateFormField('seo_image', 'text', 'image', [], true), $this->generateFormField('seo_title', 'text', 'text', ['additional_validations' => 'max:512'], true), $this->generateFormField('seo_description', 'text', 'text', ['additional_validations' => 'max:1600'], true), $this->generateFormField('seo_keywords', 'text', 'text', ['additional_validations' => 'max:1024'], true),$this->generateFormField('seo_robots', 'text', 'text', [], true)];
     }
 
     public function createPostType(string $type, array $data): array
@@ -104,6 +104,7 @@ class DatabaseHelperServices
             $table->string('seo_title')->nullable();
             $table->string('seo_description')->nullable();
             $table->string('seo_keywords')->nullable();
+            $table->text('seo_robots')->nullable();
             $table->text('seo_image')->nullable();
             $table->foreign($foreignKey)->references('id')->on($parentTable)->onDelete('cascade');
             $table->timestamps();
@@ -161,6 +162,7 @@ class DatabaseHelperServices
         Schema::create('languages', function ($table) {
             $table->increments('id');
             $table->string('slug');
+            $table->integer('published')->default(0);
             $table->string('title');
             $table->string('direction');
             $table->timestamps();
@@ -168,6 +170,7 @@ class DatabaseHelperServices
 
         DB::table('languages')->insert([
             'slug' => 'en',
+            'published'=>1,
             'title' => 'English',
             'direction' => 'ltr',
         ]);

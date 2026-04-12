@@ -270,6 +270,11 @@ input::placeholder {
   font-size: 14px;
 }
 
+.error-text {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
 .custom-dropdown-wrapper .custom-dropdown-wrapper-items {
   position: absolute;
   padding: 10px 30px;
@@ -403,7 +408,7 @@ input::placeholder {
 .select-multiple-custom-container .select2-container--default .select2-selection--multiple {
   min-height: 41px !important;
   width: 100% !important;
-  height: auto !important;
+  height: 125px !important;
   margin-top: 0px;
   padding: 4px 15px;
   color: black;
@@ -414,10 +419,17 @@ input::placeholder {
   border-radius: 8px;
   color: black;
 }
+.select-multiple-custom-container .select2-container--default .select2-search--inline .select2-search__field {
+  height: 75px !important;
+}
 .select-multiple-custom-container .select2-container .select2-selection--multiple .select2-selection__rendered {
   display: flex !important;
   width: 100% !important;
   flex-wrap: wrap !important;
+}
+
+.select2-dropdown {
+  z-index: 1051999999999 !important;
 }
 
 .custom-file-wrapper {
@@ -465,12 +477,12 @@ input::placeholder {
   display: none;
 }
 
-.single-multiple-image,
+.single-multiple-file,
 .single-image,
 .file-input-container {
   position: relative;
 }
-.single-multiple-image .delete-btn,
+.single-multiple-file .delete-btn,
 .single-image .delete-btn,
 .file-input-container .delete-btn {
   position: absolute;
@@ -484,12 +496,12 @@ input::placeholder {
   width: 20px;
   border-radius: 50%;
 }
-.single-multiple-image .delete-btn i,
+.single-multiple-file .delete-btn i,
 .single-image .delete-btn i,
 .file-input-container .delete-btn i {
   font-size: 14px;
 }
-.single-multiple-image .remove-current-image,
+.single-multiple-file .remove-current-image,
 .single-image .remove-current-image,
 .file-input-container .remove-current-image {
   left: 90px;
@@ -497,7 +509,9 @@ input::placeholder {
 }
 
 .img-thumbnail {
+  height: 75px;
   max-width: 100px;
+  object-fit: contain;
 }
 
 .multiple-image {
@@ -884,6 +898,15 @@ table.dataTable {
 
 .time-picker {
   position: relative !important;
+}
+
+.character-word-count {
+  margin-top: 3px !important;
+  font-size: 11px !important;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  transform: translateY(100%);
 }
 
 h1,
@@ -1727,6 +1750,40 @@ i {
     font-size: 25px;
   }
 }
+/* Style for progress bars and other UI elements */
+/* Container for the progress bar */
+.progress-bar-container {
+  width: 100%;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin-top: 10px;
+  position: relative;
+}
+
+/* The actual progress bar */
+.progress-bar {
+  height: 5px;
+  border-radius: 4px;
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Center the score inside the progress bar */
+.progress-score {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  padding: 3px;
+  border-radius: 5px;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+  color: #000;
+  border: 1px solid #f5f5f5;
+  background-color: white !important;
+  font-weight: bold;
+  font-size: 14px;
+}
+
 .session-popup {
   position: fixed;
   top: -100px;

@@ -6,10 +6,10 @@
 @endphp
 <div class="form-input-container">
 	@if (!isset($inline_label))
-        @include('darpersocms::cms.components/form-fields/label')
+        @include('darpersocms::cms.components/form-fields/label',['for'=>$input_name])
 	@endif
-	<label class="checkbox-container" data-testid="checkbox-{{$input_name }}">
-		<input type="checkbox" class="custom-form-input" name="{{ $input_name }}" {!! $checked ? 'checked=""' : '' !!}>
+	<label class="checkbox-container" data-testid="checkbox-{{$input_name }}" >
+		<input type="checkbox" id="{{ $input_name }}"" class="custom-form-input" name="{{ $input_name }}" {!! $checked ? 'checked=""' : '' !!}>
 		<div></div>
 		@if (isset($inline_label))
 			<span class="d-inline-block align-middle mb-0 ml-1">{{ $label }}</span>

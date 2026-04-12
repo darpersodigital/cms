@@ -19,7 +19,7 @@ class HomePage extends Model  implements TranslatableContract
 
     protected $hidden = ['translations'];
 
-    public $translatedAttributes = ["seo_image","seo_title","seo_description","seo_keywords"];
+    public $translatedAttributes = ["seo_image","seo_title","seo_description","seo_keywords","seo_robots"];
 
 	protected static function booted(){}
 

@@ -73,6 +73,7 @@
     <script src="{{ url('asset?path=js/buttons.html5.min.js') }}"></script>
     <script src="{{ url('asset?path=js/pdfmake.min.js') }}"></script>
     <script src="{{ url('asset?path=js/vfs_fonts.js') }}"></script>
+       <script type="module" src="{{ url('asset?path=js/ai-seo.js') }}"></script>
     <script src="{{ url('asset?path=js/main.js') }}"></script>
     <script src="{{ url('asset?path=js/jquery.mjs.nestedSortable.js') }}"></script>
 

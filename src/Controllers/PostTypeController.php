@@ -3,7 +3,6 @@
 namespace Darpersodigital\Cms\Controllers;
 
 use Illuminate\Http\Request;
-
 use Illuminate\Routing\Controller as BaseController;
 use Darpersodigital\Cms\Models\PostType;
 use Darpersodigital\Cms\Models\Sitemap;
@@ -156,8 +155,8 @@ class PostTypeController extends BaseController
                     'checkbox' => ($translation->{$fieldName} = isset($request[$langSlug][$fieldName]) ? 1 : 0),
                     'time' => ($translation->{$fieldName} = $inputValue ? date('H:i', strtotime($inputValue)) : null),
                     'slug' => ($translation->{$fieldName} = $inputValue ? Str::slug($inputValue) : $row[$fieldName]),
-                    'image', 'file', 'video' => ($translation->{$fieldName} = $this->uploadFileOrImage($request, $field, $row, $langSlug)),
-                    'multiple images', 'multiple files', 'multiple videos' => ($translation->{$fieldName} = $this->uploadMultipleFilesOrImages($request, $field, $row, $langSlug)),
+                    'image', 'image with alt', 'file', 'video' => ($translation->{$fieldName} = $this->uploadFileOrImage($request, $field, $row, $langSlug)),
+                    'multiple images', 'multiple images with alt', 'multiple files', 'multiple videos' => ($translation->{$fieldName} = $this->uploadMultipleFilesOrImages($request, $field, $row, $langSlug)),
                     default => ($translation->{$fieldName} = $inputValue),
                 };
             }
@@ -207,7 +206,7 @@ class PostTypeController extends BaseController
         $row = $id ? $model::findOrFail($id) : new $model();
 
         // Validate Input
-        $validation_rules = array_merge($this->getValidationRules($page_fields, $page['database_table'], $id), $this->getTranslatableValidationRules($translatable_fields, $page['database_table'] . '_translations', $id));
+        $validation_rules = array_merge($this->getValidationRules($page_fields, $page['database_table'], $id, $row), $this->getTranslatableValidationRules($translatable_fields, $page['database_table'] . '_translations', $id, $row));
         $request->validate($validation_rules);
 
         // Process Fields
@@ -256,10 +255,10 @@ class PostTypeController extends BaseController
 
         return match ($formField) {
             'password', 'password with confirmation' => $request[$fieldName] ? Hash::make($request[$fieldName]) : $row[$fieldName],
-        'checkbox' => isset($request[$fieldName]) ? 1 : 0,
+            'checkbox' => isset($request[$fieldName]) ? 1 : 0,
             'time' => date('H:i', strtotime($request[$fieldName] ?? '')),
-            'image', 'file', 'video' => $this->uploadFileOrImage($request, $field, $row),
-            'multiple images', 'multiple files', 'multiple videos' => $this->uploadMultipleFilesOrImages($request, $field, $row),
+            'image', 'image with alt', 'file', 'video' => $this->uploadFileOrImage($request, $field, $row),
+            'multiple images', 'multiple images with alt', 'multiple files', 'multiple videos' => $this->uploadMultipleFilesOrImages($request, $field, $row),
             default => $request[$fieldName] ?? null,
         };
     }
@@ -270,7 +269,13 @@ class PostTypeController extends BaseController
         $isTranslated = $langSlug !== null;
         $fileKey = $isTranslated ? "$langSlug.$fieldName" : $fieldName;
         $removeKey = "remove_file_$fieldName";
-        $currentValue = $isTranslated ? $row->translateOrNew($langSlug)->{$fieldName} : $row[$fieldName] ?? null;
+        $itemValue = $isTranslated ? $row->translateOrNew($langSlug)->{$fieldName} : $row[$fieldName] ?? null;
+        $currentValue = $itemValue;
+        if ($field['form_field'] == 'image with alt') {
+            $itemValue = json_decode($itemValue);
+            $currentValue = isset($itemValue->file) ? $itemValue->file : null;
+            $updated_alt_value = isset($langSlug) ? $request[$langSlug . '.' . $fieldName . '_alt'] : $request[$fieldName . '_alt'];
+        }
 
         // UPLOAD
         if ($request->hasFile($fileKey)) {
@@ -278,6 +283,12 @@ class PostTypeController extends BaseController
                 Storage::delete($currentValue);
             }
             $file = $request->file($fileKey);
+            if ($field['form_field'] == 'image with alt') {
+                return json_encode([
+                    'file' => $this->FileUploadController->handleSingleFileUpload($file, $request['route'], $field['form_field']),
+                    'alt' => $updated_alt_value,
+                ]);
+            }
             return $this->FileUploadController->handleSingleFileUpload($file, $request['route'], $field['form_field']);
         }
 
@@ -291,6 +302,12 @@ class PostTypeController extends BaseController
             return null;
         }
 
+        if ($field['form_field'] == 'image with alt' && isset($currentValue)) {
+            return json_encode([
+                'file' => $currentValue,
+                'alt' => $updated_alt_value,
+            ]);
+        }
         // Keep existing
         return $currentValue ?? null;
     }
@@ -307,8 +324,17 @@ class PostTypeController extends BaseController
             $storedValue = $row[$fieldName] ?? null;
         }
         $currentImages = $this->FileUploadController->normalizeMultipleFilesArray(is_array($value) ? json_decode($value[0] ?? '[]', true) ?? [] : (is_string($value) ? json_decode($value, true) ?? [] : []));
-        $newImages = $this->FileUploadController->normalizeMultipleFilesArray($this->FileUploadController->handleMultipleFilesUpload($request, $fieldName,  $request->route, $field['form_field'], $langSlug));
+        $newImages = $this->FileUploadController->normalizeMultipleFilesArray($this->FileUploadController->handleMultipleFilesUpload($request, $fieldName, $request->route, $field['form_field'], $field['form_field'] == 'multiple images with alt', $langSlug));
+        $newAlts = $this->FileUploadController->normalizeMultipleFilesArray($langSlug ? $request[$langSlug . '.' . $fieldName . '_alt'] : $request[$fieldName . '_alt']);
         $allImages = array_merge($currentImages, $newImages);
+
+        if ($field['form_field'] == 'multiple images with alt') {
+            foreach ($allImages as $index => &$img) {
+                if (isset($newAlts[$index])) {
+                    $img['alt'] = $newAlts[$index] ?? '';
+                }
+            }
+        }
         foreach (json_decode($storedValue, true) ?? [] as $existingImage) {
             if (!in_array($existingImage, $currentImages) && !empty($existingImage)) {
                 Storage::delete($existingImage);
@@ -338,9 +364,9 @@ class PostTypeController extends BaseController
         }
     }
 
-    public function getTranslatableValidationRules($translatable_fields, $table, $id)
+    public function getTranslatableValidationRules($translatable_fields, $table, $id, $row)
     {
-        $rules = $this->getValidationRules($translatable_fields, $table, $id);
+        $rules = $this->getValidationRules($translatable_fields, $table, $id, $row);
         $result = [];
         foreach ($rules as $field => $rule) {
             foreach (Language::get() as $language) {
@@ -348,6 +374,29 @@ class PostTypeController extends BaseController
             }
         }
         return $result;
+    }
+
+    public function deleteFiles($record, $field)
+    {
+        if ($field->form_field == 'image with alt') {
+            $data = json_decode($record[$field->name]);
+            if ($data && isset($data->file)) {
+                Storage::delete($data->file);
+            }
+        } elseif (isset($record[$field->name])) {
+            Storage::delete($record[$field->name]);
+        }
+    }
+
+    public function deleteMultipleFiles($record, $field)
+    {
+        foreach (json_decode($record[$field->name]) as $val) {
+            if ($field->form_field == 'multiple images with alt' && isset($val->file)) {
+                Storage::delete($val->file);
+            } elseif (isset($val) && $val !== '') {
+                Storage::delete($val);
+            }
+        }
     }
 
     public function destroy($id, $route)
@@ -375,32 +424,22 @@ class PostTypeController extends BaseController
         foreach ($array as $id) {
             $record = $model::find($id);
             foreach ($fields as $field) {
-                if ($field->form_field == 'file' || $field->form_field == 'image' || $field->form_field == 'video') {
-                    if (isset($record[$field->name])) {
-                        Storage::delete($record[$field->name]);
-                    }
-                } elseif ($field->form_field == 'multiple images' || $field->form_field == 'multiple files' || $field->form_field == 'multiple videos') {
-                    foreach (json_decode($record[$field->name]) as $val) {
-                        Storage::delete($val);
-                    }
+                if (in_array($field->form_field, ['file', 'image', 'image with alt', 'video'])) {
+                    $this->deleteFiles($record, $field);
+                } elseif (in_array($field->form_field, ['multiple images', 'multiple images with alt', 'multiple files', 'multiple videos'])) {
+                    $this->deleteMultipleFiles($record, $field);
                 }
             }
             if (count($translatable_fields) > 0 && isset($record)) {
                 $translated_records = $translatedModel::where(Str::snake($page['model_name']) . '_id', $record->id)->get();
                 foreach ($translatable_fields as $field) {
-                    if ($field->form_field == 'file' || $field->form_field == 'image' || $field->form_field == 'video') {
+                    if (in_array($field->form_field, ['file', 'image', 'image with alt', 'video'])) {
                         foreach ($translated_records as $translated_record) {
-                            if (isset($translated_record[$field->name])) {
-                                Storage::delete($translated_record[$field->name]);
-                            }
+                            $this->deleteFiles($translated_record, $field);
                         }
-                    } elseif ($field->form_field == 'multiple images' || $field->form_field == 'multiple files' || $field->form_field == 'multiple videos') {
+                    } elseif (in_array($field->form_field, ['multiple images', 'multiple images with alt', 'multiple files', 'multiple videos'])) {
                         foreach ($translated_records as $translated_record) {
-                            foreach (json_decode($translated_record[$field->name]) as $val) {
-                                if (isset($val) && $val !== '') {
-                                    Storage::delete($val);
-                                }
-                            }
+                            $this->deleteMultipleFiles($translated_record, $field);
                         }
                     }
                 }
@@ -452,7 +491,7 @@ class PostTypeController extends BaseController
         return $query;
     }
 
-    public function getValidationRules($page_fields, $database_table, $id)
+    public function getValidationRules($page_fields, $database_table, $id, $row)
     {
         $singleFileTypes = ['image', 'file', 'video'];
         $validation_rules = [];
@@ -514,7 +553,7 @@ class PostTypeController extends BaseController
                 $validation_rules[$fieldName] .= 'nullable|';
             }
 
-            if ($field['migration_type'] === 'string' && !in_array($field['form_field'], ['number', 'image', 'file', 'video'], true)) {
+            if ($field['migration_type'] === 'string' && !in_array($field['form_field'], ['number', 'image', 'image with alt', 'file', 'video'], true)) {
                 $validation_rules[$fieldName] .= 'max:191|';
             }
 

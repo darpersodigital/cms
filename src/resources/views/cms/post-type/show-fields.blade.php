@@ -24,6 +24,8 @@
     // Set dynamic path based on form field type
     $fieldComponent = match ($field['form_field']) {
         'image' => 'cms/components/show-fields/image',
+        'image with alt' => 'cms/components/show-fields/image-with-alt',
+        'multiple images with alt', 'multiple-images' => 'cms/components/show-fields/images-with-alt',
         'multiple images', 'multiple-images' => 'cms/components/show-fields/images',
         'multiple videos', 'multiple-videos' => 'cms/components/show-fields/videos',
         'multiple files', 'multiple-images' => 'cms/components/show-fields/files',

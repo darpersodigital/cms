@@ -36,11 +36,13 @@
         @else
             <div>
                 <input class="custom-form-input" name="{{ $input_name }}" type="{{ $type ?? 'text' }}"
-                   {!! isset($type) && $type=='number'? 'step="any"' :"" !!}
+                    {!! isset($maxlength) ? 'maxlength="' . $maxlength . '"' : '' !!}
+                    {!! isset($type) && $type=='number'? 'step="any"' :"" !!}
                     id="{{ $inputId }}" value="{{ old($input_name, $value ?? '') }}"
                     placeholder="{{ $placeholder ?? '' }}" data-testid="{{ $testID ?? '' }}" {!! isset($slug_origin) ? 'data-slug-origin="' . $slug_origin . '"' : '' !!}>
             </div>
         @endif
+       @include('darpersocms::cms.components.form-fields.character-word-count')
 
         @if ($isPassword)
             <div class="password-eye pointer " onclick="togglePasswordVisibility('{{ $inputId }}', this)">

@@ -9,11 +9,11 @@ use Carbon\Carbon;
 
 
 
-class SiteSettingTranslation extends Model 
+class SeoSettingTranslation extends Model 
 {
 	
 
-    protected $table = 'site_settings_translations';
+    protected $table = 'seo_settings_translations';
 
     protected $guarded = ['id'];
 

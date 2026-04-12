@@ -1,4 +1,4 @@
-<label class="d-block form-field-description-wrapper">
+<label class="d-block form-field-description-wrapper" for="{{ isset( $for) ?  $for : '' }}">
     @if ($description ?? null)
     <i class="fa fa-info-circle" aria-hidden="true"></i>
     <div class="form-field-description">

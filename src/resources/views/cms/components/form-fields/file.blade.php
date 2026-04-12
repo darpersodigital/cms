@@ -6,7 +6,7 @@
         $remove_input_name = $locale . '[' . 'remove_file_' . $name . ']';
     }
 @endphp
-<div class="form-input-container {{$style}}">
+<div class="form-input-container {{isset($style) ? $style : ''}}">
     @include('darpersocms::cms.components/form-fields/label')
     @if (isset($value) && $value)
         <div class="file-input-container position-relative pr-3 pb-2">

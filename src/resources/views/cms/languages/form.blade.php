@@ -17,6 +17,14 @@
                     @method('put')
                 @endif
 
+                 @include('darpersocms::cms.components/form-fields/checkbox', [
+                            'label' => 'Published',
+                            'name' => 'published',
+                            'checked' => isset($row['published']) ? $row['published'] : 0,
+                            'required' => false,
+                            'locale' => null,
+                        ])
+
                 @include('darpersocms::cms.components/form-fields/TextInput', [
                     'label' => 'Title',
                     'name' => 'title',

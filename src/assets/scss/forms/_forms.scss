@@ -1,4 +1,3 @@
-
 @import "inputs";
 
 @import "customDropdown";
@@ -42,3 +41,11 @@
   position: relative !important;
 }
 
+.character-word-count {
+  margin-top: 3px !important;
+  font-size: 11px !important;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  transform: translateY(100%);
+}

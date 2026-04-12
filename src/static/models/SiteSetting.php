@@ -19,7 +19,7 @@ class SiteSetting extends Model  implements TranslatableContract
 
     protected $hidden = ['translations'];
 
-    public $translatedAttributes = ["seo_image","seo_title","seo_description","seo_keywords"];
+    public $translatedAttributes = [];
 
 	protected static function booted(){}
 

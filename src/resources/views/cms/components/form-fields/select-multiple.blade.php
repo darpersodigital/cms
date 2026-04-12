@@ -4,7 +4,7 @@
     }
 @endphp
 
-<div class="form-input-container">
+<div class="form-input-container pos-z">
     @include('darpersocms::cms.components/form-fields/label')
 
     <div class="select-multiple-custom-container  " data-testid="select-multiple-container-{{$testID ?? ""}}">
@@ -20,7 +20,7 @@
         <div class="selected-options d-none">
             @foreach ($value as $selected_id)
                 @foreach ($options as $option)
-                    @if ($option->id == $selected_id)
+                    @if ($option[$store_column] == $selected_id)
                      <div class="selected-option">
                         <input type="hidden" name="{{ $name }}[]" value="{{ $selected_id }}"
                         class="selected-option-id">

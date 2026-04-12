@@ -56,7 +56,7 @@
   }
 }
 
-.single-multiple-image,
+.single-multiple-file,
 .single-image,
 .file-input-container {
   position: relative;
@@ -85,7 +85,9 @@
   }
 }
   .img-thumbnail {
+    height: 75px;
     max-width: 100px;
+    object-fit: contain;
   }
   
 

@@ -9,11 +9,11 @@ use Carbon\Carbon;
 
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract; use Astrotomic\Translatable\Translatable;
 
-class ContactPage extends Model  implements TranslatableContract
+class SeoSetting extends Model  implements TranslatableContract
 {
 	use Translatable;
 
-    protected $table = 'contact_pages';
+    protected $table = 'seo_settings';
 
     protected $guarded = ['id'];
 

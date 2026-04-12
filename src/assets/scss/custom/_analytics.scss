@@ -1,6 +1,6 @@
 .analytics {
   .small-box {
-    margin-top:15px;
+    margin-top: 15px;
     border-radius: 8px;
     padding: 15px;
     display: flex;
@@ -11,12 +11,12 @@
       color: #fff;
     }
     p {
-        font-size:14px;
-        margin-top:6px;
+      font-size: 14px;
+      margin-top: 6px;
     }
 
     .icon {
-        margin-left:15px;
+      margin-left: 15px;
       i {
         color: #f9f9f9;
         font-size: 50px;
@@ -25,27 +25,59 @@
   }
 
   .card {
-     border-radius: 8px !important;
-     .card-title {
-        font-size:18px !important
-     }
+    border-radius: 8px !important;
+    .card-title {
+      font-size: 18px !important;
+    }
   }
 }
 
-@media(max-width:1024px){
-    .analytics {
-  .small-box {
-    margin-top:12px;
-    padding: 12px;
-    .icon {
-        margin-left:15px;
-      i {
-        color: #f9f9f9;
-        font-size: 25px;
+@media (max-width: 1024px) {
+  .analytics {
+    .small-box {
+      margin-top: 12px;
+      padding: 12px;
+      .icon {
+        margin-left: 15px;
+        i {
+          color: #f9f9f9;
+          font-size: 25px;
+        }
       }
     }
   }
-
 }
 
+/* Style for progress bars and other UI elements */
+/* Container for the progress bar */
+.progress-bar-container {
+  width: 100%;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin-top: 10px;
+  position: relative;
+}
+
+/* The actual progress bar */
+.progress-bar {
+  height: 5px;
+  border-radius: 4px;
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Center the score inside the progress bar */
+.progress-score {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  padding: 3px;
+  border-radius: 5px;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+  color: #000;
+  border: 1px solid #f5f5f5;
+  background-color: white !important;
+  font-weight: bold;
+  font-size: 14px;
 }

@@ -177,14 +177,14 @@ class PostTypesController extends BaseController
 
         $post_type = $id ? PostType::where('custom_page', 0)->findOrFail($id) : new PostType();
         if (isset($rq->with_seo) && $rq->with_seo) {
-            $seoFields = ['seo_image', 'seo_title', 'seo_description', 'seo_keywords'];
-            $seoMigrationTypes = ['text', 'string', 'string', 'string'];
-            $seoFormFields = ['image', 'text', 'text', 'text'];
-            $seoAdditionalValidations = ['', 'max:60', 'max:160', ''];
-            $defaultNulls = array_fill(0, 4, null);
-            $defaultZeros = array_fill(0, 4, '0');
-            $defaultOnes = array_fill(0, 4, '1');
-            $emptyStrings = array_fill(0, 4, '');
+            $seoFields = ['seo_image', 'seo_title', 'seo_description', 'seo_keywords','seo_robots'];
+            $seoMigrationTypes = ['text', 'text', 'text', 'text','text'];
+            $seoFormFields = ['image', 'text', 'text', 'text','text'];
+            $seoAdditionalValidations = ['', 'max:512', 'max:1600', 'max:1024',''];
+            $defaultNulls = array_fill(0, 5, null);
+            $defaultZeros = array_fill(0, 5, '0');
+            $defaultOnes = array_fill(0, 5, '1');
+            $emptyStrings = array_fill(0, 5, '');
             $fieldsToMerge = [
                 'translatable_name' => $seoFields,
                 'translatable_migration_type' => $seoMigrationTypes,
