@@ -9,8 +9,9 @@
     @include('darpersocms::cms.components/form-fields/label')
     <div class="position-relative">
         <textarea class="custom-form-input" name="{{ $input_name }}" rows="5" {{-- onkeyup="wordCount(this)" --}}>{{ $value }}</textarea>
-       @include('darpersocms::cms.components.form-fields.character-word-count')
-
+        @if (!isset($disable_counter) || (isset($disable_counter) && !$disable_counter))
+            @include('darpersocms::cms.components.form-fields.character-word-count')
+        @endif
     </div>
-	@include('darpersocms::cms.components.form-fields.field-error')
+    @include('darpersocms::cms.components.form-fields.field-error')
 </div>

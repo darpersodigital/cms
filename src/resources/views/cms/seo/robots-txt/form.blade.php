@@ -22,6 +22,7 @@
                     'label' => 'Content',
                     'name' => 'content',
                     'testID' => 'content',
+                    'disable_counter'=>true,
                     'type' => 'text',
                     'value' => isset($row) ? $row->content : '',
                     'error' => $errors->first('content'),

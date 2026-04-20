@@ -40,7 +40,7 @@
             </div>
         @endif
 
-        @if (!isset($disable_counter) || (isset($disable_counter) && !$disable_counter))
+        @if (!$isPassword && !isset($disable_counter) || (isset($disable_counter) && !$disable_counter) && ((!isset($type)) || $type =='text'))
             @include('darpersocms::cms.components.form-fields.character-word-count')
         @endif
 

@@ -28,6 +28,7 @@
                         'testID'=>'title',
                         'type' => 'text',
                         'error' => $errors->first('title'),
+                        'disable_counter'=>true,
                         'styles' => 'mt-0',
                         'required' => true,
                         'value' => $row->title ?? '',

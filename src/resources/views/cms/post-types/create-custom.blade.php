@@ -34,6 +34,7 @@
                             'label' => $field['label'],
                             'name' => $field['name'],
                             'type' => 'text',
+                            'disable_counter'=>true,
                             'error' => $errors->first($field['name']),
                             'value' => $post_type[$field['name']] ?? '',
                             'locale' => null,

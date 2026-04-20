@@ -31,6 +31,7 @@
                     'name' => 'url',
                     'testID' => 'url',
                     'type' => 'text',
+                    'disable_counter'=>true,
                     'value' => isset($row) ? $row->url : '',
                     'error' => $errors->first('url'),
                     'required' => false,

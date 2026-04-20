@@ -27,6 +27,7 @@
 
                 @include('darpersocms::cms.components/form-fields/TextInput', [
                     'label' => 'Title',
+                    'disable_counter'=>true,
                     'name' => 'title',
                     'testID'=>'title',
                     'type' => 'text',
@@ -42,6 +43,7 @@
                     'name' => 'slug',
                     'testID'=>'slug',
                     'type' => 'text',
+                    'disable_counter'=>true,
                     'value' => isset($row) ? $row->slug : '',
                     'error' => $errors->first('slug'),
                     'required' => true,

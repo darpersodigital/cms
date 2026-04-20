@@ -39,6 +39,7 @@
                             @if ($field['label'] != '')
                                 @include('darpersocms::cms.components/form-fields/TextInput', [
                                     'label' => $field['label'],
+                                    'disable_counter'=>true,
                                     'name' => $field['name'],
                                     'type' => 'text',
                                     'value' => $post_type[$field['name']] ?? '',
@@ -59,6 +60,7 @@
                                     'name' => $field['name'],
                                     'type' => 'text',
                                     'value' => $post_type[$field['name']] ?? '',
+                                    'disable_counter'=>true,
                                     'error' => $errors->first($field['name']),
                                     'locale' => null,
                                     'description' => '',
