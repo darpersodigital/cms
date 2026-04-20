@@ -21,6 +21,11 @@
                 'testID'=>'user_name',
                 'value' => request()->get('admin')['user_name'],
             ])
+              @include('darpersocms::cms.components/show-fields/text', [
+                'label' => 'Email',
+                'testID'=>'email',
+                'value' => request()->get('admin')['email'],
+            ])
             @include('darpersocms::cms.components/show-fields/image', [
                 'label' => 'Image',
                 'testID'=>'image',

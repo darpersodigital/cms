@@ -64,9 +64,9 @@ class AdminsController extends BaseController
             'user_name' => 'required|string|min:3|max:16|regex:/^\S+$/|unique:admins,user_name,' . $id,
             'full_name' => 'required|string|min:6|max:191',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'email' =>  'required|email|unique:admins,email,' . $id,
         ];
         if (!$isEditProfile) {
-            $rules['email'] = 'required|email|unique:admins,email,' . $id;
             $rules['admin_role_id'] = 'required';
         }
         if (isset($request->password_confirmation) && !isset($request->password)) {
@@ -81,7 +81,7 @@ class AdminsController extends BaseController
         $row = $id ? Admin::findOrFail($id) : new Admin();
         $row->user_name = $request->user_name;
         $row->full_name = $request->full_name;
-
+        $row->email = $request->email;
         if ($request->remove_file_image && isset($row->image)) {
             Storage::delete($row->image);
             $row->image = null;
@@ -92,7 +92,7 @@ class AdminsController extends BaseController
             $row->image = $this->FileUploadController->compressAndUploadImage($request->image, 'admins');
         }
         if (!$isEditProfile) {
-            $row->email = $request->email;
+          
             $row->admin_role_id = $request->admin_role_id;
         }
 
