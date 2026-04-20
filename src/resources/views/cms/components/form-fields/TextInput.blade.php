@@ -22,9 +22,7 @@
             <div class="custom-control custom-switch">
                 <input type="checkbox" class="custom-control-input" id="{{ $inputId }}" name="{{ $input_name }}"
                     value="1" data-testid="{{ $testID ?? '' }}" {{ !empty($value) ? 'checked' : '' }}
-                    {!! isset($slug_origin) ? 'data-slug-origin="' . $slug_origin . '"' : '' !!}
-                           
-                    >
+                    {!! isset($slug_origin) ? 'data-slug-origin="' . $slug_origin . '"' : '' !!}>
 
                 @if (!empty($label))
                     <label class="custom-control-label" for="{{ $inputId }}"
@@ -36,13 +34,15 @@
         @else
             <div>
                 <input class="custom-form-input" name="{{ $input_name }}" type="{{ $type ?? 'text' }}"
-                    {!! isset($maxlength) ? 'maxlength="' . $maxlength . '"' : '' !!}
-                    {!! isset($type) && $type=='number'? 'step="any"' :"" !!}
-                    id="{{ $inputId }}" value="{{ old($input_name, $value ?? '') }}"
-                    placeholder="{{ $placeholder ?? '' }}" data-testid="{{ $testID ?? '' }}" {!! isset($slug_origin) ? 'data-slug-origin="' . $slug_origin . '"' : '' !!}>
+                    {!! isset($maxlength) ? 'maxlength="' . $maxlength . '"' : '' !!} {!! isset($type) && $type == 'number' ? 'step="any"' : '' !!} id="{{ $inputId }}"
+                    value="{{ old($input_name, $value ?? '') }}" placeholder="{{ $placeholder ?? '' }}"
+                    data-testid="{{ $testID ?? '' }}" {!! isset($slug_origin) ? 'data-slug-origin="' . $slug_origin . '"' : '' !!}>
             </div>
         @endif
-       @include('darpersocms::cms.components.form-fields.character-word-count')
+
+        @if (!isset($disable_counter) || (isset($disable_counter) && !$disable_counter))
+            @include('darpersocms::cms.components.form-fields.character-word-count')
+        @endif
 
         @if ($isPassword)
             <div class="password-eye pointer " onclick="togglePasswordVisibility('{{ $inputId }}', this)">

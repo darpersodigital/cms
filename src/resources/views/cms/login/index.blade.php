@@ -40,6 +40,7 @@
                                         'value' => '',
                                         'placeholder' => 'Email',
                                         'error' => $errors->first('email'),
+                                        'disable_counter'=>true,
                                         'required' => true,
                                         'testID' => 'login-email',
                                     ])
@@ -50,6 +51,7 @@
                                         'value' => '',
                                         'type' => 'password',
                                         'placeholder' => 'password',
+                                        'disable_counter'=>true,
                                         'error' => $errors->first('password'),
                                         'required' => true,
                                         'testID' => 'login-password',
