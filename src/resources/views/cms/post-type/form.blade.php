@@ -84,7 +84,7 @@
 
                 <div id="seo-results"></div>
 
-                <div class="form-buttons-container justify-content-end d-flex mt-3">
+                <div class="form-buttons-container justify-content-end d-flex mt-5">
                     @if (!isset($row))
                         <input type="number" name="published" id="isPublished" value="1" class="d-none">
                         <button type="submit" class="theme-btn sm secondary btn-draft mr-1"

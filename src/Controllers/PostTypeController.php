@@ -493,12 +493,13 @@ class PostTypeController extends BaseController
 
     public function getValidationRules($page_fields, $database_table, $id, $row)
     {
-        $singleFileTypes = ['image', 'file', 'video'];
+        $singleFileTypes = ['image', 'image with alt', 'file', 'video'];
         $validation_rules = [];
-        $excludeRequiredTypes = ['image', 'file', 'video', 'password with confirmation', 'checkbox'];
-        $nullableFieldTypes = ['image', 'file', 'video'];
+        $excludeRequiredTypes = ['image', 'image with alt', 'file', 'video', 'password with confirmation', 'checkbox'];
+        $nullableFieldTypes = ['image', 'image with alt', 'file', 'video'];
         $simpleValidationTypes = [
             'image' => 'image|',
+            'image with alt' => 'image|',
             'password with confirmation' => 'confirmed|',
             'number' => 'numeric|',
             'video' => 'file|mimes:mp4,mov,avi,mkv,webm',
