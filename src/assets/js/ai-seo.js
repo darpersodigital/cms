@@ -91,10 +91,6 @@ function isGibberish(text) {
 export function fallbackToCustomQualityChecker(content, field) {
     let score = 10, message = "Content is well-sized.";
 
-
-
-
-
     if (content?.length > 0 && isGibberish(content)) {
         return { score: 0, message: "Content appears to be gibberish. Please rewrite it." };
     }
@@ -103,6 +99,11 @@ export function fallbackToCustomQualityChecker(content, field) {
         if (content?.length == 0) { score = 0; message = "Missing SEO Title!" }
         else if (content.length < 50) { score = 3; message = "Title is too short (50-60 chars)"; }
         else if (content.length > 60) { score = 6; message = "Title is too long"; }
+        else { score = 10; }
+    } else if (field === 'seo_page_title') {
+        if (content?.length == 0) { score = 0; message = "Missing SEO Page Title!" }
+        else if (content.length < 50) { score = 3; message = "Page Title is too short (50-60 chars)"; }
+        else if (content.length > 60) { score = 6; message = "Page Title is too long"; }
         else { score = 10; }
     } else if (field === 'seo_description') {
         if (content?.length == 0) { score = 0; message = "Missing SEO Description!" }
@@ -121,7 +122,8 @@ export function fallbackToCustomQualityChecker(content, field) {
         else if (content.length > 50) { score = 6; message = "Author name is too long"; }
         else { score = 10; }
     } else {
-        if (content.length < 50) { score = 3; message = "Content is too short. Consider at least 50 characters."; }
+        if (content?.length == 0) { score = 0; message = "Missing !" }
+        else if (content.length < 50) { score = 3; message = "Content is too short. Consider at least 50 characters."; }
         else if (content.length > 100) { score = 6; message = "Content is too long. Consider shortening."; }
         else { score = 10; }
     }
@@ -133,12 +135,27 @@ export function fallbackToCustomQualityChecker(content, field) {
 export function collectFields(language) {
     return {
         seo_title: getSeoInput('seo_title', language)?.value || "",
+        seo_page_title: getSeoInput('seo_page_title', language)?.value || "",
         seo_description: getSeoInput('seo_description', language)?.value || "",
         seo_keywords: getSeoInput('seo_keywords', language)?.value || "",
         seo_author: getSeoInput('seo_author', language)?.value || "",
         seo_robots: getSeoInput('seo_robots', language)?.value || "",
         seo_image: getSeoInput('seo_image', language)?.value || ""
     };
+}
+
+export function getSeoLanguages() {
+    const seoTitleInputs = document.querySelectorAll('[name$="[seo_title]"]');
+    const languages = new Set();
+
+    for (const input of seoTitleInputs) {
+        const matches = input.name.match(/([^[\]]+)\[seo_title\]$/);
+        if (matches?.[1]) {
+            languages.add(matches[1]);
+        }
+    }
+
+    return Array.from(languages);
 }
 
 // New implementation: call Laravel endpoint instead of direct OpenAI
@@ -175,7 +192,11 @@ export async function callSeoAI(allFields) {
 }
 // --- Main SEO checker with full fallback ---
 export async function checkSEOHealthWithAI(token, withLoader = true) {
-    const languages = ["en", "ar"];
+    const languages = getSeoLanguages();
+
+    console.log("languages ",languages)
+    if (languages.length === 0) return {};
+
     const seoHealth = {};
 
     // Collect all fields for all languages

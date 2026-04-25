@@ -16,7 +16,7 @@ class SeoAIController extends BaseController
 
         // Only send text fields to OpenAI
         $textFields = collect($fields)
-            ->only(['seo_title', 'seo_description', 'seo_keywords', 'seo_author'])
+            ->only(['seo_title','seo_page_title', 'seo_description', 'seo_keywords', 'seo_author'])
             ->filter(fn($v) => !empty($v))
             ->all();
 

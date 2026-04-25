@@ -219,7 +219,8 @@ class DatabaseServiceProvider
                 'parent_icon' => 'fa-brands fa-searchengin',
                 'parent_title' => 'SEO',
                 'pos' => 3,
-                'translatable_fields' => json_encode($this->db_helpers->getSeoFields()),
+                'translatable_fields' => json_encode(array_merge($this->db_helpers->getSeoFields(),
+                [$this->db_helpers->generateFormField('seo_site_name', 'string', 'text', ['additional_validations' => 'max:191'], true)])),
             ]),
             $this->db_helpers->createPostType('form', [
                 'icon' => 'fa-solid fa-envelopes-bulk',

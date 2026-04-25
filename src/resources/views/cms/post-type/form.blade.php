@@ -2,7 +2,7 @@
 
 @php
     $showSeoChecker = false;
-     $required_fields = ['seo_title', 'seo_description', 'seo_keywords'];
+    $required_fields = ['seo_title','seo_page_title', 'seo_description', 'seo_keywords'];
     $found = [];
     foreach ($page_translatable_fields as $field) {
         if (in_array($field['name'], $required_fields)) {

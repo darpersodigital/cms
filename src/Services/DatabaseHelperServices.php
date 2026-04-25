@@ -42,7 +42,15 @@ class DatabaseHelperServices
     }
     public function getSeoFields(): array
     {
-        return [$this->generateFormField('seo_image', 'text', 'image', [], true), $this->generateFormField('seo_title', 'text', 'text', ['additional_validations' => 'max:512'], true), $this->generateFormField('seo_description', 'text', 'text', ['additional_validations' => 'max:1600'], true), $this->generateFormField('seo_keywords', 'text', 'text', ['additional_validations' => 'max:1024'], true),$this->generateFormField('seo_robots', 'text', 'text', [], true)];
+        return [$this->generateFormField('seo_image', 'text', 'image with alt', [], true), 
+        $this->generateFormField('seo_page_title', 'text', 'text', ['additional_validations' => 'max:120'], true),
+        $this->generateFormField('seo_title', 'text', 'text', ['additional_validations' => 'max:512'], true), 
+        $this->generateFormField('seo_description', 'text', 'text', ['additional_validations' => 'max:1600'], true),
+         $this->generateFormField('seo_keywords', 'text', 'text', ['additional_validations' => 'max:1024'], true),
+         $this->generateFormField('seo_robots', 'text', 'text', [], true),
+         $this->generateFormField('seo_og_type', 'text', 'text', [], true),
+         
+         ];
     }
 
     public function createPostType(string $type, array $data): array
@@ -102,9 +110,11 @@ class DatabaseHelperServices
             $table->unsignedInteger($foreignKey);
             $table->string('locale');
             $table->string('seo_title')->nullable();
+            $table->string('seo_page_title')->nullable();
             $table->string('seo_description')->nullable();
             $table->string('seo_keywords')->nullable();
             $table->text('seo_robots')->nullable();
+            $table->text('seo_og_type')->nullable();
             $table->text('seo_image')->nullable();
             $table->foreign($foreignKey)->references('id')->on($parentTable)->onDelete('cascade');
             $table->timestamps();

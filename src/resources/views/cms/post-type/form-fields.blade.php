@@ -167,7 +167,6 @@
     )
     : ['index', 'follow'],
         ])
-
         <div class="mt-3 seo-robots-unavailable-after-container pos-z">
             @include('darpersocms::cms/components/form-fields/date', [
                 'label' => 'Seo Robots Unavailable After',
@@ -178,6 +177,49 @@
                     : '',
             ])
         </div>
+    </div>
+@elseif ($field['name'] == 'seo_og_type')
+ <div class="mb-3  ">
+        <div class="d-none ">
+            @php
+                $fieldAttributes['value'] = isset($fieldAttributes['value']) ? $fieldAttributes['value']:"website"
+            @endphp
+            @include('darpersocms::' . $fieldComponent, $fieldAttributes)
+        </div>
+
+      @php
+        $seo_og_type_value = isset($row)  ? ($locale
+            ? (isset($row->translate($locale)['seo_og_type']) && $row->translate($locale)['seo_og_type'] != ''
+                ? $row->translate($locale)['seo_og_type']
+                : '')
+            : $row['seo_og_type'])
+        : '';
+  
+      @endphp
+        @include('darpersocms::cms/components/form-fields/select', [
+            'name' => $locale . '[select_seo_og_type]',
+            'testID'=>$locale."-select-seo-robots",
+                'required'=>$fieldAttributes['required'],
+            'display_column' => 'label',
+            'store_column' => 'value',
+            'options' => [
+                ['value' => 'website', 'label' => 'website'],
+                ['value' => 'article', 'label' => 'article'],
+                ['value' => 'product', 'label' => 'product'],
+                ['value' => 'profile', 'label' => 'profile'],
+            ],
+           'value' => isset($row)
+    ? ($locale
+        ? (isset($row->translate($locale)['seo_og_type']) &&
+            $row->translate($locale)['seo_og_type'] != ''
+            ? $row->translate($locale)['seo_og_type']
+            : 'website')
+        : (isset($row['seo_og_type']) ? $row['seo_og_type'] : "website"
+        )
+    )
+    : 'website',
+        ])
+       
     </div>
 @elseif (isset($fieldComponent) && isset($fieldAttributes))
     <div class="mb-3">

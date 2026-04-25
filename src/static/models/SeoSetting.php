@@ -19,7 +19,7 @@ class SeoSetting extends Model  implements TranslatableContract
 
     protected $hidden = ['translations'];
 
-    public $translatedAttributes = ["seo_image","seo_title","seo_description","seo_keywords","seo_robots"];
+    public $translatedAttributes = ["seo_image","seo_title","seo_page_title","seo_description","seo_keywords","seo_robots","seo_og_type","seo_site_name"];
 
 	protected static function booted(){}
 
