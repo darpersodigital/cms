@@ -26,7 +26,7 @@ class SitemapsController extends BaseController
 
     public function create()
     {
-        $postTypes = PostType::where('has_sitemap', 1)->where('single_record', 1)->get();
+        $postTypes = PostType::where('has_sitemap', 1)->get();
         $postTypes_multiple = PostType::where('has_sitemap', 1)->where('single_record', 0)->get();
         $languages = Language::get();
         return view('darpersocms::cms.seo.sitemaps.form', compact('postTypes', 'languages', 'postTypes_multiple'));
