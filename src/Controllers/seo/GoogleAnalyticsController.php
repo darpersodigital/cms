@@ -1,15 +1,20 @@
 <?php
 
 namespace Darpersodigital\Cms\Controllers\seo;
+use Google\Analytics\Data\V1beta\Dimension;
+use Google\Analytics\Data\V1beta\Metric;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Http\Request;
 use Darpersodigital\Cms\Models\PostType;
 use Darpersodigital\Cms\Models\GoogleAnalytic;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 use Carbon\Carbon;
 use Spatie\Analytics\Facades\Analytics;
+use Spatie\Analytics\OrderBy;
 use Spatie\Analytics\Period;
 use Illuminate\Support\Collection;
 use ConsoleTVs\Charts\Classes\Chartjs\Chart;
@@ -269,12 +274,31 @@ class GoogleAnalyticsController extends BaseController
     // --- Data Fetching Method ---
     private function fetchAnalyticsData(Period $period): array
     {
+        try {
+            return $this->buildAnalyticsData($period);
+        } catch (\TypeError $exception) {
+            if (! $this->isCorruptedAnalyticsCacheException($exception)) {
+                throw $exception;
+            }
+
+            $this->forgetDashboardAnalyticsCache($period);
+
+            logger()->warning('Recovered from a corrupted Google Analytics cache entry by forgetting dashboard analytics cache keys.', [
+                'message' => $exception->getMessage(),
+            ]);
+
+            return $this->buildAnalyticsData($period);
+        }
+    }
+
+    private function buildAnalyticsData(Period $period): array
+    {
         // Fetch data in parallel where possible
         $totalVisitorsAndPageViews = Analytics::fetchTotalVisitorsAndPageViews($period);
         $visitsTrend = $this->getVisitsTrend($period);
         $usersTrend = $this->getUsersTrend($period);
 
-        $data = [
+        return [
             // Info Boxes
             'total_visits' => $totalVisitorsAndPageViews->sum('screenPageViews') ?? 0,
             'total_users'  => $usersTrend->sum('totalUsers') ?? 0,
@@ -290,9 +314,89 @@ class GoogleAnalyticsController extends BaseController
             'top_devices'    => $this->getUserData($period, ['deviceCategory'])->take(5),
             'visits_and_users_trend' => $this->getVisitsAndUsersTrend($period),
         ];
+    }
 
-        return $data;
+    private function isCorruptedAnalyticsCacheException(\TypeError $exception): bool
+    {
+        $message = $exception->getMessage();
 
+        return str_contains($message, '__PHP_Incomplete_Class')
+            && (
+                str_contains($message, 'Google\\Analytics\\Data\\V1beta\\RunReportResponse')
+                || str_contains($message, 'Google\\Analytics\\Data\\V1beta\\RunRealtimeReportResponse')
+            );
+    }
+
+    private function forgetDashboardAnalyticsCache(Period $period): void
+    {
+        foreach ($this->dashboardAnalyticsRequests($period) as $request) {
+            $this->analyticsCacheRepository()->forget($this->analyticsCacheKey($request));
+        }
+    }
+
+    private function dashboardAnalyticsRequests(Period $period): array
+    {
+        return [
+            $this->makeAnalyticsRequest($period, ['activeUsers', 'screenPageViews'], ['date'], 20, [
+                OrderBy::dimension('date', true),
+            ]),
+            $this->makeAnalyticsRequest($period, ['screenPageViews'], ['date']),
+            $this->makeAnalyticsRequest($period, ['totalUsers', 'newUsers'], ['date']),
+            $this->makeAnalyticsRequest($period, ['bounceRate']),
+            $this->makeAnalyticsRequest($period, ['averageSessionDuration']),
+            $this->makeAnalyticsRequest($period, ['screenPageViews'], ['pageTitle', 'fullPageUrl'], 20, [
+                OrderBy::metric('screenPageViews', true),
+            ]),
+            $this->makeAnalyticsRequest($period, ['screenPageViews'], ['country']),
+            $this->makeAnalyticsRequest($period, ['screenPageViews'], ['pageReferrer'], 20, [
+                OrderBy::metric('screenPageViews', true),
+            ]),
+            $this->makeAnalyticsRequest($period, ['screenPageViews'], ['browser']),
+            $this->makeAnalyticsRequest($period, ['screenPageViews'], ['deviceCategory']),
+            $this->makeAnalyticsRequest($period, ['totalUsers', 'screenPageViews'], ['date']),
+        ];
+    }
+
+    private function makeAnalyticsRequest(
+        Period $period,
+        array $metrics,
+        array $dimensions = [],
+        int $maxResults = 10,
+        array $orderBy = [],
+        int $offset = 0,
+    ): array {
+        return [
+            'property' => 'properties/' . (string) config('analytics.property_id'),
+            'date_ranges' => [
+                $period->toDateRange(),
+            ],
+            'metrics' => collect($metrics)
+                ->map(fn (string $metric) => new Metric(['name' => $metric]))
+                ->toArray(),
+            'dimensions' => collect($dimensions)
+                ->map(fn (string $dimension) => new Dimension(['name' => $dimension]))
+                ->toArray(),
+            'limit' => $maxResults,
+            'offset' => $offset,
+            'order_bys' => $orderBy,
+            'dimension_filter' => null,
+            'keep_empty_rows' => false,
+            'metric_filter' => null,
+        ];
+    }
+
+    private function analyticsCacheKey(array $request): string
+    {
+        return 'spatie.laravel-analytics.' . md5(serialize([$request]));
+    }
+
+    private function analyticsCacheRepository(): CacheRepository
+    {
+        $store = config('analytics.cache.store');
+
+        return is_string($store) && $store !== ''
+            ? Cache::store($store)
+            : Cache::store();
     }
 
     // --- Individual Data Fetching Helpers ---
