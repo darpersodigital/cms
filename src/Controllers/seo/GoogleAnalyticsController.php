@@ -33,7 +33,10 @@ class GoogleAnalyticsController extends BaseController
     {
         $row = GoogleAnalytic::first();
         $page = PostType::where('route', 'google-analytics')->firstOrFail();
-
+          
+        if(!env('ANALYTICS_PROPERTY_ID')) {
+              return view('darpersocms::cms.seo.google-analytics.index');
+        }
         // 1. Get and process the selected date range
         $range = $request->input('date_range', 'weekly');
         list($period, $startDate, $endDate) = $this->getAnalyticsPeriod($request, $range);

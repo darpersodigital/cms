@@ -44,7 +44,7 @@
                 ])
 
                 @include('darpersocms::cms.components/form-fields/file', [
-                    'label' => 'Property Id',
+                    'label' => 'Service File',
                     'name' => 'service_account_credentials_json',
                     'testID' => 'service_account_credentials_json',
                     'type' => 'text',

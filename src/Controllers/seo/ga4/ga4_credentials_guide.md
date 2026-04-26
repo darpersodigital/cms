@@ -66,3 +66,32 @@ Now give access to the service account you created. Go to **Property Access Mana
 On that screen, grant access to the email address found in the `client_email` key from the JSON file you downloaded in the previous step. **Analyst** role is enough.
 
 ![Grant property access](ga4_laravel_dashboard_assets/step-10-property-access.webp)
+
+
+----
+If Analytics GUI fails to add client_email, do the following
+The Success Path (OAuth2 Playground)
+Authorization (Step 1):
+
+In the OAuth2 Playground, input this custom scope:
+https://www.googleapis.com/auth/analytics.manage.users
+
+Click Authorize APIs and log in as the GA4 Admin.
+
+Tokens (Step 2):
+
+Click Exchange authorization code for tokens.
+
+The Request (Step 3):
+
+HTTP Method: POST
+
+Request URI: https://analyticsadmin.googleapis.com/v1alpha/properties/[YOUR_PROPERTY_ID]/accessBindings
+
+JSON Body: ```json
+{
+"user": "....gserviceaccount.com",
+"roles": ["predefinedRoles/editor"]
+}
+
+Note: Use "user", not "emailAddress".

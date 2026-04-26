@@ -8,7 +8,7 @@
     <div class="container-fluid px-md-5  mt-3">
 
         @include('darpersocms::cms.components.breadcrumb.ScreenTitleHeader', [
-            'title' => 'Google Analytics ' . '(' . ucfirst($currentRange) . ')',
+            'title' => 'Google Analytics ' . '(' . ucfirst($currentRange ?? '') . ')',
             'can_add' =>
                 !isset($row) && request()->get('admin')['post_types']['google-analytics']['permissions']['add'],
             'can_edit' =>
@@ -35,13 +35,17 @@
 
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
-    {!! $charts['line']->script() !!}
-    {!! $charts['bar']->script() !!}
-    {!! $charts['country_bar']->script() !!}
-    {!! $charts['referrer_pie']->script() !!}
-    {!! $charts['browser_bar']->script() !!}
-    {!! $charts['device_doughnut']->script() !!}
-    {!! $charts['visits_users_trend_line']->script() !!}
+
+    @if (isset($charts))
+        {!! $charts['line']->script() !!}
+        {!! $charts['bar']->script() !!}
+        {!! $charts['country_bar']->script() !!}
+        {!! $charts['referrer_pie']->script() !!}
+        {!! $charts['browser_bar']->script() !!}
+        {!! $charts['device_doughnut']->script() !!}
+        {!! $charts['visits_users_trend_line']->script() !!}
+    @endif
+
 
     <script>
         $(document).ready(() => {
