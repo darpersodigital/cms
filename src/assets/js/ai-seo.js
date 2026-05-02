@@ -30,7 +30,7 @@ export function appendSeoResults(field, language, message, score) {
 
     const resultDiv = document.createElement('div');
     resultDiv.className = 'seo-message-container';
-    resultDiv.innerHTML = score < 8
+    resultDiv.innerHTML = score <= 10
         ? `<div class="${score < 6 ? 'text-error' : 'error-text'}" style="color:${getTextColor(score)};">${message}</div>${renderProgressBar(score)}`
         : `${renderProgressBar(score)}`;
     fieldInput.parentNode.parentNode.parentNode.appendChild(resultDiv);
@@ -56,7 +56,6 @@ export function getProgressBarColor(percentage) {
 }
 
 export function getTextColor(score) {
-    if (score >= 8) return '#2faa7e';
     if (score >= 6) return 'black';
     return '#dc3545';
 }
@@ -90,37 +89,139 @@ function isGibberish(text) {
 // Fallback checker with gibberish detection
 export function fallbackToCustomQualityChecker(content, field) {
     let score = 10, message = "Content is well-sized.";
-
-    if (content?.length > 0 && isGibberish(content)) {
+    const length = content?.trim().length || 0;
+    if (length > 0 && isGibberish(content)) {
         return { score: 0, message: "Content appears to be gibberish. Please rewrite it." };
     }
 
     if (field === 'seo_title') {
-        if (content?.length == 0) { score = 0; message = "Missing SEO Title!" }
-        else if (content.length < 50) { score = 3; message = "Title is too short (50-60 chars)"; }
-        else if (content.length > 60) { score = 6; message = "Title is too long"; }
-        else { score = 10; }
+        if (length === 0) {
+            score = 0;
+            message = "Missing SEO Title!";
+        }
+        else if (length < 40) {
+            score = 3;
+            message = "Title is too short. Aim for 50-60 characters.";
+        }
+        else if (length >= 40 && length < 50) {
+            score = 7;
+            message = "Title is acceptable, but 50-60 characters is ideal.";
+        }
+        else if (length >= 50 && length <= 60) {
+            score = 10;
+            message = "SEO Title length is ideal.";
+        }
+        else if (length > 60 && length <= 70) {
+            score = 8;
+            message = "Title is slightly long, but still acceptable.";
+        }
+        else {
+            score = 5;
+            message = "Title is too long. Try to keep it under 60 characters if possible.";
+        }
+
     } else if (field === 'seo_page_title') {
-        if (content?.length == 0) { score = 0; message = "Missing SEO Page Title!" }
-        else if (content.length < 50) { score = 3; message = "Page Title is too short (50-60 chars)"; }
-        else if (content.length > 60) { score = 6; message = "Page Title is too long"; }
-        else { score = 10; }
+        if (length === 0) {
+            score = 0;
+            message = "Missing SEO Page Title!";
+        }
+        else if (length < 40) {
+            score = 3;
+            message = "Page Title is too short. Aim for 50-60 characters.";
+        }
+        else if (length >= 40 && length < 50) {
+            score = 7;
+            message = "Page Title is acceptable, but 50-60 characters is ideal.";
+        }
+        else if (length >= 50 && length <= 60) {
+            score = 10;
+            message = "SEO Page Title length is ideal.";
+        }
+        else if (length > 60 && length <= 70) {
+            score = 8;
+            message = "Page Title is slightly long, but still acceptable.";
+        }
+        else {
+            score = 5;
+            message = "Page Title is too long. Try to keep it under 60 characters if possible.";
+        }
+
     } else if (field === 'seo_description') {
-        if (content?.length == 0) { score = 0; message = "Missing SEO Description!" }
-        else if (content.length < 150) { score = 3; message = "Description is too short"; }
-        else if (content.length > 160) { score = 6; message = "Description is too long"; }
-        else { score = 10; }
+        if (length === 0) {
+            score = 0;
+            message = "Missing SEO Description!";
+        }
+        else if (length < 130) {
+            score = 3;
+            message = "Description is too short. Aim for 150-160 characters.";
+        }
+        else if (length >= 130 && length < 150) {
+            score = 7;
+            message = "Description is acceptable, but 150-160 characters is ideal.";
+        }
+        else if (length >= 150 && length <= 160) {
+            score = 10;
+            message = "SEO Description length is ideal.";
+        }
+        else if (length > 160 && length <= 180) {
+            score = 8;
+            message = "Description is slightly long, but still acceptable.";
+        }
+        else {
+            score = 5;
+            message = "Description is too long and may be truncated in search results.";
+        }
     } else if (field === 'seo_keywords') {
-        const keywords = content.split(',').map(k => k.trim());
-        if (content?.length == 0) { score = 0; message = "Missing SEO Keywords!" }
-        else if (keywords.length < 5) { score = 3; message = "Too few keywords (min 5)"; }
-        else if (keywords.length > 10) { score = 6; message = "Too many keywords (max 10)"; }
-        else { score = 10; }
+        const keywords = content
+            ?.split(',')
+            .map(keyword => keyword.trim())
+            .filter(Boolean) || [];
+
+        const count = keywords.length;
+
+        if (count === 0) {
+            score = 0;
+            message = "Missing SEO Keywords!";
+        }
+        else if (count < 3) {
+            score = 4;
+            message = "Too few keywords. Aim for 3-8 focused keywords.";
+        }
+        else if (count >= 3 && count <= 8) {
+            score = 10;
+            message = "SEO Keywords count is ideal.";
+        }
+        else if (count > 8 && count <= 10) {
+            score = 8;
+            message = "Keyword count is acceptable, but 3-8 focused keywords is ideal.";
+        }
+        else {
+            score = 4;
+            message = "Too many keywords. Keep it under 10 and avoid keyword stuffing.";
+        }
     } else if (field === 'seo_author' && content) {
-        if (content?.length == 0) { score = 0; message = "Missing SEO Author!" }
-        else if (content.length < 3) { score = 3; message = "Author name is too short"; }
-        else if (content.length > 50) { score = 6; message = "Author name is too long"; }
-        else { score = 10; }
+
+        if (length === 0) {
+            score = 0;
+            message = "Missing SEO Author!";
+        }
+        else if (length < 3) {
+            score = 3;
+            message = "Author name is too short.";
+        }
+        else if (length >= 3 && length <= 50) {
+            score = 10;
+            message = "SEO Author length is valid.";
+        }
+        else if (length > 50 && length <= 70) {
+            score = 7;
+            message = "Author name is slightly long, but still acceptable.";
+        }
+        else {
+            score = 4;
+            message = "Author name is too long. Try to keep it under 50 characters.";
+        }
+
     } else {
         if (content?.length == 0) { score = 0; message = "Missing !" }
         else if (content.length < 50) { score = 3; message = "Content is too short. Consider at least 50 characters."; }
@@ -194,7 +295,7 @@ export async function callSeoAI(allFields) {
 export async function checkSEOHealthWithAI(token, withLoader = true) {
     const languages = getSeoLanguages();
 
-    console.log("languages ",languages)
+    console.log("languages ", languages)
     if (languages.length === 0) return {};
 
     const seoHealth = {};

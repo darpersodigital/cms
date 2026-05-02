@@ -2,7 +2,7 @@
   "name": "darpersodigital/cms",
   "description": "Darperso CMS",
   "type": "package",
-  "version":"1.0.5",
+  "version":"1.0.6",
   "autoload": {
     "psr-4": {
       "Darpersodigital\\Cms\\": "src/",

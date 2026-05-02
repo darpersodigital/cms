@@ -112,7 +112,7 @@ class DatabaseHelperServices
             $table->string('seo_title')->nullable();
             $table->string('seo_page_title')->nullable();
             $table->string('seo_description')->nullable();
-            $table->string('seo_keywords')->nullable();
+            $table->text('seo_keywords')->nullable();
             $table->text('seo_robots')->nullable();
             $table->text('seo_og_type')->nullable();
             $table->text('seo_image')->nullable();
