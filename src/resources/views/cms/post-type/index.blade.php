@@ -11,6 +11,7 @@
     }
     $languages = $languages ?? collect();
     $translatable_fields = $translatable_fields ?? ($page_translatable_fields ?? json_decode($page['translatable_fields'] ?? '[]', true) ?? []);
+
 @endphp
 @section('dashboard-content')
     <div class="container-fluid px-md-5  mt-3 {{ $page->server_side_pagination ? ' server-side-pagination ' : '' }}">
@@ -72,7 +73,7 @@
                                     @continue
                                 @endif
                                 @foreach ($languages as $language)
-                                    <th class="export-only-column">
+                                    <th class="{{ $field['hide_table'] == 1 ? 'export-only-column' : '' }}">
                                         {{ str_replace(['_id', '_'], ['', ' '], $field['name']) }} ({{ $language->slug }})
                                     </th>
                                 @endforeach
@@ -284,7 +285,7 @@
                                                 $cellValue = is_scalar($rawValue) ? (string) $rawValue : '';
                                             }
                                         @endphp
-                                        <td class="export-only-column">
+                                        <td class="{{ $field['hide_table'] == 1 ? 'export-only-column' : '' }}">
                                             @if ($cellIsHtml)
                                                 {!! $cellValue !!}
                                             @else
