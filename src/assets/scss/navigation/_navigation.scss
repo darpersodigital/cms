@@ -29,6 +29,8 @@ $sideWidth: 225px;
   height: 100vh;
   overflow: hidden;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   width: 270px;
 
   &::-webkit-scrollbar {
@@ -69,6 +71,7 @@ $sideWidth: 225px;
   .admin-menu {
     padding-left: 10px;
     padding-right: 10px;
+    padding-bottom: 160px;
     .admin-menu-item {
       margin-bottom: 7.5px;
       display: flex;

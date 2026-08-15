@@ -1450,6 +1450,8 @@ i {
   height: 100vh;
   overflow: hidden;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   width: 270px;
 }
 .side-menu::-webkit-scrollbar {
@@ -1483,6 +1485,7 @@ i {
 .side-menu .admin-menu {
   padding-left: 10px;
   padding-right: 10px;
+  padding-bottom: 160px;
 }
 .side-menu .admin-menu .admin-menu-item {
   margin-bottom: 7.5px;

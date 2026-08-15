@@ -39,7 +39,16 @@ $(document).ready(function () {
 
 
     $('.admin-menu-item.with-children').on('click', function () {
-        $(this).parent().find('.children').slideToggle();
+        $(this).parent().find('.children').slideToggle(400, function () {
+            // iOS Safari caches the scrollable height of a position:fixed +
+            // overflow-y:auto ancestor and doesn't recompute it when content
+            // inside animates taller. Forcing a reflow after the slide
+            // finishes makes it pick up the new scrollHeight.
+            const sideMenu = $('.side-menu');
+            sideMenu.css('overflow', 'hidden');
+            void sideMenu[0].offsetHeight;
+            sideMenu.css('overflow', '');
+        });
     });
 
     // Function to slugify text
@@ -322,6 +331,22 @@ $(document).ready(function () {
     $('.burger-menu').click(function () {
         $('.side-menu').toggleClass('open')
         $(this).toggleClass('open')
+
+        // overflow:hidden on body doesn't reliably block background touch-scroll on iOS,
+        // which can steal the swipe gesture away from the open .side-menu. Pinning body
+        // to its current scroll position forces iOS to hand the gesture to the menu instead.
+        if ($('.side-menu').hasClass('open')) {
+            const scrollY = window.scrollY;
+            $('body').data('scroll-y', scrollY).css({
+                position: 'fixed',
+                top: -scrollY,
+                width: '100%',
+            });
+        } else {
+            const scrollY = $('body').data('scroll-y') || 0;
+            $('body').css({ position: '', top: '', width: '' });
+            window.scrollTo(0, scrollY);
+        }
     })
 
     $('.default-select').select2('destroy');

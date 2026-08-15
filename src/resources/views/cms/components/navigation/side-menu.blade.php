@@ -55,6 +55,7 @@
                                 'page' => $page,
                             ])
                         @endforeach
+                        
                     </div>
                 </div>
             @endif
