@@ -57,7 +57,7 @@ $(document).ready(function () {
             .toString() // Ensure it's a string
             .toLowerCase() // Convert to lowercase
             .trim() // Remove leading/trailing spaces
-            .replace(/[^a-z0-9\s-]/g, '') // Remove non-alphanumeric characters
+            .replace(/[^\p{L}\p{N}\s-]/gu, '') // Remove punctuation/symbols, keep letters from any language
             .replace(/\s+/g, '-') // Replace spaces with hyphens
             .replace(/-+/g, '-'); // Replace multiple hyphens with a single hyphen
     }

@@ -154,7 +154,7 @@ class PostTypeController extends BaseController
                     'password', 'password with confirmation' => ($translation->{$fieldName} = $inputValue ? Hash::make($inputValue) : $row[$fieldName]),
                     'checkbox' => ($translation->{$fieldName} = isset($request[$langSlug][$fieldName]) ? 1 : 0),
                     'time' => ($translation->{$fieldName} = $inputValue ? date('H:i', strtotime($inputValue)) : null),
-                    'slug' => ($translation->{$fieldName} = $inputValue ? Str::slug($inputValue) : $row[$fieldName]),
+                    'slug' => ($translation->{$fieldName} = $inputValue ?: $row[$fieldName]),
                     'image', 'image with alt', 'file', 'video' => ($translation->{$fieldName} = $this->uploadFileOrImage($request, $field, $row, $langSlug)),
                     'multiple images', 'multiple images with alt', 'multiple files', 'multiple videos' => ($translation->{$fieldName} = $this->uploadMultipleFilesOrImages($request, $field, $row, $langSlug)),
                     default => ($translation->{$fieldName} = $inputValue),
