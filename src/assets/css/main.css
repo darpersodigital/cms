@@ -1569,6 +1569,10 @@ i {
   margin-left: 225px !important;
 }
 
+.page-wrapper:has(.side-menu.expanded.open), body:has(.side-menu.expanded.open) {
+  overflow: hidden !important;
+}
+
 .animated-routes-wrapper:has(.modal.show) {
   z-index: 999999999;
 }
@@ -1652,7 +1656,7 @@ i {
   padding-bottom: 50px;
   width: calc(100% - 270px) !important;
   margin-left: auto;
-  min-height: 100vh;
+  min-height: calc(100vh - 50px);
 }
 
 @media (max-width: 1024px) {

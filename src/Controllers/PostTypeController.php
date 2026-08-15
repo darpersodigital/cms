@@ -593,9 +593,7 @@ class PostTypeController extends BaseController
 
     public function create($route)
     {
-        $page = PostType::where('route', $route)
-            ->when(request()->get('admin')['admin_role_id'])
-            ->firstOrFail();
+        $page = PostType::where('route', $route)->firstOrFail();
         $languages = Language::get();
         if (isset($page->single_record) && $page->single_record == 1) {
             $model = 'App\\Models\\' . $page['model_name'];

@@ -159,7 +159,9 @@ $sideWidth: 225px;
     margin-left: $sideWidth !important;
   }
 }
-
+.page-wrapper:has(.side-menu.expanded.open),body:has(.side-menu.expanded.open) {
+  overflow: hidden !important;
+}
 .animated-routes-wrapper:has(.modal.show) {
   z-index: 999999999;
 }
@@ -250,7 +252,7 @@ $sideWidth: 225px;
   width: calc(100% - 270px) !important;
   margin-left: auto;
   // margin-right: 15px;
-  min-height: 100vh;
+  min-height: calc(100vh - 50px);
 }
 
 @media (max-width: 1024px) {

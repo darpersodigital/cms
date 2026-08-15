@@ -11,7 +11,7 @@
         <div class="container-fluid px-md-5  mt-3">
             @include('darpersocms::cms.components.breadcrumb.ScreenTitleHeader', [
                 'title' => isset($post_type) ? 'Edit Custom CMS page #' . $post_type['id'] : 'Add Custom CMS page',
-                'submit' => isset($post_type) ? 'Update' . $post_type['id'] : 'Create',
+                'submit' => isset($post_type) ? 'Update ' . $post_type['id'] : 'Create',
             ])
 
             <div class="white-card">

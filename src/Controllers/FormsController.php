@@ -10,7 +10,7 @@ class FormsController extends BaseController
 {
    
     public function star($id, $route) {
-        $page = PostType::where('route', $route)->when(request()->get('admin')['admin_role_id'])->firstOrFail();
+        $page = PostType::where('route', $route)->firstOrFail();
         $model = 'App\\Models\\' . $page['model_name'];
         if (!class_exists($model))  abort(404);
         $row = $model::findOrFail($id);
@@ -25,7 +25,7 @@ class FormsController extends BaseController
 
        
     public function read($id, $route) {
-        $page = PostType::where('route', $route)->when(request()->get('admin')['admin_role_id'])->firstOrFail();
+        $page = PostType::where('route', $route)->firstOrFail();
         $model = 'App\\Models\\' . $page['model_name'];
         if (!class_exists($model))  abort(404);
         $row = $model::findOrFail($id);

@@ -27,37 +27,43 @@ class FileUploadController extends BaseController
             return $this->compressAndUploadFile($file, $route);
         }
 
-        $imgSize = +$this->bytesToMegabytes($file->getSize());
-
-        if ($imgSize >= 10) {
-            $quality = 1;
-        } elseif ($imgSize >= 9) {
-            $quality = 4;
-        } elseif ($imgSize >= 8) {
-            $quality = 6;
-        } elseif ($imgSize >= 7) {
-            $quality = 7;
-        } elseif ($imgSize >= 5) {
-            $quality = 20;
-        } elseif ($imgSize >= 4) {
-            $quality = 25;
-        } elseif ($imgSize >= 3) {
-            $quality = 30;
-        } elseif ($imgSize >= 2) {
-            $quality = 50;
-        } elseif ($imgSize >= 1) {
-            $quality = 65;
-        } elseif ($imgSize >= 0.7) {
-            $quality = 75;
-        } elseif ($imgSize >= 0.6) {
-            $quality = 80;
-        } elseif ($imgSize >= 0.5) {
-            $quality = 85;
-        } elseif ($imgSize >= 0.25) {
-            $quality = 90;
+        if (filter_var(env('DISABLE_IMAGE_COMPRESSION', false), FILTER_VALIDATE_BOOLEAN)) {
+            // Quality 100 re-encodes at max fidelity but often inflates file size well beyond
+            // the source (a re-encode still fully re-compresses the image); 92 is visually
+            // lossless while staying close to source size.
+            $quality = 95;
         } else {
+            $imgSize = +$this->bytesToMegabytes($file->getSize());
+
+            if ($imgSize >= 10) {
+                $quality = 1;
+            } elseif ($imgSize >= 9) {
+                $quality = 4;
+            } elseif ($imgSize >= 8) {
+                $quality = 6;
+            } elseif ($imgSize >= 7) {
+                $quality = 7;
+            } elseif ($imgSize >= 5) {
+                $quality = 20;
+            } elseif ($imgSize >= 4) {
+                $quality = 25;
+            } elseif ($imgSize >= 3) {
+                $quality = 30;
+            } elseif ($imgSize >= 2) {
+                $quality = 50;
+            } elseif ($imgSize >= 1) {
+                $quality = 65;
+            } elseif ($imgSize >= 0.7) {
+                $quality = 75;
+            } elseif ($imgSize >= 0.6) {
+                $quality = 80;
+            } elseif ($imgSize >= 0.5) {
+                $quality = 85;
+            } else {
+                $quality = 90;
+            }
         }
-        $quality = 40;
+
         $imageName = $route . '/' . Str::uuid() . '.webp';
 
         // try {

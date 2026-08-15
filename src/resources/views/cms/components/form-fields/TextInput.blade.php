@@ -5,6 +5,12 @@
     }
     $inputId = $testID ?? trim((string) ($placeholder ?? $name));
     $isPassword = ($type ?? 'text') === 'password';
+    $isEmail = ($type ?? 'text') === 'email' || str_contains($name ?? '', 'email');
+    $isUrlField = str_contains($name ?? '', '_url');
+    $showCounter = !$isPassword
+        && !$isEmail
+        && !$isUrlField
+        && !($disable_counter ?? false);
 
 @endphp
 
@@ -40,7 +46,7 @@
             </div>
         @endif
 
-        @if (!$isPassword && !isset($disable_counter) || (isset($disable_counter) && !$disable_counter) && ((!isset($type)) || $type =='text'))
+        @if ($showCounter)
             @include('darpersocms::cms.components.form-fields.character-word-count')
         @endif
 
