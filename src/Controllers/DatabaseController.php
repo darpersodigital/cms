@@ -287,8 +287,14 @@ class DatabaseController extends BaseController
                     ->update([$name => $defaultValue]);
             }
 
-            Schema::table($tableName, function ($table) use ($columnType, $name, $isNullable) {
+            $isSelect = $field_name[$i] === 'select';
+
+            Schema::table($tableName, function ($table) use ($columnType, $name, $isNullable, $isSelect) {
                 $column = $table->$columnType($name);
+
+                if ($isSelect) {
+                    $column->unsigned();
+                }
 
                 if ($isNullable) {
                     $column->nullable();
