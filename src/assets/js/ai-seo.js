@@ -5,6 +5,13 @@ export function getSeoInput(field, language) {
     return document.querySelector(`input[name*="${language}[${field}]"]`);
 }
 
+// Check whether a SEO field is required for this post type (set via the field builder's
+// "nullable" config and rendered as data-required on the input by the Blade field templates)
+export function isSeoFieldRequired(field, language) {
+    const input = getSeoInput(field, language);
+    return input?.dataset.required === '1';
+}
+
 // Check image validity
 export function checkImage(language) {
     const imageInput = getSeoInput('seo_image', language);
@@ -15,9 +22,22 @@ export function checkImage(language) {
         return "Image tag is set and valid!";
     } else if (imageInput && imageInput.files && imageInput.files.length > 0) {
         return "Image file is selected and valid!";
-    } else {
+    } else if (isSeoFieldRequired('seo_image', language)) {
         return "Missing SEO Image!";
+    } else {
+        return null;
     }
+}
+
+// Run the image check and render its result under the input (shared by the batch
+// AI/fallback pass and the live, no-network validation below)
+export function checkAndRenderImage(language) {
+    const message = checkImage(language);
+    const score = message === null
+        ? null
+        : (message === "Image tag is set and valid!" || message === "Image file is selected and valid!") ? 10 : 0;
+    appendSeoResults('seo_image', language, message, score);
+    return { message, score };
 }
 
 // Append SEO results under input
@@ -27,6 +47,9 @@ export function appendSeoResults(field, language, message, score) {
 
     const existingDiv = fieldInput.parentNode.parentNode.parentNode.querySelector('.seo-message-container');
     if (existingDiv) existingDiv.remove();
+
+    // score === null means the field is optional and empty - nothing to report
+    if (score === null || score === undefined) return;
 
     const resultDiv = document.createElement('div');
     resultDiv.className = 'seo-message-container';
@@ -87,9 +110,15 @@ function isGibberish(text) {
     return false;
 }
 // Fallback checker with gibberish detection
-export function fallbackToCustomQualityChecker(content, field) {
+export function fallbackToCustomQualityChecker(content, field, required = true) {
     let score = 10, message = "Content is well-sized.";
     const length = content?.trim().length || 0;
+
+    // Empty and not required for this post type - nothing to flag
+    if (length === 0 && !required) {
+        return { score: null, message: null };
+    }
+
     if (length > 0 && isGibberish(content)) {
         return { score: 0, message: "Content appears to be gibberish. Please rewrite it." };
     }
@@ -320,7 +349,8 @@ export async function checkSEOHealthWithAI(token, withLoader = true) {
             const fields = allFields[lang];
             for (const field in fields) {
                 if (!["seo_image", "seo_robots"].includes(field)) {
-                    aiResultsAllLanguages[lang][field] = fallbackToCustomQualityChecker(fields[field], field);
+                    const required = isSeoFieldRequired(field, lang);
+                    aiResultsAllLanguages[lang][field] = fallbackToCustomQualityChecker(fields[field], field, required);
                 }
             }
         }
@@ -335,16 +365,15 @@ export async function checkSEOHealthWithAI(token, withLoader = true) {
         applySeoResults(lang, aiResults);
 
         // Custom checks for seo_image
-        const imageMessage = checkImage(lang);
-        const imageScore = (imageMessage === "Image tag is set and valid!" || imageMessage === "Image file is selected and valid!") ? 10 : 0;
-        appendSeoResults('seo_image', lang, imageMessage, imageScore);
+        const { message: imageMessage, score: imageScore } = checkAndRenderImage(lang);
 
         // Custom checks for seo_robots
         const robotsInput = getSeoInput('seo_robots', lang);
         if (robotsInput) {
             const robotsValue = robotsInput.value;
-            const robotsMessage = robotsValue ? "Robots field is set" : "Robots field is empty";
-            const robotsScore = robotsValue ? 10 : 0;
+            const robotsRequired = isSeoFieldRequired('seo_robots', lang);
+            const robotsMessage = robotsValue ? "Robots field is set" : (robotsRequired ? "Robots field is empty" : null);
+            const robotsScore = robotsValue ? 10 : (robotsRequired ? 0 : null);
             appendSeoResults('seo_robots', lang, robotsMessage, robotsScore);
 
             seoHealth[lang] = {
@@ -364,4 +393,58 @@ export async function checkSEOHealthWithAI(token, withLoader = true) {
 
     console.log("SEO Health Results:", seoHealth);
     return seoHealth;
+}
+
+// --- Live, no-network validation (runs on input/blur, independent of the AI call) ---
+
+function debounce(fn, delay = 300) {
+    let timer;
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+    };
+}
+
+// Re-runs the local fallback checker (no network) for a single field and renders it,
+// so a required field left empty (or a quality issue) surfaces immediately instead of
+// waiting for the next full AI pass on page load / "Check SEO" click / submit.
+export function validateSeoFieldLive(field, language) {
+    const input = getSeoInput(field, language);
+    if (!input) return;
+
+    const required = isSeoFieldRequired(field, language);
+    const { score, message } = fallbackToCustomQualityChecker(input.value, field, required);
+    appendSeoResults(field, language, message, score);
+}
+
+// Wires live validation listeners to every SEO field for every language present on the form.
+// Live checks only start once a field has held a value - an untouched empty field (e.g. one
+// the user hasn't reached yet on a new form) doesn't get flagged just for being blurred past.
+// Once a field has had content, live validation keeps running even if it's cleared again, so
+// a required field emptied out after typing still reports "Missing ...!" in real time.
+export function initLiveSeoValidation() {
+    const languages = getSeoLanguages();
+    const textFields = ['seo_title', 'seo_page_title', 'seo_description', 'seo_keywords', 'seo_author'];
+    const startedFields = new WeakSet();
+
+    for (const lang of languages) {
+        for (const field of textFields) {
+            const input = getSeoInput(field, lang);
+            if (!input) continue;
+
+            if (input.value.trim().length > 0) startedFields.add(input);
+
+            const validate = () => {
+                if (input.value.trim().length > 0) startedFields.add(input);
+                if (startedFields.has(input)) validateSeoFieldLive(field, lang);
+            };
+            input.addEventListener('input', debounce(validate, 300));
+            input.addEventListener('blur', validate);
+        }
+
+        const imageInput = getSeoInput('seo_image', lang);
+        if (imageInput) {
+            imageInput.addEventListener('change', () => checkAndRenderImage(lang));
+        }
+    }
 }

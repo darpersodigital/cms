@@ -11,18 +11,33 @@ use Darpersodigital\Cms\Models\AdminRolePermission;
 use Illuminate\Validation\ValidationException;
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class CustomCRUDController extends BaseController
 {
 
+   
+    private function controllerName($display_name_plural)
+    {
+        $name = Str::studly(preg_replace('/[^a-zA-Z0-9]+/', ' ', (string) $display_name_plural));
+        $name = preg_replace('/[^a-zA-Z0-9]/', '', $name);
+
+        if ($name === '' || is_numeric(substr($name, 0, 1))) {
+            $name = 'PostType' . $name;
+        }
+
+        return $name;
+    }
+
     public function createCustomCRUDController($post_type)
     {
-        $controllerPath = app_path('/Http/Controllers//' . $post_type['display_name_plural'] . 'Controller.php');
+        $controllerName = $this->controllerName($post_type['display_name_plural']);
+        $controllerPath = app_path('Http/Controllers/' . $controllerName . 'Controller.php');
         $crudViewDirectory = resource_path('views/cms/' . $post_type['route']);
         $packageViewDirectory = dirname(__DIR__) . '/resources/views/cms/post-type';
 
         if (!file_exists($controllerPath)) {
-            $replacements = [$post_type['display_name_plural'], $post_type['route']];
+            $replacements = [$controllerName, $post_type['route']];
             $fileContent = str_replace(['%%controller_name%%', '%%route%%'], $replacements, file_get_contents(__DIR__ . '/constants/CustomCRUDController.stub'));
             file_put_contents($controllerPath, $fileContent);
         }

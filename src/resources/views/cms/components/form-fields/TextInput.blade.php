@@ -42,7 +42,8 @@
                 <input class="custom-form-input" name="{{ $input_name }}" type="{{ $type ?? 'text' }}"
                     {!! isset($maxlength) ? 'maxlength="' . $maxlength . '"' : '' !!} {!! isset($type) && $type == 'number' ? 'step="any"' : '' !!} id="{{ $inputId }}"
                     value="{{ old($input_name, $value ?? '') }}" placeholder="{{ $placeholder ?? '' }}"
-                    data-testid="{{ $testID ?? '' }}" {!! isset($slug_origin) ? 'data-slug-origin="' . $slug_origin . '"' : '' !!}>
+                    data-testid="{{ $testID ?? '' }}" data-required="{{ !empty($required) ? '1' : '0' }}"
+                    {!! isset($slug_origin) ? 'data-slug-origin="' . $slug_origin . '"' : '' !!}>
             </div>
         @endif
 

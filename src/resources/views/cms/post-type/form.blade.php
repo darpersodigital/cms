@@ -109,10 +109,12 @@
     @section('scripts')
         <script type="module">
             import {
-                checkSEOHealthWithAI
+                checkSEOHealthWithAI,
+                initLiveSeoValidation
             } from "{{ url('asset?path=js/ai-seo.js') }}";
             document.addEventListener('DOMContentLoaded', async function() {
                 await checkSEOHealthWithAI("{{ env('OPENAI_API_KEY') }}");
+                initLiveSeoValidation();
                 $('.seo-check-btn').click(() => {
                     checkSEOHealthWithAI("{{ env('OPENAI_API_KEY') }}", true);
                 })

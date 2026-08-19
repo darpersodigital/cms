@@ -18,7 +18,7 @@
         </div>
     @endif
     <label class="custom-file-wrapper placeholder w-100" data-placeholder="Upload image" data-text="Upload image">
-        <input type="file" class="custom-form-input" name="{{ $input_name }}"   data-testid="image-input-input-{{$locale ? $locale .'-' :""}}{{$testID ?? ""}}">
+        <input type="file" class="custom-form-input" name="{{ $input_name }}"   data-testid="image-input-input-{{$locale ? $locale .'-' :""}}{{$testID ?? ""}}" data-required="{{ !empty($required) ? '1' : '0' }}">
     </label>
 	@include('darpersocms::cms.components.form-fields.field-error')
 
