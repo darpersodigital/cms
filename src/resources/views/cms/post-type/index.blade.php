@@ -9,6 +9,11 @@
             $filters[] = $field;
         }
     }
+    // Returns the show url of a related record, or null when the admin can't read it.
+    $relation_url = fn($database_table, $id) => \Darpersodigital\Cms\Services\RelationLinkServices::showUrl(
+        $database_table,
+        $id,
+    );
     $languages = $languages ?? collect();
     $translatable_fields = $translatable_fields ?? ($page_translatable_fields ?? json_decode($page['translatable_fields'] ?? '[]', true) ?? []);
 
@@ -62,7 +67,8 @@
                                 @endphp
 
                                 <th class="{{ $field['hide_table'] == 1 ? 'export-only-column' : '' }}">
-                                    <a
+                                    <a  
+                                        style="color:#000!important"
                                         @if ($page['server_side_pagination'] && $field['form_field'] !== 'select multiple') href="{{ url($base_url . $appends_to_sort_query) }}" @endif>
                                         {{ str_replace(['_id', '_'], ['', ' '], $field['name']) }}
                                     </a>
@@ -108,20 +114,29 @@
                                         @switch($formField)
                                             @case('select')
                                                 @if ($row[str_replace('_id', '', $fieldName)])
-                                                    <a
-                                                        href="{{ url(config('cms_config.route_path_prefix') . '/' . str_replace('_', '-', $field['form_field_configs_1']) . '/' . $row[$fieldName]) }}">
-                                                        {{ strip_tags($row[str_replace('_id', '', $fieldName)][$field['form_field_configs_2']]) }}
-                                                    </a>
+                                                    @php
+                                                        $related_url = $relation_url($field['form_field_configs_1'], $row[$fieldName]);
+                                                        $related_label = strip_tags($row[str_replace('_id', '', $fieldName)][$field['form_field_configs_2']]);
+                                                    @endphp
+                                                    @if ($related_url)
+                                                        <a href="{{ $related_url }}">{{ $related_label }}</a>
+                                                    @else
+                                                        {{ $related_label }}
+                                                    @endif
                                                 @endif
                                             @break
 
                                             @case('select multiple')
                                                 @foreach ($row[str_replace('_id', '', $fieldName)] as $i => $pivot)
+                                                    @php
+                                                        $related_url = $relation_url($field['form_field_configs_1'], $pivot->id);
+                                                    @endphp
                                                     {{ $i ? ', ' : '' }}
-                                                    <a
-                                                        href="{{ url(config('cms_config.route_path_prefix') . '/' . str_replace('_', '-', $field['form_field_configs_1']) . '/' . $pivot->id) }}">
+                                                    @if ($related_url)
+                                                        <a href="{{ $related_url }}">{{ $pivot[$field['form_field_configs_2']] }}</a>
+                                                    @else
                                                         {{ $pivot[$field['form_field_configs_2']] }}
-                                                    </a>
+                                                    @endif
                                                 @endforeach
                                             @break
 

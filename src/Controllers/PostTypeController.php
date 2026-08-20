@@ -8,6 +8,7 @@ use Darpersodigital\Cms\Models\PostType;
 use Darpersodigital\Cms\Models\Sitemap;
 use Darpersodigital\Cms\Models\Language;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 
 use Darpersodigital\Cms\Controllers\FileUploadController;
 use Illuminate\Support\Str;
@@ -68,9 +69,14 @@ class PostTypeController extends BaseController
 
         $rows = $model
             ::select($page->database_table . '.*')
-            ->when($sort_by, function ($query) use ($page, $sort_by, $sort_direction) {
+            ->when($sort_by, function ($query) use ($page, $sort_by, $sort_direction, $order_by_column_relationship) {
                 if (isset($page->is_form) && $page->is_form) {
-                    return $query->orderBy($page->database_table . '.star', $sort_direction);
+                    $query->orderBy($page->database_table . '.star', $sort_direction);
+                }
+                // A relationship column is not a column of this table, it is ordered
+                // on the joined table further below.
+                if ($order_by_column_relationship) {
+                    return $query;
                 }
                 return $query->orderBy($page->database_table . '.' . $sort_by, $sort_direction);
             })
@@ -93,21 +99,9 @@ class PostTypeController extends BaseController
                 return $query;
             })
             ->when(request('search'), fn($query) => $this->applySearchFilter($query, $page_fields))
-            ->when(
-                $order_by_column_relationship,
-                function ($query) use ($order_by_column_relationship, $page, $sort_direction) {
-                    $query->when(
-                        $order_by_column_relationship['form_field'] == 'select',
-                        function ($query) use ($order_by_column_relationship, $page, $sort_direction) {
-                            $query->leftJoin($order_by_column_relationship['form_field_configs_1'], $order_by_column_relationship['form_field_configs_1'] . '.id', '=', $page['database_table'] . '.' . $order_by_column_relationship['name'])->orderBy($order_by_column_relationship['form_field_configs_1'] . '.' . $order_by_column_relationship['form_field_configs_2'], $sort_direction);
-                        },
-                        function ($query) {},
-                    );
-                },
-                function ($query) use ($page, $sort_by, $sort_direction) {
-                    $query->orderBy($page->database_table . '.' . $sort_by, $sort_direction);
-                },
-            )
+            ->when($order_by_column_relationship, function ($query) use ($order_by_column_relationship, $page, $sort_direction) {
+                $this->applyRelationshipSort($query, $page, $order_by_column_relationship, $sort_direction);
+            })
             ->when(
                 $page['server_side_pagination'],
                 function ($query) {
@@ -128,6 +122,57 @@ class PostTypeController extends BaseController
             $view = view()->exists('darpersocms::cms/' . $route . '/index') ? 'darpersocms::cms/' . $route . '/index' : 'darpersocms::cms/post-type/index';
             return view($view, compact('page', 'page_fields', 'rows', 'extra_variables', 'appends_to_query', 'languages', 'translatable_fields'));
         }
+    }
+
+    /**
+     * Order the listing by the label of a "select" field instead of by its foreign key.
+     *
+     * The label column (form_field_configs_2) can either be a normal column of the
+     * related table or one of its translatable fields, in which case it lives in the
+     * related "{table}_translations" table and has to be joined through the current locale.
+     */
+    private function applyRelationshipSort($query, $page, $field, $sort_direction)
+    {
+        // "select multiple" has no foreign key on this table, so there is nothing to join.
+        if ($field['form_field'] !== 'select') {
+            return $query;
+        }
+
+        $related_table = $field['form_field_configs_1'];
+        $label_column = $field['form_field_configs_2'];
+        $related_page = $related_table ? PostType::where('database_table', $related_table)->first() : null;
+
+        if (!$related_page || !$label_column) {
+            return $query;
+        }
+
+        $query->leftJoin($related_table, $related_table . '.id', '=', $page['database_table'] . '.' . $field['name']);
+
+        $is_translatable = collect(json_decode($related_page['translatable_fields'], true) ?? [])
+            ->pluck('name')
+            ->contains($label_column);
+
+        if ($is_translatable) {
+            $translations_table = $related_table . '_translations';
+            if (!Schema::hasColumn($translations_table, $label_column)) {
+                return $query;
+            }
+            // Aliased so it can never collide with a join added by the relationship filters.
+            $alias = 'sort_' . $translations_table;
+            $foreign_key = Str::singular($related_table) . '_id';
+
+            return $query
+                ->leftJoin($translations_table . ' as ' . $alias, function ($join) use ($alias, $related_table, $foreign_key) {
+                    $join->on($alias . '.' . $foreign_key, '=', $related_table . '.id')->where($alias . '.locale', '=', app()->getLocale());
+                })
+                ->orderBy($alias . '.' . $label_column, $sort_direction);
+        }
+
+        if (!Schema::hasColumn($related_table, $label_column)) {
+            return $query;
+        }
+
+        return $query->orderBy($related_table . '.' . $label_column, $sort_direction);
     }
 
     public function translateOrNew($translatable_fields, $request, $row)

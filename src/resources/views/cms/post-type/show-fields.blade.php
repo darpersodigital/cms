@@ -33,25 +33,45 @@
         'video' => 'cms/components/show-fields/video',
         'checkbox' => 'cms/components/show-fields/boolean',
         'color picker' => 'cms/components/show-fields/color-picker',
+        'textarea' => 'cms/components/show-fields/textarea',
         default => 'cms/components/show-fields/text',
     };
 
     // Special handling for select fields
+    // The related record links to its show screen, but only when the logged in admin
+    // is allowed to read that post type (see RelationLinkServices).
     if ($field['form_field'] === 'select' && isset($row[str_replace('_id', '', $field['name'])])) {
-        $fieldAttributes['value'] = $locale
-            ? $row->translate($locale)[$field['name']]
-            : $row[str_replace('_id', '', $field['name'])][$field['form_field_configs_2']];
-        $fieldComponent = 'cms/components/show-fields/text';
+        if ($locale) {
+            $fieldAttributes['value'] = $row->translate($locale)[$field['name']];
+            $fieldComponent = 'cms/components/show-fields/text';
+        } else {
+            $related = $row[str_replace('_id', '', $field['name'])];
+            $fieldAttributes['items'] = [
+                [
+                    'label' => $related[$field['form_field_configs_2']],
+                    'url' => \Darpersodigital\Cms\Services\RelationLinkServices::showUrl(
+                        $field['form_field_configs_1'],
+                        $row[$field['name']],
+                    ),
+                ],
+            ];
+            $fieldComponent = 'cms/components/show-fields/relation';
+        }
     }
 
     if ($field['form_field'] === 'select multiple' && isset($row[str_replace('_id', '', $field['name'])])) {
-        $v = '';
-        foreach ($row[str_replace('_id', '', $field['name'])] as $i => $pivot) {
-            $v .= $i ? ', ' : '';
-            $v .= $pivot[$field['form_field_configs_2']];
+        $items = [];
+        foreach ($row[str_replace('_id', '', $field['name'])] as $pivot) {
+            $items[] = [
+                'label' => $pivot[$field['form_field_configs_2']],
+                'url' => \Darpersodigital\Cms\Services\RelationLinkServices::showUrl(
+                    $field['form_field_configs_1'],
+                    $pivot->id,
+                ),
+            ];
         }
-        $fieldAttributes['value'] = $v;
-        $fieldComponent = 'cms/components/show-fields/text';
+        $fieldAttributes['items'] = $items;
+        $fieldComponent = 'cms/components/show-fields/relation';
     }
 
     if ($field['form_field'] == 'time') {
