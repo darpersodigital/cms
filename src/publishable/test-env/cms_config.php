@@ -4,7 +4,7 @@ return [
       'id'=>'test-env',
     'route_path_prefix' => 'admin',
     'logo' => 'test.png',
-    'footer_copyright' => 'v1.1.3 All Right Reserved Copyright &copy; <a href="https://google.com" target="_blank" class="text-primary" ><b>Client Digital</b></a>',
+    'footer_copyright' => 'v1.1.4 All Right Reserved Copyright &copy; <a href="https://google.com" target="_blank" class="text-primary" ><b>Client Digital</b></a>',
     'home_title' => 'Client CMS',
     'seo_title'=>'Client CMS',
     'additional_styles'=>[

@@ -27,11 +27,16 @@ class FileUploadController extends BaseController
             return $this->compressAndUploadFile($file, $route);
         }
 
+        $configuredQuality = env('IMAGE_COMPRESSION_QUALITY');
+
         if (filter_var(env('DISABLE_IMAGE_COMPRESSION', false), FILTER_VALIDATE_BOOLEAN)) {
             // Quality 100 re-encodes at max fidelity but often inflates file size well beyond
             // the source (a re-encode still fully re-compresses the image); 92 is visually
             // lossless while staying close to source size.
             $quality = 95;
+        } elseif ($configuredQuality !== null && $configuredQuality !== '' && is_numeric($configuredQuality)) {
+            // An explicit quality in .env overrides the size-based ladder below.
+            $quality = max(1, min(100, (int) $configuredQuality));
         } else {
             $imgSize = +$this->bytesToMegabytes($file->getSize());
 
@@ -63,7 +68,6 @@ class FileUploadController extends BaseController
                 $quality = 90;
             }
         }
-
         $imageName = $route . '/' . Str::uuid() . '.webp';
 
         // try {

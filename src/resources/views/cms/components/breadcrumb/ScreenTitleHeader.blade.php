@@ -2,7 +2,9 @@
     $_can_add = isset($can_add) && $can_add;
     $_can_order = isset($can_order) && $can_order;
     $_can_edit = isset($can_edit) && $can_edit;
-    $_can_delete = isset($can_delete) && $can_delete;
+
+    $_disable_bulk_delete = isset($disableBulkDelete) && $disableBulkDelete;
+    $_can_delete = isset($can_delete) && $can_delete && !$_disable_bulk_delete;
 
     $_disable_header_actions = isset($disableHeaderActions) && $disableHeaderActions;
     $_auto = isset($auto) && $auto;
