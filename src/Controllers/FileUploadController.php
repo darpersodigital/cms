@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Storage;
 
 class FileUploadController extends BaseController
 {
+    /**
+     * The quality WebP re-encodes at when the source is small enough that the ladder
+     * below has nothing to claw back. Kept high enough to keep document scans and
+     * fine print legible. Override per project with IMAGE_COMPRESSION_QUALITY.
+     */
+    private const DEFAULT_IMAGE_QUALITY = 82;
+
     public function bytesToMegabytes($bytes, $binary = false, $precision = 2)
     {
         if ($binary) {
@@ -22,65 +29,83 @@ class FileUploadController extends BaseController
 
     public function compressAndUploadImage($file, $route)
     {
-        $mime = $file->getMimeType();
-        if (!str_starts_with($mime, 'image/') || $mime === 'image/svg+xml') {
+        if (!$this->isCompressibleImage($file)) {
             return $this->compressAndUploadFile($file, $route);
         }
 
-        $configuredQuality = env('IMAGE_COMPRESSION_QUALITY');
-
-        if (filter_var(env('DISABLE_IMAGE_COMPRESSION', false), FILTER_VALIDATE_BOOLEAN)) {
-            // Quality 100 re-encodes at max fidelity but often inflates file size well beyond
-            // the source (a re-encode still fully re-compresses the image); 92 is visually
-            // lossless while staying close to source size.
-            $quality = 95;
-        } elseif ($configuredQuality !== null && $configuredQuality !== '' && is_numeric($configuredQuality)) {
-            // An explicit quality in .env overrides the size-based ladder below.
-            $quality = max(1, min(100, (int) $configuredQuality));
-        } else {
-            $imgSize = +$this->bytesToMegabytes($file->getSize());
-
-            if ($imgSize >= 10) {
-                $quality = 1;
-            } elseif ($imgSize >= 9) {
-                $quality = 4;
-            } elseif ($imgSize >= 8) {
-                $quality = 6;
-            } elseif ($imgSize >= 7) {
-                $quality = 7;
-            } elseif ($imgSize >= 5) {
-                $quality = 20;
-            } elseif ($imgSize >= 4) {
-                $quality = 25;
-            } elseif ($imgSize >= 3) {
-                $quality = 30;
-            } elseif ($imgSize >= 2) {
-                $quality = 50;
-            } elseif ($imgSize >= 1) {
-                $quality = 65;
-            } elseif ($imgSize >= 0.7) {
-                $quality = 75;
-            } elseif ($imgSize >= 0.6) {
-                $quality = 80;
-            } elseif ($imgSize >= 0.5) {
-                $quality = 85;
-            } else {
-                $quality = 90;
-            }
-        }
         $imageName = $route . '/' . Str::uuid() . '.webp';
 
-        // try {
-        // ini_set('memory_limit', '512M');
-        $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
-        $image = $manager->read($file);
-        $webpData = (string) $image->toWebp(quality: $quality);
-        Storage::disk('public')->put($imageName, $webpData);
-        // } catch (Exception $e){
-        //     return $this->compressAndUploadFile($file,$route);
-        // }
+        try {
+            // GD holds the decoded bitmap uncompressed: a 4032x3024 phone photo is ~48MB
+            // and an 8000px document scan ~190MB. Document fields now reach this method
+            // too (see handleSingleFileUpload), so the ceiling has to cover scans as well
+            // as photos.
+            ini_set('memory_limit', '512M');
+
+            $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+            $image = $manager->read($file);
+
+            // A phone records its rotation in an EXIF tag rather than in the pixels, and
+            // that tag does not survive the re-encode below - so the rotation has to be
+            // baked into the pixels first, or portrait photos come back on their side.
+            $image->orient();
+
+            $webpData = (string) $image->toWebp(quality: $this->imageQuality($file));
+            Storage::disk('public')->put($imageName, $webpData);
+        } catch (\Throwable $e) {
+            // Decoding can still fail on a corrupt file or one too large for the limit
+            // above. Storing the original beats losing the upload entirely.
+            return $this->compressAndUploadFile($file, $route);
+        }
 
         return $imageName;
+    }
+
+    /**
+     * Whether the upload is a raster image we can re-encode. SVG is an image by mime
+     * but a document to the decoder, and rasterising it would destroy it.
+     */
+    private function isCompressibleImage($file): bool
+    {
+        $mime = $file?->getMimeType();
+
+        return is_string($mime) && str_starts_with($mime, 'image/') && $mime !== 'image/svg+xml';
+    }
+
+    private function imageQuality($file): int
+    {
+        if (filter_var(env('DISABLE_IMAGE_COMPRESSION', false), FILTER_VALIDATE_BOOLEAN)) {
+            // Quality 100 re-encodes at max fidelity but often inflates file size well beyond
+            // the source (a re-encode still fully re-compresses the image); 95 is visually
+            // lossless while staying close to source size.
+            return 95;
+        }
+
+        $configured = env('IMAGE_COMPRESSION_QUALITY');
+
+        if ($configured !== null && $configured !== '' && is_numeric($configured)) {
+            // An explicit quality in .env overrides the size-based ladder below.
+            return max(1, min(100, (int) $configured));
+        }
+
+        // Bigger sources still compress harder, since dimensions are left alone and
+        // quality is the only lever - but the ladder is floored well above the point
+        // where a document scan stops being legible.
+        $imgSize = +$this->bytesToMegabytes($file->getSize());
+
+        if ($imgSize >= 5) {
+            return 60;
+        }
+
+        if ($imgSize >= 3) {
+            return 68;
+        }
+
+        if ($imgSize >= 1) {
+            return 75;
+        }
+
+        return self::DEFAULT_IMAGE_QUALITY;
     }
     public function normalizeMultipleFilesArray($value)
     {
@@ -141,15 +166,21 @@ class FileUploadController extends BaseController
         return $file->storeAs($route, $fileName, 'public');
     }
 
+    /**
+     * Route on what the file actually is rather than on what the form called the
+     * field: a 5MB phone photo arrives on a document field as often as on a photo
+     * one, and the field name alone let those through untouched. Everything that
+     * isn't a raster image - PDFs, video, SVG - is still stored byte for byte.
+     *
+     * $form_field is kept for callers that still pass it, but no longer decides.
+     */
     public function handleSingleFileUpload($file, $route, $form_field)
     {
-        if (str_contains($form_field, 'image')) {
+        if ($this->isCompressibleImage($file)) {
             return $this->compressAndUploadImage($file, $route);
-        } elseif (str_contains($form_field, 'video')) {
-            return $this->compressAndUploadFile($file, $route);
-        } else {
-            return $this->compressAndUploadFile($file, $route);
         }
+
+        return $this->compressAndUploadFile($file, $route);
     }
 
     public function handleMultipleFilesUpload($request, $field_name, $route, $form_field, $with_alt = false, $locale = null)
