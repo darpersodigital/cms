@@ -142,9 +142,9 @@ class AdminMiddleware
             $route_path_prefix = config('cms_config.route_path_prefix');
             $requested_path = ltrim(substr(request()->path(), strlen($route_path_prefix)), '/');
             $request_path_array = explode('/', $requested_path);
-            $request_path_array[0] = $request_path_array[0] ?? 'home';  // Set default 'home' if the first element is missing or empty
-
-            $route = $request_path_array[0];
+            // Root of the CMS (e.g. /admin) has no segment: treat it as the dashboard
+            // instead of looking up a post type with an empty route.
+            $route = $request_path_array[0] !== '' ? $request_path_array[0] : 'dashboard';
     
             if (!in_array($route, [ 'profile', 'logout','dashboard'])) {
                 if (!isset($admin['post_types'][$route])) abort(403);
