@@ -57,7 +57,7 @@
                                     </th>
                                 @endif
                             @endforeach
-
+                            <th>Date</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -158,7 +158,9 @@
                                     @endif
                                 @endforeach
 
-
+                                <td data-order="{{ $row['created_at'] ? \Carbon\Carbon::parse($row['created_at'])->timestamp : 0 }}">
+                                    {{ $row['created_at'] ? \Carbon\Carbon::parse($row['created_at'])->format('d M Y, h:i A') : '' }}
+                                </td>
                                 <td>
                                     <div class="d-flex justify-content-end">
                                         @if ($page['show'] || !request()->get('admin')['admin_role_id'])

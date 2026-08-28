@@ -54,6 +54,13 @@
                 @endif
             @endforeach
 
+            @include('darpersocms::cms/components/show-fields/text', [
+                'label' => 'Date',
+                'value' => $row['created_at'] ? \Carbon\Carbon::parse($row['created_at'])->format('d M Y, h:i A') : '',
+                'name' => 'created_at',
+                'testID' => 'created_at',
+            ])
+
         </div>
 
     </div>
